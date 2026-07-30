@@ -220,6 +220,7 @@ export const AdvancedReportsPage: React.FC = () => {
             />
           </CardContent>
         </Card>
+      )}
 
       {/* BANK BOOK TAB */}
       {activeTab === 'BANK_BOOK' && (
