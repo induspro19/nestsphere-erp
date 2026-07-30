@@ -1,0 +1,3037 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum RoleType {
+  SUPER_ADMIN
+  SOCIETY_ADMIN
+  COMMITTEE
+  SECURITY
+  RESIDENT
+  TENANT
+  VENDOR
+  MAINTENANCE_STAFF
+}
+
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  INACTIVE
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum BillingCycle {
+  MONTHLY
+  QUARTERLY
+  ANNUAL
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  EXPIRED
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum NotificationChannel {
+  IN_APP
+  PUSH
+  EMAIL
+  SMS
+  WHATSAPP
+  VOICE_CALL
+  WEBHOOK
+}
+
+enum NotificationCategory {
+  INFORMATION
+  WARNING
+  SUCCESS
+  ERROR
+  EMERGENCY
+  APPROVAL
+  REMINDER
+  BILLING
+  VISITOR
+  COMPLAINT
+  BOOKING
+  SECURITY
+  BROADCAST
+}
+
+enum NotificationPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum DispatchStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  FAILED
+  RETRYING
+}
+
+enum ApprovalStatus {
+  PENDING
+  IN_REVIEW
+  APPROVED
+  REJECTED
+  RETURNED_FOR_CORRECTION
+  CANCELLED
+  WITHDRAWN
+}
+
+enum WorkflowApprovalType {
+  SEQUENTIAL
+  PARALLEL
+  CONDITIONAL
+}
+
+enum WorkflowAssignmentType {
+  ROLE
+  USER
+  DEPARTMENT
+}
+
+enum ActivityAction {
+  CREATED
+  UPDATED
+  APPROVED
+  REJECTED
+  DELETED
+  RESTORED
+}
+
+enum UnitType {
+  APARTMENT
+  VILLA
+  ROW_HOUSE
+  OFFICE
+  SHOP
+  WAREHOUSE
+  PENTHOUSE
+  STUDIO
+  DUPLEX
+  PARKING_UNIT
+  STORAGE_UNIT
+}
+
+enum PersonRoleCategory {
+  OWNER
+  TENANT
+  FAMILY_MEMBER
+  COMMITTEE_MEMBER
+  SECURITY_GUARD
+  MAINTENANCE_STAFF
+  VENDOR
+  DRIVER
+  COOK
+  HOUSE_MAID
+  GARDENER
+  ELECTRICIAN
+  PLUMBER
+  DELIVERY_PARTNER
+  PROPERTY_MANAGER
+  WATCHMAN
+}
+
+enum KycStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum AccessType {
+  RESIDENT
+  OWNER
+  TENANT
+  FAMILY_MEMBER
+  COMMITTEE
+  VENDOR
+  DELIVERY
+  COURIER
+  CAB
+  GUEST
+  TEMPORARY_WORKER
+  SECURITY_STAFF
+  MAINTENANCE_STAFF
+  EMERGENCY_SERVICE
+  POLICE
+  FIRE_BRIGADE
+  AMBULANCE
+  VEHICLE_ENTRY
+  VISITOR_VEHICLE
+}
+
+enum EntryMethod {
+  RFID
+  QR_CODE
+  FACE_RECOGNITION
+  OTP
+  MANUAL_APPROVAL
+  REMOTE_APPROVAL
+  BIOMETRIC
+  EMERGENCY_OVERRIDE
+}
+
+enum AccessDirection {
+  ENTRY
+  EXIT
+}
+
+enum RuleType {
+  WHITELIST
+  BLACKLIST
+}
+
+enum AssetStatus {
+  OPERATIONAL
+  UNDER_MAINTENANCE
+  OUT_OF_SERVICE
+  DECOMMISSIONED
+}
+
+enum AssetLogType {
+  SERVICE
+  INSPECTION
+  CALIBRATION
+  BREAKDOWN
+  DEPRECIATION_UPDATE
+}
+
+enum VisitorTypeCategory {
+  GUEST
+  RELATIVE
+  FRIEND
+  VENDOR
+  COURIER
+  FOOD_DELIVERY
+  CAB_DRIVER
+  SERVICE_ENGINEER
+  TECHNICIAN
+  HOUSEKEEPING
+  GOVERNMENT_OFFICER
+  POLICE
+  FIRE_BRIGADE
+  AMBULANCE
+  INTERVIEW_CANDIDATE
+  TEMPORARY_WORKER
+}
+
+enum VisitorPassStatus {
+  PRE_APPROVED
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  CHECKED_IN
+  CHECKED_OUT
+  EXPIRED
+  CANCELLED
+}
+
+enum StorageProvider {
+  LOCAL
+  AWS_S3
+  MINIO
+  AZURE_BLOB
+  GOOGLE_CLOUD_STORAGE
+}
+
+enum FinancialAccountType {
+  ASSET
+  LIABILITY
+  EQUITY
+  INCOME
+  EXPENSE
+}
+
+enum TransactionType {
+  INVOICE
+  PAYMENT
+  RECEIPT
+  CREDIT_NOTE
+  DEBIT_NOTE
+  REFUND
+  WALLET_TOPUP
+  JOURNAL_ADJUSTMENT
+}
+
+enum PaymentMethod {
+  CASH
+  UPI
+  BANK_TRANSFER
+  CHEQUE
+  CARD
+  RAZORPAY
+  STRIPE
+}
+
+enum ComplaintCategory {
+  ELECTRICAL
+  PLUMBING
+  CIVIL
+  CLEANING
+  HOUSEKEEPING
+  GARDENING
+  SECURITY
+  LIFT
+  FIRE_SYSTEM
+  DG_SET
+  WATER_SUPPLY
+  PARKING
+  CLUB_HOUSE
+  SWIMMING_POOL
+  STREET_LIGHT
+  INTERNET
+  COMMON_AREA
+  OTHER
+}
+
+enum ComplaintPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+  EMERGENCY
+}
+
+enum ComplaintStatus {
+  OPEN
+  ASSIGNED
+  IN_PROGRESS
+  ON_HOLD
+  WAITING_FOR_RESIDENT
+  RESOLVED
+  CLOSED
+  REOPENED
+}
+
+enum WorkOrderType {
+  PREVENTIVE
+  CORRECTIVE
+  BREAKDOWN
+  INSPECTION
+  CALIBRATION
+}
+
+enum WorkOrderPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+  EMERGENCY
+}
+
+enum WorkOrderStatus {
+  PLANNED
+  SCHEDULED
+  IN_PROGRESS
+  ON_HOLD
+  COMPLETED
+  VERIFIED
+  CANCELLED
+}
+
+enum AmenityBookingType {
+  HOURLY
+  DAILY
+  RECURRING
+}
+
+enum AmenityBookingStatus {
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  WAITLISTED
+  CHECKED_IN
+  CHECKED_OUT
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum ParkingType {
+  COVERED
+  OPEN
+  BASEMENT
+  MECHANICAL
+  VISITOR
+  DISABLED
+  EV
+  RESERVED
+  COMMERCIAL
+  TEMPORARY
+  TWO_WHEELER
+  FOUR_WHEELER
+  TRUCK
+  BUS
+  LOADING_BAY
+}
+
+enum ParkingSlotStatus {
+  AVAILABLE
+  OCCUPIED
+  RESERVED
+  BLOCKED
+  MAINTENANCE
+}
+
+enum ParkingSlotSize {
+  TWO_WHEELER
+  CAR
+  SUV
+  TRUCK
+  BUS
+}
+
+enum ParkingAllocationStatus {
+  PENDING
+  ACTIVE
+  WAITLISTED
+  EXPIRED
+  TRANSFERRED
+  CANCELLED
+}
+
+enum VendorStatus {
+  ACTIVE
+  INACTIVE
+  BLACKLISTED
+  PREFERRED
+  UNDER_REVIEW
+}
+
+enum AmcContractType {
+  ANNUAL
+  QUARTERLY
+  MONTHLY
+  COMPREHENSIVE
+  NON_COMPREHENSIVE
+  WARRANTY
+}
+
+enum AmcContractStatus {
+  DRAFT
+  ACTIVE
+  EXPIRED
+  TERMINATED
+  PENDING_RENEWAL
+  RENEWED
+}
+
+enum ServiceVisitType {
+  PLANNED
+  EMERGENCY
+  BREAKDOWN
+  INSPECTION
+  CALIBRATION
+  PREVENTIVE
+}
+
+enum ServiceVisitStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  RESCHEDULED
+}
+
+// ======================================================
+// 1. REUSABLE MASTER DATA TABLES
+// ======================================================
+
+model MasterCountry {
+  id        String       @id @default(uuid()) @db.Uuid
+  code      String       @unique @db.VarChar(10)
+  name      String       @db.VarChar(100)
+  phoneCode String       @map("phone_code") @db.VarChar(10)
+  states    MasterState[]
+
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  @@map("master_countries")
+}
+
+model MasterState {
+  id        String       @id @default(uuid()) @db.Uuid
+  countryId String       @map("country_id") @db.Uuid
+  code      String       @db.VarChar(10)
+  name      String       @db.VarChar(100)
+  country   MasterCountry @relation(fields: [countryId], references: [id])
+  cities    MasterCity[]
+
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  @@unique([countryId, code])
+  @@map("master_states")
+}
+
+model MasterCity {
+  id        String      @id @default(uuid()) @db.Uuid
+  stateId   String      @map("state_id") @db.Uuid
+  name      String      @db.VarChar(100)
+  state     MasterState @relation(fields: [stateId], references: [id])
+  areas     MasterArea[]
+
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+
+  @@map("master_cities")
+}
+
+model MasterArea {
+  id      String     @id @default(uuid()) @db.Uuid
+  cityId  String     @map("city_id") @db.Uuid
+  name    String     @db.VarChar(100)
+  pincode String     @db.VarChar(20)
+  city    MasterCity @relation(fields: [cityId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("master_areas")
+}
+
+model MasterCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+  domain      String   @db.VarChar(50)
+  code        String   @db.VarChar(50)
+  name        String   @db.VarChar(100)
+  description String?  @db.VarChar(255)
+  isActive    Boolean  @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([domain, code])
+  @@map("master_categories")
+}
+
+// ======================================================
+// 2. SAAS SUBSCRIPTION & FEATURE FLAG SYSTEM
+// ======================================================
+
+model SubscriptionPlan {
+  id          String   @id @default(uuid()) @db.Uuid
+  code        String   @unique @db.VarChar(50)
+  name        String   @db.VarChar(100)
+  description String?  @db.VarChar(255)
+  monthlyPrice Decimal  @default(0) @map("monthly_price") @db.Decimal(10, 2)
+  annualPrice  Decimal  @default(0) @map("annual_price") @db.Decimal(10, 2)
+  maxFlats    Int      @default(50) @map("max_flats")
+  maxUsers    Int      @default(100) @map("max_users")
+  isActive    Boolean  @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  features      PlanFeature[]
+  subscriptions SocietySubscription[]
+
+  @@map("subscription_plans")
+}
+
+model SubscriptionFeature {
+  id          String  @id @default(uuid()) @db.Uuid
+  code        String  @unique @db.VarChar(100)
+  name        String  @db.VarChar(100)
+  module      String  @db.VarChar(50)
+  description String? @db.VarChar(255)
+
+  planFeatures PlanFeature[]
+
+  @@map("subscription_features")
+}
+
+model PlanFeature {
+  id        String @id @default(uuid()) @db.Uuid
+  planId    String @map("plan_id") @db.Uuid
+  featureId String @map("feature_id") @db.Uuid
+
+  plan    SubscriptionPlan    @relation(fields: [planId], references: [id], onDelete: Cascade)
+  feature SubscriptionFeature @relation(fields: [featureId], references: [id], onDelete: Cascade)
+
+  @@unique([planId, featureId])
+  @@map("plan_features")
+}
+
+model SocietySubscription {
+  id           String             @id @default(uuid()) @db.Uuid
+  societyId    String             @map("society_id") @db.Uuid
+  planId       String             @map("plan_id") @db.Uuid
+  status       SubscriptionStatus @default(TRIAL)
+  billingCycle BillingCycle       @default(MONTHLY) @map("billing_cycle")
+  startDate    DateTime           @map("start_date")
+  endDate      DateTime           @map("end_date")
+  autoRenew    Boolean            @default(true) @map("auto_renew")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  society  Society          @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  plan     SubscriptionPlan @relation(fields: [planId], references: [id])
+  invoices InvoiceHistory[]
+
+  @@index([societyId, status])
+  @@map("society_subscriptions")
+}
+
+model InvoiceHistory {
+  id             String        @id @default(uuid()) @db.Uuid
+  subscriptionId String        @map("subscription_id") @db.Uuid
+  societyId      String        @map("society_id") @db.Uuid
+  invoiceNumber  String        @unique @map("invoice_number") @db.VarChar(50)
+  amount         Decimal       @db.Decimal(10, 2)
+  taxAmount      Decimal       @default(0) @map("tax_amount") @db.Decimal(10, 2)
+  totalAmount    Decimal       @map("total_amount") @db.Decimal(10, 2)
+  dueDate        DateTime      @map("due_date")
+  paidAt         DateTime?     @map("paid_at")
+  status         InvoiceStatus @default(DRAFT)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  subscription SocietySubscription @relation(fields: [subscriptionId], references: [id])
+  society      Society             @relation(fields: [societyId], references: [id])
+  payments     PaymentHistory[]
+
+  @@map("invoice_history")
+}
+
+model PaymentHistory {
+  id            String    @id @default(uuid()) @db.Uuid
+  invoiceId     String    @map("invoice_id") @db.Uuid
+  transactionId String    @unique @map("transaction_id") @db.VarChar(100)
+  gateway       String    @db.VarChar(50)
+  amount        Decimal   @db.Decimal(10, 2)
+  paymentMethod String    @map("payment_method") @db.VarChar(50)
+  status        String    @db.VarChar(50)
+  paidAt        DateTime  @default(now()) @map("paid_at")
+
+  invoice InvoiceHistory @relation(fields: [invoiceId], references: [id])
+
+  @@map("payment_history")
+}
+
+// ======================================================
+// 3. MULTI-TENANT CORE: SOCIETY & GENERIC PROPERTY HIERARCHY
+// ======================================================
+
+model Society {
+  id              String        @id @default(uuid()) @db.Uuid
+  code            String        @unique @db.VarChar(50)
+  name            String        @db.VarChar(255)
+  registrationNo  String?       @map("registration_no") @db.VarChar(100)
+  societyTypeCode String        @map("society_type_code") @db.VarChar(50)
+  addressLine1    String        @map("address_line_1") @db.VarChar(255)
+  addressLine2    String?       @map("address_line_2") @db.VarChar(255)
+  cityId          String?       @map("city_id") @db.Uuid
+  pincode         String        @db.VarChar(20)
+  contactEmail    String        @map("contact_email") @db.VarChar(255)
+  contactPhone    String        @map("contact_phone") @db.VarChar(20)
+  status          AccountStatus @default(PENDING)
+  onboardingStep  Int           @default(1) @map("onboarding_step")
+  isOnboarded     Boolean       @default(false) @map("is_onboarded")
+
+  // Audit Fields
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+  updatedBy String?   @db.Uuid @map("updated_by")
+  deletedBy String?   @db.Uuid @map("deleted_by")
+
+  // Relations
+  buildings        Building[]
+  users            User[]
+  residents        Resident[]
+  tenants          Tenant[]
+  staff            Staff[]
+  vehicles         Vehicle[]
+  auditLogs        AuditLog[]
+  notifications    Notification[]
+  settings         Setting[]
+  subscriptions    SocietySubscription[]
+  invoices         InvoiceHistory[]
+  files            MediaFile[]
+  numberingConfigs NumberingConfig[]
+  propertyConfig   PropertyConfig?
+  people           Person[]
+  gates            Gate[]
+  accessLogs       AccessLog[]
+  accessRules      AccessRule[]
+  notificationTemplates NotificationTemplate[]
+  notificationDispatches NotificationDispatch[]
+  workflowTemplates WorkflowTemplate[]
+  assetCategories  AssetCategory[]
+  assets           Asset[]
+  visitorPasses    VisitorPass[]
+  documentFolders  DocumentFolder[]
+  documents        Document[]
+  financialAccounts FinancialAccount[]
+  financialYears   FinancialYear[]
+  journalEntries   JournalEntry[]
+  financialTransactions FinancialTransaction[]
+  wallets          MemberWallet[]
+  reportConfigs    ReportConfig[]
+  dashboardWidgets DashboardWidget[]
+  complaints       Complaint[]
+  workOrders       WorkOrder[]
+  maintenanceBillConfig MaintenanceBillConfig?
+  maintenanceBills MaintenanceBill[]
+  amenities        Amenity[]
+  amenityBookings  AmenityBooking[]
+  parkingZones     ParkingZone[]
+  parkingSlots     ParkingSlot[]
+  parkingAllocations ParkingAllocation[]
+  vendors          Vendor[]
+  amcContracts     AmcContract[]
+  serviceVisits    ServiceVisit[]
+  meetings         Meeting[]
+  meetingTemplates MeetingTemplate[]
+  notices          Notice[]
+  noticeTemplates  NoticeTemplate[]
+
+  @@index([isDeleted])
+  @@map("societies")
+}
+
+model PropertyConfig {
+  id                 String  @id @default(uuid()) @db.Uuid
+  societyId          String  @unique @map("society_id") @db.Uuid
+  blockLabel         String  @default("Tower") @map("block_label") @db.VarChar(50)
+  hasWings           Boolean @default(true) @map("has_wings")
+  hasFloors          Boolean @default(true) @map("has_floors")
+  isSeparateParking  Boolean @default(true) @map("is_separate_parking")
+  autoUnitNumbering  Boolean @default(true) @map("auto_unit_numbering")
+  unitNumberPattern  String  @default("{block}-{wing}-{unit}") @map("unit_number_pattern") @db.VarChar(100)
+
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  @@map("property_configs")
+}
+
+model Building {
+  id        String  @id @default(uuid()) @db.Uuid
+  societyId String  @map("society_id") @db.Uuid
+  code      String  @db.VarChar(50)
+  name      String  @db.VarChar(100)
+  typeCode  String? @map("type_code") @db.VarChar(50)
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+  updatedBy String?   @db.Uuid @map("updated_by")
+  deletedBy String?   @db.Uuid @map("deleted_by")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  wings   Wing[]
+  flats   Flat[]
+  assets  Asset[]
+
+  @@index([societyId, isDeleted])
+  @@map("buildings")
+}
+
+model Wing {
+  id         String @id @default(uuid()) @db.Uuid
+  buildingId String @map("building_id") @db.Uuid
+  societyId  String @map("society_id") @db.Uuid
+  code       String @db.VarChar(50)
+  name       String @db.VarChar(50)
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+  updatedBy String?   @db.Uuid @map("updated_by")
+  deletedBy String?   @db.Uuid @map("deleted_by")
+
+  building Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  floors   Floor[]
+  flats    Flat[]
+  assets   Asset[]
+
+  @@index([buildingId, isDeleted])
+  @@index([societyId])
+  @@map("wings")
+}
+
+model Floor {
+  id          String @id @default(uuid()) @db.Uuid
+  wingId      String? @map("wing_id") @db.Uuid
+  buildingId  String @map("building_id") @db.Uuid
+  societyId   String @map("society_id") @db.Uuid
+  code        String @db.VarChar(50)
+  floorNumber Int    @map("floor_number")
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+  updatedBy String?   @db.Uuid @map("updated_by")
+  deletedBy String?   @db.Uuid @map("deleted_by")
+
+  wing  Wing?  @relation(fields: [wingId], references: [id], onDelete: Cascade)
+  flats Flat[]
+
+  @@index([buildingId, isDeleted])
+  @@index([societyId])
+  @@map("floors")
+}
+
+model Flat {
+  id             String   @id @default(uuid()) @db.Uuid
+  floorId        String?  @map("floor_id") @db.Uuid
+  wingId         String?  @map("wing_id") @db.Uuid
+  buildingId     String   @map("building_id") @db.Uuid
+  societyId      String   @map("society_id") @db.Uuid
+  code           String   @db.VarChar(50)
+  flatNumber     String   @map("flat_number") @db.VarChar(50)
+  unitType       UnitType @default(APARTMENT) @map("unit_type")
+  flatTypeCode   String?  @map("flat_type_code") @db.VarChar(50)
+  sqFt           Float?   @map("sq_ft")
+  status         String   @default("VACANT") @db.VarChar(50)
+  intercomNumber String?  @map("intercom_number") @db.VarChar(20)
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+  updatedBy String?   @db.Uuid @map("updated_by")
+  deletedBy String?   @db.Uuid @map("deleted_by")
+
+  building      Building       @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  wing          Wing?          @relation(fields: [wingId], references: [id], onDelete: Cascade)
+  floor         Floor?         @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  residents     Resident[]
+  tenants       Tenant[]
+  vehicles      Vehicle[]
+  familyMembers FamilyMember[]
+  personUnits   PersonUnit[]
+  visitorPasses VisitorPass[]
+  financialTransactions FinancialTransaction[]
+  complaints    Complaint[]
+  maintenanceBills MaintenanceBill[]
+  parkingAllocations ParkingAllocation[]
+
+  @@index([buildingId, isDeleted], map: "flats_building_id_is_deleted_idx")
+  @@index([societyId, isDeleted], map: "flats_society_id_is_deleted_idx")
+  @@map("flats")
+}
+
+// ======================================================
+// 4. MASTER PERSON ENTITY
+// ======================================================
+
+model Person {
+  id           String        @id @default(uuid()) @db.Uuid
+  societyId    String        @map("society_id") @db.Uuid
+  userId       String?       @unique @map("user_id") @db.Uuid
+  digitalId    String        @unique @map("digital_id") @db.VarChar(50)
+  firstName    String        @map("first_name") @db.VarChar(100)
+  lastName     String        @map("last_name") @db.VarChar(100)
+  email        String?       @db.VarChar(255)
+  phone        String        @db.VarChar(20)
+  gender       Gender        @default(MALE)
+  avatarUrl    String?       @map("avatar_url") @db.VarChar(500)
+  
+  identityType   String?     @map("identity_type") @db.VarChar(50)
+  identityNumber String?     @map("identity_number") @db.VarChar(100)
+  kycStatus      KycStatus   @default(PENDING) @map("kyc_status")
+
+  status AccountStatus @default(ACTIVE)
+
+  emergencyContacts Json? @map("emergency_contacts")
+
+  digitalIdQrToken       String? @map("digital_id_qr_token") @db.VarChar(255)
+  isAttendanceReady      Boolean @default(true) @map("is_attendance_ready")
+  isFaceRecognitionReady Boolean @default(false) @map("is_face_recognition_ready")
+  isMobileAppReady       Boolean @default(false) @map("is_mobile_app_ready")
+  isVisitorReady         Boolean @default(true) @map("is_visitor_ready")
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+  updatedBy String?   @db.Uuid @map("updated_by")
+  deletedBy String?   @db.Uuid @map("deleted_by")
+
+  society     Society      @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  user        User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  roles       PersonRole[]
+  unitMappings PersonUnit[]
+  vehicles    Vehicle[]
+  accessLogs  AccessLog[]
+  visitorPassesAsVisitor VisitorPass[] @relation("VisitorPerson")
+  visitorPassesAsHost    VisitorPass[] @relation("HostPerson")
+  financialTransactions FinancialTransaction[]
+  wallet      MemberWallet?
+  reportedComplaints Complaint[] @relation("ReportedByPerson")
+  assignedComplaints StaffComplaintAssignment[]
+  assignedWorkOrders WorkOrder[] @relation("AssignedWorkOrderStaff")
+  maintenanceBills   MaintenanceBill[]
+  amenityBookings    AmenityBooking[]
+  parkingAllocations ParkingAllocation[]
+  chairedMeetings    Meeting[] @relation("MeetingChairPerson")
+  secretariedMeetings Meeting[] @relation("MeetingSecretaryPerson")
+  meetingParticipants MeetingParticipant[]
+  assignedMeetingTasks MeetingActionItem[] @relation("MeetingTaskOwner")
+  createdNotices      Notice[]            @relation("NoticeCreatedBy")
+  approvedNotices     Notice[]            @relation("NoticeApprovedBy")
+  noticeRecipients    NoticeRecipient[]
+
+  @@index([societyId, isDeleted])
+  @@index([phone])
+  @@index([digitalId])
+  @@map("people")
+}
+
+model StaffComplaintAssignment {
+  id          String @id @default(uuid()) @db.Uuid
+  complaintId String @map("complaint_id") @db.Uuid
+  staffId     String @map("staff_id") @db.Uuid
+
+  complaint Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  staff     Person    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@unique([complaintId, staffId])
+  @@map("staff_complaint_assignments")
+}
+
+model PersonRole {
+  id         String             @id @default(uuid()) @db.Uuid
+  personId   String             @map("person_id") @db.Uuid
+  roleCode   PersonRoleCategory @map("role_code")
+  assignedAt DateTime           @default(now()) @map("assigned_at")
+
+  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@unique([personId, roleCode])
+  @@map("person_roles")
+}
+
+model PersonUnit {
+  id                 String    @id @default(uuid()) @db.Uuid
+  personId           String    @map("person_id") @db.Uuid
+  unitId             String    @map("unit_id") @db.Uuid
+  isPrimaryOccupant  Boolean   @default(false) @map("is_primary_occupant")
+  moveInDate         DateTime? @map("move_in_date")
+  moveOutDate        DateTime? @map("move_out_date")
+  occupancyStatus    String    @default("ACTIVE") @map("occupancy_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+  unit   Flat   @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  @@unique([personId, unitId])
+  @@map("person_units")
+}
+
+// ======================================================
+// 5. REUSABLE ENTERPRISE ACCESS CONTROL ENGINE
+// ======================================================
+
+model Gate {
+  id        String  @id @default(uuid()) @db.Uuid
+  societyId String  @map("society_id") @db.Uuid
+  code      String  @db.VarChar(50)
+  name      String  @db.VarChar(100)
+  gateType  String  @default("BI_DIRECTIONAL") @map("gate_type") @db.VarChar(50)
+  status    String  @default("ACTIVE") @db.VarChar(50)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  society    Society     @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  accessLogs AccessLog[]
+
+  @@unique([societyId, code])
+  @@map("gates")
+}
+
+model AccessRule {
+  id          String   @id @default(uuid()) @db.Uuid
+  societyId   String   @map("society_id") @db.Uuid
+  ruleType    RuleType @map("rule_type")
+  entityType  String   @map("entity_type") @db.VarChar(50)
+  entityValue String   @map("entity_value") @db.VarChar(100)
+  reason      String?  @db.VarChar(255)
+  expiresAt   DateTime? @map("expires_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  createdBy String?  @db.Uuid @map("created_by")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  @@unique([societyId, ruleType, entityType, entityValue])
+  @@map("access_rules")
+}
+
+model AccessLog {
+  id              String          @id @default(uuid()) @db.Uuid
+  societyId       String          @map("society_id") @db.Uuid
+  gateId          String          @map("gate_id") @db.Uuid
+  personId        String?         @map("person_id") @db.Uuid
+  vehicleId       String?         @map("vehicle_id") @db.Uuid
+  accessType      AccessType      @map("access_type")
+  entryMethod     EntryMethod     @map("entry_method")
+  direction       AccessDirection @default(ENTRY)
+  entryTime       DateTime        @default(now()) @map("entry_time")
+  exitTime        DateTime?       @map("exit_time")
+  durationMinutes Int?            @map("duration_minutes")
+  isOverstay      Boolean         @default(false) @map("is_overstay")
+  approvalSource  String          @default("SECURITY_GUARD") @map("approval_source") @db.VarChar(50)
+  securityGuardId String?         @map("security_guard_id") @db.Uuid
+  vehicleNumber   String?         @map("vehicle_number") @db.VarChar(50)
+  photoUrl        String?         @map("photo_url") @db.VarChar(500)
+  qrToken         String?         @map("qr_token") @db.VarChar(255)
+  otpToken        String?         @map("otp_token") @db.VarChar(50)
+  remarks         String?         @db.VarChar(255)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  society Society  @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  gate    Gate     @relation(fields: [gateId], references: [id], onDelete: Cascade)
+  person  Person?  @relation(fields: [personId], references: [id], onDelete: SetNull)
+  vehicle Vehicle? @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  visitorPasses VisitorPass[]
+
+  @@index([societyId, direction, exitTime])
+  @@index([societyId, isOverstay])
+  @@index([vehicleNumber])
+  @@map("access_logs")
+}
+
+// ======================================================
+// 6. ENTERPRISE COMMUNICATION & NOTIFICATION ENGINE
+// ======================================================
+
+model NotificationTemplate {
+  id            String               @id @default(uuid()) @db.Uuid
+  societyId     String?              @map("society_id") @db.Uuid
+  code          String               @unique @db.VarChar(100)
+  name          String               @db.VarChar(150)
+  category      NotificationCategory @default(INFORMATION)
+  channel       NotificationChannel  @default(IN_APP)
+  titleTemplate String               @map("title_template") @db.VarChar(255)
+  bodyTemplate  String               @map("body_template") @db.Text
+  variables     Json?
+  isActive      Boolean              @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  society Society? @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  dispatches NotificationDispatch[]
+
+  @@map("notification_templates")
+}
+
+model NotificationDispatch {
+  id             String               @id @default(uuid()) @db.Uuid
+  societyId      String               @map("society_id") @db.Uuid
+  templateId     String?              @map("template_id") @db.Uuid
+  channel        NotificationChannel  @default(IN_APP)
+  category       NotificationCategory @default(INFORMATION)
+  priority       NotificationPriority @default(MEDIUM)
+  recipientType  String               @map("recipient_type") @db.VarChar(50)
+  recipientId    String               @map("recipient_id") @db.VarChar(100)
+  title          String               @db.VarChar(255)
+  message        String               @db.Text
+  metadata       Json?
+  status         DispatchStatus       @default(QUEUED)
+  scheduledAt    DateTime             @default(now()) @map("scheduled_at")
+  sentAt         DateTime?            @map("sent_at")
+  failureReason  String?              @map("failure_reason") @db.VarChar(255)
+  retryCount     Int                  @default(0) @map("retry_count")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  society  Society               @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  template NotificationTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+
+  @@index([societyId, status])
+  @@map("notification_dispatches")
+}
+
+// ======================================================
+// 7. GENERIC ENTERPRISE WORKFLOW & APPROVAL ENGINE
+// ======================================================
+
+model WorkflowTemplate {
+  id                   String               @id @default(uuid()) @db.Uuid
+  societyId            String?              @map("society_id") @db.Uuid
+  code                 String               @unique @db.VarChar(100)
+  name                 String               @db.VarChar(150)
+  entityType           String               @map("entity_type") @db.VarChar(100)
+  approvalType         WorkflowApprovalType @default(SEQUENTIAL) @map("approval_type")
+  slaHours             Int                  @default(24) @map("sla_hours")
+  autoApproveThreshold Float?               @map("auto_approve_threshold")
+  isActive             Boolean              @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  society   Society?               @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  steps     WorkflowTemplateStep[]
+  instances WorkflowInstance[]
+
+  @@map("workflow_templates")
+}
+
+model WorkflowTemplateStep {
+  id                      String                 @id @default(uuid()) @db.Uuid
+  templateId              String                 @map("template_id") @db.Uuid
+  stepNumber              Int                    @map("step_number")
+  stepName                String                 @map("step_name") @db.VarChar(100)
+  assignmentType          WorkflowAssignmentType @default(ROLE) @map("assignment_type")
+  assigneeRole            RoleType?              @map("assignee_role")
+  assigneeUserId          String?                @map("assignee_user_id") @db.Uuid
+  requireDigitalSignature Boolean                @default(false) @map("require_digital_signature")
+
+  template WorkflowTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@unique([templateId, stepNumber])
+  @@map("workflow_template_steps")
+}
+
+model WorkflowInstance {
+  id                String         @id @default(uuid()) @db.Uuid
+  societyId         String         @map("society_id") @db.Uuid
+  templateId        String?        @map("template_id") @db.Uuid
+  entityType        String         @map("entity_type") @db.VarChar(100)
+  entityId          String         @map("entity_id") @db.Uuid
+  title             String         @db.VarChar(255)
+  notes             String?
+  status            ApprovalStatus @default(PENDING)
+  currentStepNumber Int            @default(1) @map("current_step_number")
+  slaDueDate        DateTime?      @map("sla_due_date")
+  isEscalated       Boolean        @default(false) @map("is_escalated")
+  signatureHash     String?        @map("signature_hash") @db.VarChar(255)
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  createdBy String?   @db.Uuid @map("created_by")
+
+  template WorkflowTemplate?     @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  steps    WorkflowStepInstance[]
+  comments WorkflowComment[]
+  visitorPasses VisitorPass[]
+  documents Document[]
+  complaints Complaint[]
+
+  @@index([societyId, entityType, entityId])
+  @@index([societyId, status])
+  @@map("workflow_instances")
+}
+
+model WorkflowStepInstance {
+  id                      String         @id @default(uuid()) @db.Uuid
+  instanceId              String         @map("instance_id") @db.Uuid
+  stepNumber              Int            @map("step_number")
+  stepName                String         @map("step_name") @db.VarChar(100)
+  roleCode                RoleType       @map("role_code")
+  approverId              String?        @map("approver_id") @db.Uuid
+  status                  ApprovalStatus @default(PENDING)
+  comments                String?
+  signatureHash           String?        @map("signature_hash") @db.VarChar(255)
+  actionAt                DateTime?      @map("action_at")
+
+  instance WorkflowInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  @@map("workflow_step_instances")
+}
+
+model WorkflowComment {
+  id            String   @id @default(uuid()) @db.Uuid
+  instanceId    String   @map("instance_id") @db.Uuid
+  actorId       String   @map("actor_id") @db.Uuid
+  comment       String   @db.Text
+  attachmentUrl String?  @map("attachment_url") @db.VarChar(500)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  instance WorkflowInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  @@map("workflow_comments")
+}
+
+model ApprovalWorkflow {
+  id         String         @id @default(uuid()) @db.Uuid
+  societyId  String         @map("society_id") @db.Uuid
+  entityType String         @map("entity_type") @db.VarChar(100)
+  entityId   String         @map("entity_id") @db.Uuid
+  status     ApprovalStatus @default(PENDING)
+  title      String         @db.VarChar(255)
+  notes      String?
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  createdBy String?   @db.Uuid @map("created_by")
+
+  steps ApprovalStep[]
+
+  @@index([societyId, entityType, entityId])
+  @@map("approval_workflows")
+}
+
+model ApprovalStep {
+  id         String         @id @default(uuid()) @db.Uuid
+  workflowId String         @map("workflow_id") @db.Uuid
+  stepNumber Int            @map("step_number")
+  roleCode   RoleType       @map("role_code")
+  approverId String?        @map("approver_id") @db.Uuid
+  status     ApprovalStatus @default(PENDING)
+  comments   String?
+  actionAt   DateTime?      @map("action_at")
+
+  workflow ApprovalWorkflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@map("approval_steps")
+}
+
+// ======================================================
+// 8. ENTERPRISE ASSET & RESOURCE MANAGEMENT ENGINE
+// ======================================================
+
+model AssetCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+  societyId   String?  @map("society_id") @db.Uuid
+  code        String   @unique @db.VarChar(50)
+  name        String   @db.VarChar(100)
+  description String?  @db.VarChar(255)
+  isActive    Boolean  @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  society Society? @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  assets  Asset[]
+
+  @@map("asset_categories")
+}
+
+model Asset {
+  id                      String      @id @default(uuid()) @db.Uuid
+  societyId               String      @map("society_id") @db.Uuid
+  categoryId              String      @map("category_id") @db.Uuid
+  assetCode               String      @unique @map("asset_code") @db.VarChar(50)
+  name                    String      @db.VarChar(200)
+  brand                   String?     @db.VarChar(100)
+  modelNumber             String?     @map("model_number") @db.VarChar(100)
+  serialNumber            String?     @map("serial_number") @db.VarChar(100)
+  
+  qrToken                 String?     @map("qr_token") @db.VarChar(255)
+  barcode                 String?     @db.VarChar(100)
+  rfidTag                 String?     @map("rfid_tag") @db.VarChar(100)
+  
+  buildingId              String?     @map("building_id") @db.Uuid
+  wingId                  String?     @map("wing_id") @db.Uuid
+  locationDetails         String?     @map("location_details") @db.VarChar(255)
+
+  purchaseDate            DateTime?   @map("purchase_date")
+  installationDate        DateTime?   @map("installation_date")
+  warrantyExpiry          DateTime?   @map("warranty_expiry")
+  amcExpiry               DateTime?   @map("amc_expiry")
+  vendorName              String?     @map("vendor_name") @db.VarChar(150)
+  vendorPhone             String?     @map("vendor_phone") @db.VarChar(20)
+
+  purchaseCost            Decimal     @default(0) @map("purchase_cost") @db.Decimal(12, 2)
+  currentValue            Decimal     @default(0) @map("current_value") @db.Decimal(12, 2)
+  depreciationRate        Float       @default(0) @map("depreciation_rate")
+
+  maintenanceIntervalDays Int         @default(30) @map("maintenance_interval_days")
+  lastServiceDate         DateTime?   @map("last_service_date")
+  nextServiceDate         DateTime?   @map("next_service_date")
+  personResponsibleId     String?     @map("person_responsible_id") @db.Uuid
+
+  status                  AssetStatus @default(OPERATIONAL)
+
+  photos                  Json?
+  documents               Json?
+  spareParts              Json?
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+  updatedBy String?   @db.Uuid @map("updated_by")
+  deletedBy String?   @db.Uuid @map("deleted_by")
+
+  society   Society       @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  category  AssetCategory @relation(fields: [categoryId], references: [id])
+  building  Building?     @relation(fields: [buildingId], references: [id], onDelete: SetNull)
+  wing      Wing?         @relation(fields: [wingId], references: [id], onDelete: SetNull)
+  logs      AssetLog[]
+  complaints Complaint[]
+  workOrders WorkOrder[]
+  amcAssets  AmcAssetLink[]
+
+  @@index([societyId, isDeleted])
+  @@index([status])
+  @@map("assets")
+}
+
+model AssetLog {
+  id          String       @id @default(uuid()) @db.Uuid
+  assetId     String       @map("asset_id") @db.Uuid
+  logType     AssetLogType @map("log_type")
+  title       String       @db.VarChar(255)
+  description String?      @db.Text
+  cost        Decimal      @default(0) @db.Decimal(10, 2)
+  performedBy String?      @map("performed_by") @db.VarChar(100)
+  logDate     DateTime     @default(now()) @map("log_date")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@map("asset_logs")
+}
+
+// ======================================================
+// 9. ENTERPRISE VISITOR MANAGEMENT MODULE
+// ======================================================
+
+model VisitorPass {
+  id                 String              @id @default(uuid()) @db.Uuid
+  societyId          String              @map("society_id") @db.Uuid
+  passNumber         String              @unique @map("pass_number") @db.VarChar(50)
+  passType           String              @default("INSTANT") @map("pass_type") @db.VarChar(50)
+  visitorType        VisitorTypeCategory @map("visitor_type")
+  visitorName        String              @map("visitor_name") @db.VarChar(150)
+  visitorPhone       String              @map("visitor_phone") @db.VarChar(20)
+  visitorEmail       String?             @map("visitor_email") @db.VarChar(255)
+
+  personId           String?             @map("person_id") @db.Uuid
+  hostPersonId       String?             @map("host_person_id") @db.Uuid
+  hostUnitId         String?             @map("host_unit_id") @db.Uuid
+  workflowInstanceId String?             @map("workflow_instance_id") @db.Uuid
+  accessLogId        String?             @map("access_log_id") @db.Uuid
+
+  purpose            String?             @db.VarChar(255)
+  vehicleNumber      String?             @map("vehicle_number") @db.VarChar(50)
+
+  expectedArrival    DateTime?           @map("expected_arrival")
+  expectedExit       DateTime?           @map("expected_exit")
+  actualArrival      DateTime?           @map("actual_arrival")
+  actualExit         DateTime?           @map("actual_exit")
+
+  qrToken            String?             @map("qr_token") @db.VarChar(255)
+  otpCode            String?             @map("otp_code") @db.VarChar(10)
+  photoUrl           String?             @map("photo_url") @db.VarChar(500)
+  idProofUrl         String?             @map("id_proof_url") @db.VarChar(500)
+
+  status             VisitorPassStatus   @default(CHECKED_IN)
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+  updatedBy String?   @db.Uuid @map("updated_by")
+  deletedBy String?   @db.Uuid @map("deleted_by")
+
+  society          Society           @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  visitorPerson    Person?           @relation("VisitorPerson", fields: [personId], references: [id], onDelete: SetNull)
+  hostPerson       Person?           @relation("HostPerson", fields: [hostPersonId], references: [id], onDelete: SetNull)
+  hostUnit         Flat?             @relation(fields: [hostUnitId], references: [id], onDelete: SetNull)
+  workflowInstance WorkflowInstance? @relation(fields: [workflowInstanceId], references: [id], onDelete: SetNull)
+  accessLog        AccessLog?        @relation(fields: [accessLogId], references: [id], onDelete: SetNull)
+
+  @@index([societyId, status])
+  @@index([visitorPhone])
+  @@index([passNumber])
+  @@map("visitor_passes")
+}
+
+// ======================================================
+// 10. ENTERPRISE DOCUMENT & FILE MANAGEMENT ENGINE
+// ======================================================
+
+model DocumentFolder {
+  id        String  @id @default(uuid()) @db.Uuid
+  societyId String  @map("society_id") @db.Uuid
+  parentId  String? @map("parent_id") @db.Uuid
+  name      String  @db.VarChar(100)
+  path      String  @default("/") @db.VarChar(255)
+  isSystem  Boolean @default(false) @map("is_system")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  society   Society          @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  parent    DocumentFolder?  @relation("SubFolders", fields: [parentId], references: [id], onDelete: Cascade)
+  children  DocumentFolder[] @relation("SubFolders")
+  documents Document[]
+
+  @@unique([societyId, parentId, name])
+  @@map("document_folders")
+}
+
+model Document {
+  id                  String          @id @default(uuid()) @db.Uuid
+  societyId           String          @map("society_id") @db.Uuid
+  folderId            String?         @map("folder_id") @db.Uuid
+  documentCode        String          @unique @map("document_code") @db.VarChar(50)
+  title               String          @db.VarChar(200)
+  description         String?         @db.Text
+  category            String          @default("GENERAL") @db.VarChar(50)
+  
+  entityType          String?         @map("entity_type") @db.VarChar(50)
+  entityId            String?         @map("entity_id") @db.Uuid
+
+  mimeType            String          @map("mime_type") @db.VarChar(100)
+  extension           String          @db.VarChar(20)
+  sizeBytes           BigInt          @map("size_bytes")
+  storageProvider     StorageProvider @default(LOCAL) @map("storage_provider")
+  storageKey          String          @map("storage_key") @db.VarChar(500)
+  fileUrl             String          @map("file_url") @db.VarChar(1000)
+  thumbnailUrl        String?         @map("thumbnail_url") @db.VarChar(1000)
+
+  version             Int             @default(1)
+  fileHash            String?         @map("file_hash") @db.VarChar(128)
+
+  isPrivate           Boolean         @default(false) @map("is_private")
+  accessRoles         Json?           @map("access_roles")
+  tags                Json?
+
+  expiryDate          DateTime?       @map("expiry_date")
+  renewalReminderDate DateTime?       @map("renewal_reminder_date")
+
+  workflowInstanceId  String?         @map("workflow_instance_id") @db.Uuid
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+  updatedBy String?   @db.Uuid @map("updated_by")
+  deletedBy String?   @db.Uuid @map("deleted_by")
+
+  society          Society           @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  folder           DocumentFolder?   @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  workflowInstance WorkflowInstance? @relation(fields: [workflowInstanceId], references: [id], onDelete: SetNull)
+  versions         DocumentVersion[]
+
+  @@index([societyId, isDeleted])
+  @@index([entityType, entityId])
+  @@index([fileHash])
+  @@map("documents")
+}
+
+model DocumentVersion {
+  id          String   @id @default(uuid()) @db.Uuid
+  documentId  String   @map("document_id") @db.Uuid
+  version     Int
+  fileUrl     String   @map("file_url") @db.VarChar(1000)
+  storageKey  String   @map("storage_key") @db.VarChar(500)
+  sizeBytes   BigInt   @map("size_bytes")
+  fileHash    String?  @map("file_hash") @db.VarChar(128)
+  changeNotes String?  @map("change_notes") @db.VarChar(255)
+  createdBy   String?  @db.Uuid @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@map("document_versions")
+}
+
+// ======================================================
+// 11. ENTERPRISE FINANCIAL & ACCOUNTING ENGINE
+// ======================================================
+
+model FinancialAccount {
+  id          String               @id @default(uuid()) @db.Uuid
+  societyId   String               @map("society_id") @db.Uuid
+  accountCode String               @map("account_code") @db.VarChar(50)
+  accountName String               @map("account_name") @db.VarChar(100)
+  type        FinancialAccountType
+  balance     Decimal              @default(0) @db.Decimal(14, 2)
+  isSystem    Boolean              @default(false) @map("is_system")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  society      Society              @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  journalItems JournalEntryItem[]
+
+  @@unique([societyId, accountCode])
+  @@map("financial_accounts")
+}
+
+model FinancialYear {
+  id        String   @id @default(uuid()) @db.Uuid
+  societyId String   @map("society_id") @db.Uuid
+  yearCode  String   @map("year_code") @db.VarChar(20)
+  startDate DateTime @map("start_date")
+  endDate   DateTime @map("end_date")
+  isClosed  Boolean  @default(false) @map("is_closed")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  @@unique([societyId, yearCode])
+  @@map("financial_years")
+}
+
+model JournalEntry {
+  id              String   @id @default(uuid()) @db.Uuid
+  societyId       String   @map("society_id") @db.Uuid
+  entryNumber     String   @unique @map("entry_number") @db.VarChar(50)
+  entryDate       DateTime @default(now()) @map("entry_date")
+  narration       String   @db.VarChar(255)
+  referenceNumber String?  @map("reference_number") @db.VarChar(100)
+  totalAmount     Decimal  @db.Decimal(14, 2)
+  isPosted        Boolean  @default(true) @map("is_posted")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  createdBy String?  @db.Uuid @map("created_by")
+
+  society Society            @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  items   JournalEntryItem[]
+
+  @@index([societyId, entryDate])
+  @@map("journal_entries")
+}
+
+model JournalEntryItem {
+  id             String  @id @default(uuid()) @db.Uuid
+  journalEntryId String  @map("journal_entry_id") @db.Uuid
+  accountId      String  @map("account_id") @db.Uuid
+  debitAmount    Decimal @default(0) @map("debit_amount") @db.Decimal(14, 2)
+  creditAmount   Decimal @default(0) @map("credit_amount") @db.Decimal(14, 2)
+  notes          String? @db.VarChar(255)
+
+  entry   JournalEntry     @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  account FinancialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("journal_entry_items")
+}
+
+model FinancialTransaction {
+  id                String          @id @default(uuid()) @db.Uuid
+  societyId         String          @map("society_id") @db.Uuid
+  txnNumber         String          @unique @map("txn_number") @db.VarChar(50)
+  txnType           TransactionType @map("txn_type")
+  txnDate           DateTime        @default(now()) @map("txn_date")
+  dueDate           DateTime?       @map("due_date")
+  
+  personId          String?         @map("person_id") @db.Uuid
+  unitId            String?         @map("unit_id") @db.Uuid
+
+  subtotal          Decimal         @default(0) @db.Decimal(14, 2)
+  taxAmount         Decimal         @default(0) @map("tax_amount") @db.Decimal(14, 2)
+  penaltyAmount     Decimal         @default(0) @map("penalty_amount") @db.Decimal(14, 2)
+  discountAmount    Decimal         @default(0) @map("discount_amount") @db.Decimal(14, 2)
+  totalAmount       Decimal         @default(0) @map("total_amount") @db.Decimal(14, 2)
+  paidAmount        Decimal         @default(0) @map("paid_amount") @db.Decimal(14, 2)
+  outstandingAmount Decimal         @default(0) @map("outstanding_amount") @db.Decimal(14, 2)
+
+  paymentMethod     PaymentMethod   @default(RAZORPAY) @map("payment_method")
+  gatewayRef        String?         @map("gateway_ref") @db.VarChar(100)
+  status            String          @default("UNPAID") @db.VarChar(50)
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  createdBy String?   @db.Uuid @map("created_by")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  person  Person? @relation(fields: [personId], references: [id], onDelete: SetNull)
+  unit    Flat?   @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  maintenanceBill MaintenanceBill?
+
+  @@index([societyId, txnType, status])
+  @@index([societyId, dueDate])
+  @@map("financial_transactions")
+}
+
+model MemberWallet {
+  id        String   @id @default(uuid()) @db.Uuid
+  societyId String   @map("society_id") @db.Uuid
+  personId  String   @unique @map("person_id") @db.Uuid
+  balance   Decimal  @default(0) @db.Decimal(14, 2)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  person  Person  @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@map("member_wallets")
+}
+
+// ======================================================
+// 12. ENTERPRISE ANALYTICS & REPORTING ENGINE
+// ======================================================
+
+model ReportConfig {
+  id           String   @id @default(uuid()) @db.Uuid
+  societyId    String   @map("society_id") @db.Uuid
+  reportCode   String   @unique @map("report_code") @db.VarChar(50)
+  title        String   @db.VarChar(150)
+  description  String?  @db.Text
+  domain       String   @db.VarChar(50)
+  chartType    String   @default("BAR") @map("chart_type") @db.VarChar(50)
+  queryConfig  Json?    @map("query_config")
+  isScheduled  Boolean  @default(false) @map("is_scheduled")
+  cronSchedule String?  @map("cron_schedule") @db.VarChar(50)
+  recipients   Json?
+  isFavorite   Boolean  @default(false) @map("is_favorite")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @db.Uuid @map("created_by")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  @@map("report_configs")
+}
+
+model DashboardWidget {
+  id         String   @id @default(uuid()) @db.Uuid
+  societyId  String   @map("society_id") @db.Uuid
+  title      String   @db.VarChar(100)
+  widgetType String   @map("widget_type") @db.VarChar(50)
+  domain     String   @db.VarChar(50)
+  gridPos    Json?    @map("grid_pos")
+  queryConfig Json?   @map("query_config")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  @@map("dashboard_widgets")
+}
+
+// ======================================================
+// 13. ENTERPRISE COMPLAINT & HELPDESK ENGINE
+// ======================================================
+
+model Complaint {
+  id                 String            @id @default(uuid()) @db.Uuid
+  societyId          String            @map("society_id") @db.Uuid
+  ticketNumber       String            @unique @map("ticket_number") @db.VarChar(50)
+  category           ComplaintCategory
+  priority           ComplaintPriority @default(MEDIUM)
+  status             ComplaintStatus   @default(OPEN)
+
+  subject            String            @db.VarChar(255)
+  description        String            @db.Text
+
+  reportedById       String            @map("reported_by_id") @db.Uuid
+  unitId             String?           @map("unit_id") @db.Uuid
+  assetId            String?           @map("asset_id") @db.Uuid
+
+  assignedVendorName String?           @map("assigned_vendor_name") @db.VarChar(150)
+  workflowInstanceId String?           @map("workflow_instance_id") @db.Uuid
+
+  slaHours           Int               @default(24) @map("sla_hours")
+  slaDueDate         DateTime?         @map("sla_due_date")
+  isEscalated        Boolean           @default(false) @map("is_escalated")
+
+  resolutionNotes    String?           @map("resolution_notes") @db.Text
+  rootCause          String?           @map("root_cause") @db.Text
+  correctiveAction   String?           @map("corrective_action") @db.Text
+  preventiveAction   String?           @map("preventive_action") @db.Text
+
+  materialUsed       Json?             @map("material_used")
+  cost               Decimal           @default(0) @db.Decimal(10, 2)
+
+  starRating         Int?              @map("star_rating")
+  residentFeedback   String?           @map("resident_feedback") @db.Text
+
+  resolvedAt         DateTime?         @map("resolved_at")
+  closedAt           DateTime?         @map("closed_at")
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+  updatedBy String?   @db.Uuid @map("updated_by")
+  deletedBy String?   @db.Uuid @map("deleted_by")
+
+  society          Society                  @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  reportedBy       Person                   @relation("ReportedByPerson", fields: [reportedById], references: [id], onDelete: Cascade)
+  unit             Flat?                    @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  asset            Asset?                   @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  workflowInstance WorkflowInstance?        @relation(fields: [workflowInstanceId], references: [id], onDelete: SetNull)
+  assignedStaff    StaffComplaintAssignment[]
+  workOrders       WorkOrder[]
+
+  @@index([societyId, status])
+  @@index([societyId, priority])
+  @@index([ticketNumber])
+  @@map("complaints")
+}
+
+// ======================================================
+// 14. ENTERPRISE PREVENTIVE & CORRECTIVE MAINTENANCE ENGINE
+// ======================================================
+
+model WorkOrder {
+  id                 String            @id @default(uuid()) @db.Uuid
+  societyId          String            @map("society_id") @db.Uuid
+  workOrderNumber    String            @unique @map("work_order_number") @db.VarChar(50)
+  type               WorkOrderType     @default(PREVENTIVE)
+  priority           WorkOrderPriority @default(MEDIUM)
+  status             WorkOrderStatus   @default(PLANNED)
+
+  title              String            @db.VarChar(255)
+  description        String            @db.Text
+
+  assetId            String            @map("asset_id") @db.Uuid
+  complaintId        String?           @map("complaint_id") @db.Uuid
+  assignedStaffId    String?           @map("assigned_staff_id") @db.Uuid
+  assignedVendorName String?           @map("assigned_vendor_name") @db.VarChar(150)
+
+  scheduledDate      DateTime          @map("scheduled_date")
+  completedAt        DateTime?         @map("completed_at")
+
+  downtimeHours      Float             @default(0) @map("downtime_hours")
+  labourCost         Decimal           @default(0) @map("labour_cost") @db.Decimal(10, 2)
+  materialCost       Decimal           @default(0) @map("material_cost") @db.Decimal(10, 2)
+  totalCost          Decimal           @default(0) @map("total_cost") @db.Decimal(10, 2)
+
+  spareParts         Json?             @map("spare_parts")
+  serviceChecklist   Json?             @map("service_checklist")
+
+  rootCause          String?           @map("root_cause") @db.Text
+  correctiveAction   String?           @map("corrective_action") @db.Text
+  preventiveAction   String?           @map("preventive_action") @db.Text
+  signatureHash      String?           @map("signature_hash") @db.VarChar(255)
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+  updatedBy String?   @db.Uuid @map("updated_by")
+  deletedBy String?   @db.Uuid @map("deleted_by")
+
+  society       Society    @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  asset         Asset      @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  complaint     Complaint? @relation(fields: [complaintId], references: [id], onDelete: SetNull)
+  assignedStaff Person?    @relation("AssignedWorkOrderStaff", fields: [assignedStaffId], references: [id], onDelete: SetNull)
+
+  @@index([societyId, status])
+  @@index([societyId, type])
+  @@index([workOrderNumber])
+  @@map("work_orders")
+}
+
+// ======================================================
+// 15. ENTERPRISE MAINTENANCE BILLING ENGINE
+// ======================================================
+
+model MaintenanceBillConfig {
+  id                    String       @id @default(uuid()) @db.Uuid
+  societyId             String       @unique @map("society_id") @db.Uuid
+  billingCycle          BillingCycle @default(MONTHLY) @map("billing_cycle")
+  baseSqFtRate          Decimal      @default(2.5) @map("base_sqft_rate") @db.Decimal(8, 2)
+  flatRatePerUnit       Decimal      @default(1500) @map("flat_rate_per_unit") @db.Decimal(10, 2)
+  sinkingFundAmount     Decimal      @default(300) @map("sinking_fund_amount") @db.Decimal(10, 2)
+  corpusFundAmount      Decimal      @default(200) @map("corpus_fund_amount") @db.Decimal(10, 2)
+  parkingCharge2Wheeler Decimal      @default(100) @map("parking_charge_2wheeler") @db.Decimal(10, 2)
+  parkingCharge4Wheeler Decimal      @default(500) @map("parking_charge_4wheeler") @db.Decimal(10, 2)
+  waterCharge           Decimal      @default(150) @map("water_charge") @db.Decimal(10, 2)
+  electricityCharge     Decimal      @default(200) @map("electricity_charge") @db.Decimal(10, 2)
+  lateFeePercentage     Float        @default(5.0) @map("late_fee_percentage")
+  dueDateDays           Int          @default(15) @map("due_date_days")
+  gstPercentage         Float        @default(18.0) @map("gst_percentage")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  @@map("maintenance_bill_configs")
+}
+
+model MaintenanceBill {
+  id                     String   @id @default(uuid()) @db.Uuid
+  societyId              String   @map("society_id") @db.Uuid
+  billNumber             String   @unique @map("bill_number") @db.VarChar(50) // E.g. MB-2026-00001
+  financialTransactionId String?  @unique @map("financial_transaction_id") @db.Uuid
+  unitId                 String   @map("unit_id") @db.Uuid
+  personId               String?  @map("person_id") @db.Uuid
+
+  billingMonth           String   @map("billing_month") @db.VarChar(20) // E.g. 2026-07
+  maintenanceAmount      Decimal  @default(0) @map("maintenance_amount") @db.Decimal(12, 2)
+  sinkingFund            Decimal  @default(0) @map("sinking_fund") @db.Decimal(12, 2)
+  corpusFund             Decimal  @default(0) @map("corpus_fund") @db.Decimal(12, 2)
+  utilityCharges         Decimal  @default(0) @map("utility_charges") @db.Decimal(12, 2)
+  parkingCharges         Decimal  @default(0) @map("parking_charges") @db.Decimal(12, 2)
+
+  subtotal               Decimal  @default(0) @db.Decimal(12, 2)
+  gstAmount              Decimal  @default(0) @map("gst_amount") @db.Decimal(12, 2)
+  lateFee                Decimal  @default(0) @map("late_fee") @db.Decimal(12, 2)
+  discount               Decimal  @default(0) @db.Decimal(12, 2)
+  totalAmount            Decimal  @default(0) @map("total_amount") @db.Decimal(12, 2)
+  paidAmount             Decimal  @default(0) @map("paid_amount") @db.Decimal(12, 2)
+  outstandingAmount      Decimal  @default(0) @map("outstanding_amount") @db.Decimal(12, 2)
+
+  dueDate                DateTime @map("due_date")
+  status                 String   @default("UNPAID") @db.VarChar(50)
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+
+  society              Society               @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  financialTransaction FinancialTransaction? @relation(fields: [financialTransactionId], references: [id], onDelete: SetNull)
+  unit                 Flat                  @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  person               Person?               @relation(fields: [personId], references: [id], onDelete: SetNull)
+
+  @@index([societyId, billingMonth, status])
+  @@index([unitId, billingMonth])
+  @@map("maintenance_bills")
+}
+
+// ======================================================
+// 16. NUMBERING ENGINE CONFIGURATION
+// ======================================================
+
+model NumberingConfig {
+  id         String @id @default(uuid()) @db.Uuid
+  societyId  String @map("society_id") @db.Uuid
+  entityType String @map("entity_type") @db.VarChar(50)
+  prefix     String @db.VarChar(20)
+  nextNumber Int    @default(1) @map("next_number")
+  padding    Int    @default(5)
+
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  @@unique([societyId, entityType])
+  @@map("numbering_configs")
+}
+
+// ======================================================
+// 17. UNIVERSAL ACTIVITY TIMELINE SYSTEM
+// ======================================================
+
+model ActivityTimeline {
+  id          String         @id @default(uuid()) @db.Uuid
+  societyId   String?        @map("society_id") @db.Uuid
+  entityType  String         @map("entity_type") @db.VarChar(100)
+  entityId    String         @map("entity_id") @db.Uuid
+  action      ActivityAction
+  title       String         @db.VarChar(255)
+  description String?
+  actorId     String         @map("actor_id") @db.Uuid
+  metadata    Json?
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([societyId, entityType, entityId])
+  @@map("activity_timelines")
+}
+
+// ======================================================
+// 18. CENTRALIZED 10-DOMAIN SETTINGS
+// ======================================================
+
+model Setting {
+  id        String   @id @default(uuid()) @db.Uuid
+  societyId String   @map("society_id") @db.Uuid
+  domain    String   @db.VarChar(50)
+  key       String   @db.VarChar(100)
+  value     Json
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  @@unique([societyId, domain, key])
+  @@map("settings")
+}
+
+// ======================================================
+// 19. USERS, ROLES, OCCUPANTS & STAFF
+// ======================================================
+
+model User {
+  id           String        @id @default(uuid()) @db.Uuid
+  societyId    String?       @map("society_id") @db.Uuid
+  email        String        @unique @db.VarChar(255)
+  phone        String        @unique @db.VarChar(20)
+  passwordHash String        @map("password_hash") @db.VarChar(255)
+  firstName    String        @map("first_name") @db.VarChar(100)
+  lastName     String        @map("last_name") @db.VarChar(100)
+  avatarUrl    String?       @map("avatar_url") @db.VarChar(500)
+  status       AccountStatus @default(ACTIVE)
+  lastLoginAt  DateTime?     @map("last_login_at")
+  
+  refreshTokenHash String?  @map("refresh_token_hash") @db.VarChar(255)
+  preferredLang    String   @default("en") @map("preferred_lang") @db.VarChar(10)
+
+  // Audit Fields
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+  updatedBy String?   @db.Uuid @map("updated_by")
+  deletedBy String?   @db.Uuid @map("deleted_by")
+
+  society         Society?          @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  userRoles       UserRole[]
+  residents       Resident[]
+  tenants         Tenant[]
+  staff           Staff[]
+  auditLogs       AuditLog[]
+  notifications   Notification[]
+  dashboardConfig DashboardConfig?
+  personProfile   Person?
+
+  @@index([societyId, isDeleted])
+  @@index([email])
+  @@map("users")
+}
+
+model Role {
+  id          String   @id @default(uuid()) @db.Uuid
+  code        RoleType @unique
+  name        String   @db.VarChar(100)
+  description String?  @db.VarChar(255)
+
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String  @id @default(uuid()) @db.Uuid
+  code        String  @unique @db.VarChar(100)
+  module      String  @db.VarChar(100)
+  description String? @db.VarChar(255)
+
+  rolePermissions RolePermission[]
+
+  @@index([module])
+  @@map("permissions")
+}
+
+model UserRole {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  roleId String @map("role_id") @db.Uuid
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  id           String @id @default(uuid()) @db.Uuid
+  roleId       String @map("role_id") @db.Uuid
+  permissionId String @map("permission_id") @db.Uuid
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model Resident {
+  id         String  @id @default(uuid()) @db.Uuid
+  societyId  String  @map("society_id") @db.Uuid
+  buildingId String  @map("building_id") @db.Uuid
+  wingId     String? @map("wing_id") @db.Uuid
+  floorId    String? @map("floor_id") @db.Uuid
+  flatId     String  @map("flat_id") @db.Uuid
+  userId     String  @map("user_id") @db.Uuid
+  isPrimary  Boolean @default(true) @map("is_primary")
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  flat    Flat    @relation(fields: [flatId], references: [id], onDelete: Cascade)
+
+  @@index([societyId, isDeleted])
+  @@map("residents")
+}
+
+model Tenant {
+  id         String   @id @default(uuid()) @db.Uuid
+  societyId  String   @map("society_id") @db.Uuid
+  buildingId String   @map("building_id") @db.Uuid
+  wingId     String?  @map("wing_id") @db.Uuid
+  floorId    String?  @map("floor_id") @db.Uuid
+  flatId     String   @map("flat_id") @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  leaseStart DateTime @map("lease_start")
+  leaseEnd   DateTime @map("lease_end")
+  isVerified Boolean  @default(false) @map("is_verified")
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  flat    Flat    @relation(fields: [flatId], references: [id], onDelete: Cascade)
+
+  @@index([societyId, isDeleted])
+  @@map("tenants")
+}
+
+model FamilyMember {
+  id       String  @id @default(uuid()) @db.Uuid
+  flatId   String  @map("flat_id") @db.Uuid
+  fullName String  @map("full_name") @db.VarChar(200)
+  relation String  @db.VarChar(50)
+  gender   Gender
+  phone    String? @db.VarChar(20)
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  flat Flat @relation(fields: [flatId], references: [id], onDelete: Cascade)
+
+  @@map("family_members")
+}
+
+model Vehicle {
+  id            String  @id @default(uuid()) @db.Uuid
+  societyId     String  @map("society_id") @db.Uuid
+  flatId        String  @map("flat_id") @db.Uuid
+  personId      String? @map("person_id") @db.Uuid
+  vehicleNumber String  @map("vehicle_number") @db.VarChar(50)
+  typeCode      String  @map("type_code") @db.VarChar(50)  // CAR, BIKE, EV_CAR, TRUCK, etc.
+  parkingSlot   String? @map("parking_slot") @db.VarChar(50)
+
+  // Enhanced vehicle details
+  brand         String? @db.VarChar(100)
+  modelName     String? @map("model_name") @db.VarChar(100)
+  color         String? @db.VarChar(50)
+  stickerNumber String? @map("sticker_number") @db.VarChar(50)
+
+  // RFID / FASTag / QR
+  rfidTag   String? @unique @map("rfid_tag") @db.VarChar(100)
+  fasTag    String? @map("fas_tag") @db.VarChar(100)
+  qrToken   String? @map("qr_token") @db.VarChar(255)
+
+  // Compliance expiry dates
+  registrationDate DateTime? @map("registration_date")
+  insuranceExpiry  DateTime? @map("insurance_expiry")
+  pucExpiry        DateTime? @map("puc_expiry")
+  fitnessExpiry    DateTime? @map("fitness_expiry")
+
+  // Document URLs
+  rcDocUrl        String? @map("rc_doc_url") @db.VarChar(500)
+  insuranceDocUrl String? @map("insurance_doc_url") @db.VarChar(500)
+  photoUrl        String? @map("photo_url") @db.VarChar(500)
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+
+  society     Society             @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  flat        Flat                @relation(fields: [flatId], references: [id], onDelete: Cascade)
+  person      Person?             @relation(fields: [personId], references: [id], onDelete: SetNull)
+  accessLogs  AccessLog[]
+  allocations ParkingAllocation[]
+
+  @@index([societyId, isDeleted])
+  @@index([vehicleNumber])
+  @@index([rfidTag])
+  @@map("vehicles")
+}
+
+model Staff {
+  id            String  @id @default(uuid()) @db.Uuid
+  societyId     String  @map("society_id") @db.Uuid
+  userId        String? @map("user_id") @db.Uuid
+  staffTypeCode String  @map("staff_type_code") @db.VarChar(50)
+  employeeCode  String  @map("employee_code") @db.VarChar(50)
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("staff")
+}
+
+// ======================================================
+// 20. FILES, AUDIT & NOTIFICATIONS
+// ======================================================
+
+model MediaFile {
+  id           String  @id @default(uuid()) @db.Uuid
+  societyId    String? @map("society_id") @db.Uuid
+  originalName String  @map("original_name") @db.VarChar(255)
+  fileName     String  @map("file_name") @db.VarChar(255)
+  mimeType     String  @map("mime_type") @db.VarChar(100)
+  extension    String  @db.VarChar(20)
+  sizeBytes    BigInt  @map("size_bytes")
+  storageKey   String  @map("storage_key") @db.VarChar(500)
+  publicUrl    String? @map("public_url") @db.VarChar(1000)
+
+  entityType String? @map("entity_type") @db.VarChar(100)
+  entityId   String? @map("entity_id") @db.Uuid
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  society Society? @relation(fields: [societyId], references: [id], onDelete: SetNull)
+
+  @@map("media_files")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  societyId String?  @map("society_id") @db.Uuid
+  userId    String?  @map("user_id") @db.Uuid
+  action    String   @db.VarChar(100)
+  entity    String   @db.VarChar(100)
+  entityId  String?  @map("entity_id") @db.VarChar(100)
+  ipAddress String?  @map("ip_address") @db.VarChar(45)
+  device    String?  @db.VarChar(100)
+  browser   String?  @db.VarChar(100)
+  changes   Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  society Society? @relation(fields: [societyId], references: [id], onDelete: SetNull)
+  user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}
+
+model Notification {
+  id        String               @id @default(uuid()) @db.Uuid
+  societyId String?              @map("society_id") @db.Uuid
+  userId    String               @map("user_id") @db.Uuid
+  channel   NotificationChannel  @default(IN_APP)
+  category  NotificationCategory @default(INFORMATION)
+  priority  NotificationPriority @default(MEDIUM)
+  title     String               @db.VarChar(200)
+  message   String
+  metadata  Json?
+  isRead    Boolean              @default(false) @map("is_read")
+  isArchived Boolean             @default(false) @map("is_archived")
+  readAt    DateTime?            @map("read_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  society Society? @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model DashboardConfig {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @unique @map("user_id") @db.Uuid
+  layout    Json
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("dashboard_configs")
+}
+
+// ======================================================
+// 16. ENTERPRISE AMENITY BOOKING & FACILITY RESERVATION
+// ======================================================
+
+model Amenity {
+  id             String   @id @default(uuid()) @db.Uuid
+  societyId      String   @map("society_id") @db.Uuid
+  categoryCode   String   @map("category_code") @db.VarChar(50) // e.g. CLUB_HOUSE, GYM, SWIMMING_POOL
+  name           String   @db.VarChar(150)
+  description    String?  @db.Text
+  location       String?  @db.VarChar(255)
+  buildingId     String?  @map("building_id") @db.Uuid
+  capacity       Int      @default(10)
+
+  // Booking rules
+  bookingTypes         Json?   @map("booking_types") // ["HOURLY","DAILY"]
+  minBookingHours      Int     @default(1) @map("min_booking_hours")
+  maxBookingHours      Int     @default(4) @map("max_booking_hours")
+  maxAdvanceBookDays   Int     @default(30) @map("max_advance_book_days")
+  maxBookingsPerMember Int     @default(2) @map("max_bookings_per_member")
+  requiresApproval     Boolean @default(false) @map("requires_approval")
+
+  // Charges
+  hourlyRate       Decimal @default(0) @map("hourly_rate") @db.Decimal(10, 2)
+  dailyRate        Decimal @default(0) @map("daily_rate") @db.Decimal(10, 2)
+  securityDeposit  Decimal @default(0) @map("security_deposit") @db.Decimal(10, 2)
+  cancellationFee  Decimal @default(0) @map("cancellation_fee") @db.Decimal(10, 2)
+
+  // Operational
+  openTime         String  @default("06:00") @map("open_time") @db.VarChar(5)  // "HH:MM"
+  closeTime        String  @default("22:00") @map("close_time") @db.VarChar(5)
+  operatingDays    Json?   @map("operating_days") // ["MON","TUE",...]
+  maintenanceDays  Json?   @map("maintenance_days") // blocked dates
+  amenityRules     String? @map("amenity_rules") @db.Text
+
+  photoUrls  Json?
+  qrToken    String? @map("qr_token") @db.VarChar(255)
+  isActive   Boolean @default(true) @map("is_active")
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+
+  society   Society          @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  bookings  AmenityBooking[]
+  waitlist  AmenityWaitlist[]
+
+  @@index([societyId, isDeleted])
+  @@index([societyId, categoryCode])
+  @@map("amenities")
+}
+
+model AmenityBooking {
+  id             String               @id @default(uuid()) @db.Uuid
+  societyId      String               @map("society_id") @db.Uuid
+  amenityId      String               @map("amenity_id") @db.Uuid
+  personId       String               @map("person_id") @db.Uuid
+  bookingNumber  String               @unique @map("booking_number") @db.VarChar(50) // AMB-00001
+  bookingType    AmenityBookingType   @default(HOURLY) @map("booking_type")
+  status         AmenityBookingStatus @default(PENDING_APPROVAL) @map("status")
+
+  bookingDate    DateTime @map("booking_date") @db.Date
+  startTime      String   @map("start_time") @db.VarChar(5)  // "HH:MM"
+  endTime        String   @map("end_time") @db.VarChar(5)
+  durationHours  Float    @default(1) @map("duration_hours")
+  guestCount     Int      @default(1) @map("guest_count")
+  purposeNotes   String?  @map("purpose_notes") @db.VarChar(255)
+
+  // Recurring booking support
+  isRecurring         Boolean  @default(false) @map("is_recurring")
+  recurringDays       Json?    @map("recurring_days")
+  recurringEndDate    DateTime? @map("recurring_end_date")
+
+  // Financials
+  bookingCharge    Decimal  @default(0) @map("booking_charge") @db.Decimal(10, 2)
+  securityDeposit  Decimal  @default(0) @map("security_deposit") @db.Decimal(10, 2)
+  damageCharges    Decimal  @default(0) @map("damage_charges") @db.Decimal(10, 2)
+  cancellationFee  Decimal  @default(0) @map("cancellation_fee") @db.Decimal(10, 2)
+  totalAmount      Decimal  @default(0) @map("total_amount") @db.Decimal(10, 2)
+  paidAmount       Decimal  @default(0) @map("paid_amount") @db.Decimal(10, 2)
+  refundAmount     Decimal  @default(0) @map("refund_amount") @db.Decimal(10, 2)
+  paymentMethod    PaymentMethod @default(RAZORPAY) @map("payment_method")
+  gatewayRef       String?  @map("gateway_ref") @db.VarChar(100)
+
+  // Attendance
+  qrToken       String?   @map("qr_token") @db.VarChar(255)
+  checkedInAt   DateTime? @map("checked_in_at")
+  checkedOutAt  DateTime? @map("checked_out_at")
+  checkedInBy   String?   @db.Uuid @map("checked_in_by")
+
+  // Workflow / cancellation
+  approvedBy       String?  @db.Uuid @map("approved_by")
+  approvedAt       DateTime? @map("approved_at")
+  rejectionReason  String?  @map("rejection_reason") @db.VarChar(255)
+  cancelledBy      String?  @db.Uuid @map("cancelled_by")
+  cancelledAt      DateTime? @map("cancelled_at")
+  cancellationNote String?  @map("cancellation_note") @db.VarChar(255)
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  amenity Amenity @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+  person  Person  @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@index([societyId, bookingDate, status])
+  @@index([amenityId, bookingDate])
+  @@index([personId])
+  @@index([bookingNumber])
+  @@map("amenity_bookings")
+}
+
+model AmenityWaitlist {
+  id          String   @id @default(uuid()) @db.Uuid
+  amenityId   String   @map("amenity_id") @db.Uuid
+  personId    String   @map("person_id") @db.Uuid
+  bookingDate DateTime @map("booking_date") @db.Date
+  startTime   String   @map("start_time") @db.VarChar(5)
+  endTime     String   @map("end_time") @db.VarChar(5)
+  position    Int      @default(1)
+  isNotified  Boolean  @default(false) @map("is_notified")
+  expiresAt   DateTime @map("expires_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  amenity Amenity @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+
+  @@index([amenityId, bookingDate])
+  @@map("amenity_waitlist")
+}
+
+// ======================================================
+// 17. ENTERPRISE PARKING & VEHICLE MANAGEMENT
+// ======================================================
+
+model ParkingZone {
+  id          String      @id @default(uuid()) @db.Uuid
+  societyId   String      @map("society_id") @db.Uuid
+  buildingId  String?     @map("building_id") @db.Uuid
+  code        String      @db.VarChar(50)
+  name        String      @db.VarChar(150)
+  parkingType ParkingType @map("parking_type")
+  floor       String?     @db.VarChar(50)
+  totalSlots  Int         @default(0) @map("total_slots")
+  description String?     @db.Text
+  isActive    Boolean     @default(true) @map("is_active")
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+
+  society Society       @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  slots   ParkingSlot[]
+
+  @@unique([societyId, code])
+  @@index([societyId, isDeleted])
+  @@map("parking_zones")
+}
+
+model ParkingSlot {
+  id         String            @id @default(uuid()) @db.Uuid
+  societyId  String            @map("society_id") @db.Uuid
+  zoneId     String            @map("zone_id") @db.Uuid
+  slotNumber String            @map("slot_number") @db.VarChar(50)
+  slotSize   ParkingSlotSize   @default(CAR) @map("slot_size")
+  status     ParkingSlotStatus @default(AVAILABLE)
+  floor      String?           @db.VarChar(50)
+  block      String?           @db.VarChar(50)
+  location   String?           @db.VarChar(255)
+
+  isEvEnabled   Boolean @default(false) @map("is_ev_enabled")
+  isRfidEnabled Boolean @default(false) @map("is_rfid_enabled")
+  isQrEnabled   Boolean @default(true) @map("is_qr_enabled")
+  isBoomBarrier Boolean @default(false) @map("is_boom_barrier")
+  isDisabled    Boolean @default(false) @map("is_disabled")
+
+  qrToken     String? @map("qr_token") @db.VarChar(255)
+  monthlyRate Decimal @default(0) @map("monthly_rate") @db.Decimal(10, 2)
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+
+  society     Society             @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  zone        ParkingZone         @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  allocations ParkingAllocation[]
+
+  @@unique([zoneId, slotNumber])
+  @@index([societyId, status])
+  @@index([societyId, isDeleted])
+  @@map("parking_slots")
+}
+
+model ParkingAllocation {
+  id               String                  @id @default(uuid()) @db.Uuid
+  societyId        String                  @map("society_id") @db.Uuid
+  slotId           String                  @map("slot_id") @db.Uuid
+  vehicleId        String                  @map("vehicle_id") @db.Uuid
+  personId         String                  @map("person_id") @db.Uuid
+  unitId           String?                 @map("unit_id") @db.Uuid
+  allocationNumber String                  @unique @map("allocation_number") @db.VarChar(50) // PA-00001
+  allocationType   String                  @default("PERMANENT") @map("allocation_type") @db.VarChar(50)
+  status           ParkingAllocationStatus @default(PENDING)
+
+  startDate DateTime  @map("start_date")
+  endDate   DateTime? @map("end_date")
+
+  monthlyCharge Decimal @default(0) @map("monthly_charge") @db.Decimal(10, 2)
+  depositPaid   Decimal @default(0) @map("deposit_paid") @db.Decimal(10, 2)
+
+  approvedBy String?   @db.Uuid @map("approved_by")
+  approvedAt DateTime? @map("approved_at")
+  notes      String?   @db.VarChar(255)
+
+  // Transfer / Swap tracking
+  transferredToPersonId String? @db.Uuid @map("transferred_to_person_id")
+  transferredAt         DateTime? @map("transferred_at")
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+
+  society Society     @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  slot    ParkingSlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  vehicle Vehicle     @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  person  Person      @relation(fields: [personId], references: [id], onDelete: Cascade)
+  unit    Flat?       @relation(fields: [unitId], references: [id], onDelete: SetNull)
+
+  @@index([societyId, status])
+  @@index([slotId])
+  @@index([vehicleId])
+  @@index([allocationNumber])
+  @@map("parking_allocations")
+}
+
+// ======================================================
+// 18. ENTERPRISE VENDOR & AMC MANAGEMENT
+// ======================================================
+
+model Vendor {
+  id         String       @id @default(uuid()) @db.Uuid
+  societyId  String       @map("society_id") @db.Uuid
+  vendorCode String       @map("vendor_code") @db.VarChar(50)   // VEN-00001
+  name       String       @db.VarChar(255)
+  typeCode   String       @map("type_code") @db.VarChar(80)     // ELECTRICAL, PLUMBING, etc.
+  status     VendorStatus @default(ACTIVE)
+
+  // GST / Legal
+  gstNumber     String? @map("gst_number") @db.VarChar(20)
+  panNumber     String? @map("pan_number") @db.VarChar(20)
+  licenseNumber String? @map("license_number") @db.VarChar(100)
+
+  // Contact
+  primaryEmail   String? @map("primary_email") @db.VarChar(255)
+  primaryPhone   String? @map("primary_phone") @db.VarChar(20)
+  website        String? @db.VarChar(255)
+
+  // Address
+  addressLine1 String? @map("address_line_1") @db.VarChar(255)
+  addressLine2 String? @map("address_line_2") @db.VarChar(255)
+  city         String? @db.VarChar(100)
+  state        String? @db.VarChar(100)
+  country      String? @default("India") @db.VarChar(100)
+  pincode      String? @db.VarChar(20)
+
+  // Bank & Payment
+  bankName      String? @map("bank_name") @db.VarChar(150)
+  accountNumber String? @map("account_number") @db.VarChar(50)
+  ifscCode      String? @map("ifsc_code") @db.VarChar(20)
+  upiId         String? @map("upi_id") @db.VarChar(100)
+
+  // Performance / Rating (0-5)
+  rating        Decimal @default(0) @db.Decimal(3, 2)
+  totalContracts Int    @default(0) @map("total_contracts")
+  totalContractValue Decimal @default(0) @map("total_contract_value") @db.Decimal(14, 2)
+  penaltyAmount  Decimal @default(0) @map("penalty_amount") @db.Decimal(12, 2)
+
+  // Flags
+  isEmergencyContact Boolean @default(false) @map("is_emergency_contact")
+  isPreferred        Boolean @default(false) @map("is_preferred")
+  isBlacklisted      Boolean @default(false) @map("is_blacklisted")
+
+  qrToken   String? @map("qr_token") @db.VarChar(255)
+  notes     String? @db.Text
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+  updatedBy String?   @db.Uuid @map("updated_by")
+
+  society      Society        @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  contacts     VendorContact[]
+  amcContracts AmcContract[]
+  serviceVisits ServiceVisit[]
+
+  @@unique([societyId, vendorCode])
+  @@index([societyId, isDeleted])
+  @@index([societyId, typeCode])
+  @@map("vendors")
+}
+
+model VendorContact {
+  id        String  @id @default(uuid()) @db.Uuid
+  vendorId  String  @map("vendor_id") @db.Uuid
+  name      String  @db.VarChar(150)
+  designation String? @db.VarChar(100)
+  email     String? @db.VarChar(255)
+  phone     String  @db.VarChar(20)
+  isEmergency Boolean @default(false) @map("is_emergency")
+  isPrimary  Boolean @default(false) @map("is_primary")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@index([vendorId])
+  @@map("vendor_contacts")
+}
+
+model AmcContract {
+  id             String            @id @default(uuid()) @db.Uuid
+  societyId      String            @map("society_id") @db.Uuid
+  vendorId       String            @map("vendor_id") @db.Uuid
+  amcNumber      String            @unique @map("amc_number") @db.VarChar(50)  // AMC-00001
+  contractNumber String?           @map("contract_number") @db.VarChar(100)
+  contractType   AmcContractType   @map("contract_type")
+  status         AmcContractStatus @default(DRAFT)
+
+  // Dates
+  startDate     DateTime  @map("start_date")
+  endDate       DateTime  @map("end_date")
+  renewalReminderDays Int @default(30) @map("renewal_reminder_days")
+  autoRenew     Boolean   @default(false) @map("auto_renew")
+
+  // SLA
+  slaResponseHours   Int @default(4)  @map("sla_response_hours")
+  slaResolutionHours Int @default(24) @map("sla_resolution_hours")
+  visitFrequency     String? @map("visit_frequency") @db.VarChar(50)  // MONTHLY, QUARTERLY, etc.
+
+  // Financial
+  contractValue   Decimal @default(0) @map("contract_value") @db.Decimal(14, 2)
+  amcCostPerMonth Decimal @default(0) @map("amc_cost_per_month") @db.Decimal(12, 2)
+  penaltyPerHour  Decimal @default(0) @map("penalty_per_hour") @db.Decimal(10, 2)
+
+  // Insurance & Warranty
+  insuranceNumber  String? @map("insurance_number") @db.VarChar(100)
+  insuranceExpiry  DateTime? @map("insurance_expiry")
+  warrantyDetails  String? @map("warranty_details") @db.Text
+
+  // Escalation
+  escalationMatrix Json? @map("escalation_matrix")
+
+  description String? @db.Text
+  terms       String? @db.Text
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+
+  society       Society        @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  vendor        Vendor         @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  assetLinks    AmcAssetLink[]
+  serviceVisits ServiceVisit[]
+
+  @@index([societyId, status])
+  @@index([vendorId])
+  @@index([amcNumber])
+  @@map("amc_contracts")
+}
+
+model AmcAssetLink {
+  id          String   @id @default(uuid()) @db.Uuid
+  amcId       String   @map("amc_id") @db.Uuid
+  assetId     String   @map("asset_id") @db.Uuid
+  notes       String?  @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  amc   AmcContract @relation(fields: [amcId], references: [id], onDelete: Cascade)
+  asset Asset       @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@unique([amcId, assetId])
+  @@map("amc_asset_links")
+}
+
+model ServiceVisit {
+  id            String             @id @default(uuid()) @db.Uuid
+  societyId     String             @map("society_id") @db.Uuid
+  vendorId      String             @map("vendor_id") @db.Uuid
+  amcId         String?            @map("amc_id") @db.Uuid
+  visitNumber   String             @unique @map("visit_number") @db.VarChar(50)  // SV-00001
+  visitType     ServiceVisitType   @map("visit_type")
+  status        ServiceVisitStatus @default(SCHEDULED)
+
+  scheduledDate DateTime  @map("scheduled_date")
+  actualDate    DateTime? @map("actual_date")
+  completedAt   DateTime? @map("completed_at")
+
+  technicianName  String? @map("technician_name") @db.VarChar(150)
+  technicianPhone String? @map("technician_phone") @db.VarChar(20)
+
+  checklist       Json?  // { item: string, completed: boolean }[]
+  workDescription String? @map("work_description") @db.Text
+  technicalNotes  String? @map("technical_notes") @db.Text
+  attachments     Json?  // photo URLs
+
+  // Feedback
+  residentRating  Int?     @map("resident_rating")
+  residentFeedback String? @map("resident_feedback") @db.VarChar(500)
+
+  // Financials
+  labourCost    Decimal @default(0) @map("labour_cost") @db.Decimal(10, 2)
+  materialCost  Decimal @default(0) @map("material_cost") @db.Decimal(10, 2)
+  totalCost     Decimal @default(0) @map("total_cost") @db.Decimal(12, 2)
+  penaltyAmount Decimal @default(0) @map("penalty_amount") @db.Decimal(10, 2)
+
+  // Response SLA tracking
+  reportedAt    DateTime? @map("reported_at")
+  respondedAt   DateTime? @map("responded_at")
+  responseMinutes Int?    @map("response_minutes")
+
+  hasDigitalSignature Boolean @default(false) @map("has_digital_signature")
+  signatureUrl        String? @map("signature_url") @db.VarChar(500)
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+
+  society Vendor       @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  amc     AmcContract? @relation(fields: [amcId], references: [id], onDelete: SetNull)
+  parent  Society      @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  @@index([societyId, status])
+  @@index([vendorId])
+  @@index([amcId])
+  @@map("service_visits")
+}
+
+// ======================================================
+// ENTERPRISE MEETING MANAGEMENT ENGINE
+// ======================================================
+
+enum MeetingType {
+  AGM
+  SGM
+  COMMITTEE
+  EMERGENCY
+  VIRTUAL
+  HYBRID
+}
+
+enum MeetingMode {
+  PHYSICAL
+  ONLINE
+  HYBRID
+}
+
+enum MeetingStatus {
+  DRAFT
+  SCHEDULED
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  TENTATIVE
+}
+
+enum AttendanceRole {
+  CHAIRPERSON
+  SECRETARY
+  MEMBER
+  GUEST
+  SPEAKER
+  ATTENDEE
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
+enum ResolutionStatus {
+  APPROVED
+  REJECTED
+  DEFERRED
+  VOTING_REQUIRED
+}
+
+enum ActionItemPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum ActionItemStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  OVERDUE
+  CANCELLED
+}
+
+enum RecurrenceType {
+  NONE
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+model Meeting {
+  id            String        @id @default(uuid()) @db.Uuid
+  societyId     String        @map("society_id") @db.Uuid
+  meetingNumber String        @unique @map("meeting_number") @db.VarChar(50) // MTG-00001
+  title         String        @db.VarChar(255)
+  meetingType   MeetingType   @map("meeting_type")
+  meetingMode   MeetingMode   @default(PHYSICAL) @map("meeting_mode")
+  meetingStatus MeetingStatus @default(DRAFT) @map("meeting_status")
+  description   String?       @db.Text
+
+  meetingDate   DateTime      @map("meeting_date")
+  startTime     String        @map("start_time") @db.VarChar(10)
+  endTime       String        @map("end_time") @db.VarChar(10)
+  venue         String?       @db.VarChar(255)
+  meetingUrl    String?       @map("meeting_url") @db.VarChar(500)
+  meetingLink   String?       @map("meeting_link") @db.VarChar(500)
+  meetingPlatform String?     @map("meeting_platform") @db.VarChar(100)
+  meetingPassword String?     @map("meeting_password") @db.VarChar(100)
+
+  // Recurrence
+  isRecurring       Boolean        @default(false) @map("is_recurring")
+  recurrenceType    RecurrenceType @default(NONE) @map("recurrence_type")
+  recurrenceEndDate DateTime?      @map("recurrence_end_date")
+
+  chairPersonId String?       @map("chair_person_id") @db.Uuid
+  secretaryId   String?       @map("secretary_id") @db.Uuid
+
+  requiresApproval   Boolean  @default(false) @map("requires_approval")
+  workflowInstanceId String?  @map("workflow_instance_id") @db.Uuid
+
+  // Quorum Tracking
+  requiredQuorum    Int       @default(5) @map("required_quorum")
+  achievedQuorum    Int       @default(0) @map("achieved_quorum")
+  isQuorumAchieved  Boolean   @default(false) @map("is_quorum_achieved")
+
+  // Minutes of Meeting (MoM)
+  minutesPrepared     Boolean   @default(false) @map("minutes_prepared")
+  minutesPreparedBy   String?   @map("minutes_prepared_by") @db.Uuid
+  minutesApproved     Boolean   @default(false) @map("minutes_approved")
+  minutesApprovedDate DateTime? @map("minutes_approved_date")
+  minutesNotes        String?   @map("minutes_notes") @db.Text
+
+  // Official Meeting Notice (Linked to Document Engine)
+  noticePublished   Boolean   @default(false) @map("notice_published")
+  noticePublishedAt DateTime? @map("notice_published_at")
+  noticeDocumentId  String?   @map("notice_document_id") @db.Uuid
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy String?   @db.Uuid @map("created_by")
+  updatedBy String?   @db.Uuid @map("updated_by")
+
+  society      Society              @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  chairPerson  Person?              @relation("MeetingChairPerson", fields: [chairPersonId], references: [id], onDelete: SetNull)
+  secretary    Person?              @relation("MeetingSecretaryPerson", fields: [secretaryId], references: [id], onDelete: SetNull)
+
+  agendas      MeetingAgenda[]
+  participants MeetingParticipant[]
+  resolutions  MeetingResolution[]
+  actionItems  MeetingActionItem[]
+
+  @@index([societyId, meetingStatus])
+  @@index([societyId, meetingType])
+  @@index([meetingDate])
+  @@map("meetings")
+}
+
+model MeetingAgenda {
+  id                String   @id @default(uuid()) @db.Uuid
+  meetingId         String   @map("meeting_id") @db.Uuid
+  agendaNumber      String   @map("agenda_number") @db.VarChar(50)
+  title             String   @db.VarChar(255)
+  description       String?  @db.Text
+  presenter         String?  @db.VarChar(150)
+  estimatedDuration Int      @default(15) @map("estimated_duration")
+  sequence          Int      @default(1)
+
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  meeting Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  @@index([meetingId, sequence])
+  @@map("meeting_agendas")
+}
+
+model MeetingParticipant {
+  id               String           @id @default(uuid()) @db.Uuid
+  meetingId        String           @map("meeting_id") @db.Uuid
+  personId         String           @map("person_id") @db.Uuid
+  role             AttendanceRole   @default(MEMBER)
+  invitationStatus InvitationStatus @default(PENDING) @map("invitation_status")
+  attendanceStatus AttendanceStatus @default(ABSENT) @map("attendance_status")
+  checkInTime      DateTime?        @map("check_in_time")
+  remarks          String?          @db.VarChar(255)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  meeting Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  person  Person  @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@unique([meetingId, personId])
+  @@index([meetingId, attendanceStatus])
+  @@map("meeting_participants")
+}
+
+model MeetingResolution {
+  id                 String           @id @default(uuid()) @db.Uuid
+  meetingId          String           @map("meeting_id") @db.Uuid
+  resolutionNumber   String           @map("resolution_number") @db.VarChar(50)
+  title              String           @db.VarChar(255)
+  description        String           @db.Text
+  status             ResolutionStatus @default(VOTING_REQUIRED)
+  votingRequired     Boolean          @default(true) @map("voting_required")
+
+  votesFor           Int              @default(0) @map("votes_for")
+  votesAgainst       Int              @default(0) @map("votes_against")
+  abstained          Int              @default(0) @map("abstained")
+  passedByPercentage Decimal          @default(0) @map("passed_by_percentage") @db.Decimal(5, 2)
+  votingClosedAt     DateTime?        @map("voting_closed_at")
+  remarks            String?          @db.Text
+
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  meeting Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  @@index([meetingId, status])
+  @@map("meeting_resolutions")
+}
+
+model MeetingActionItem {
+  id                   String             @id @default(uuid()) @db.Uuid
+  meetingId            String             @map("meeting_id") @db.Uuid
+  task                 String             @db.VarChar(255)
+  ownerId              String?            @map("owner_id") @db.Uuid
+  ownerName            String?            @map("owner_name") @db.VarChar(150)
+  dueDate              DateTime?          @map("due_date")
+  priority             ActionItemPriority @default(MEDIUM)
+  status               ActionItemStatus   @default(OPEN)
+  completionPercentage Int                @default(0) @map("completion_percentage")
+  remarks              String?            @db.Text
+
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  meeting Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  owner   Person? @relation("MeetingTaskOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+
+  @@index([meetingId, status])
+  @@index([ownerId])
+  @@map("meeting_action_items")
+}
+
+model MeetingTemplate {
+  id                String      @id @default(uuid()) @db.Uuid
+  societyId         String      @map("society_id") @db.Uuid
+  name              String      @db.VarChar(255)
+  meetingType       MeetingType @map("meeting_type")
+  defaultAgenda     Json?       @map("default_agenda")
+  estimatedDuration Int         @default(60) @map("estimated_duration")
+  status            String      @default("ACTIVE") @db.VarChar(50)
+
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  @@index([societyId, meetingType])
+  @@map("meeting_templates")
+}
+
+// ======================================================
+// NOTICE BOARD ENGINE (PHASE 22.1)
+// ======================================================
+
+enum NoticeCategory {
+  GENERAL
+  MAINTENANCE
+  EMERGENCY
+  EVENT
+  SECURITY
+  FINANCE
+  AGM
+  SGM
+  WATER
+  ELECTRICITY
+  PARKING
+  HOUSEKEEPING
+  FESTIVAL
+  LEGAL
+  OTHER
+}
+
+enum NoticePriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+  EMERGENCY
+}
+
+enum NoticeStatus {
+  DRAFT
+  PENDING_APPROVAL
+  PUBLISHED
+  EXPIRED
+  CANCELLED
+}
+
+enum NoticeTargetType {
+  ENTIRE_SOCIETY
+  BUILDING
+  WING
+  FLOOR
+  UNIT
+  ROLE
+  INDIVIDUAL
+}
+
+enum AcknowledgementStatus {
+  PENDING
+  READ
+  ACKNOWLEDGED
+}
+
+model Notice {
+  id                      String         @id @default(uuid()) @db.Uuid
+  societyId               String         @map("society_id") @db.Uuid
+  noticeNumber            String         @unique @map("notice_number") @db.VarChar(50) // NTC-00001
+  title                   String         @db.VarChar(255)
+  description             String         @db.Text
+  category                NoticeCategory
+  priority                NoticePriority @default(MEDIUM)
+  status                  NoticeStatus   @default(DRAFT)
+  publishDate             DateTime?      @map("publish_date")
+  expiryDate              DateTime?      @map("expiry_date")
+  requiresApproval        Boolean        @default(false) @map("requires_approval")
+  requiresAcknowledgement Boolean        @default(false) @map("requires_acknowledgement")
+
+  createdById String? @map("created_by_id") @db.Uuid
+  approvedById String? @map("approved_by_id") @db.Uuid
+
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  society    Society           @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  createdBy  Person?           @relation("NoticeCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  approvedBy Person?           @relation("NoticeApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
+  recipients NoticeRecipient[]
+
+  @@index([societyId])
+  @@index([noticeNumber])
+  @@index([status])
+  @@index([category])
+  @@index([priority])
+  @@index([publishDate])
+  @@map("notices")
+}
+
+model NoticeRecipient {
+  id                    String                @id @default(uuid()) @db.Uuid
+  noticeId              String                @map("notice_id") @db.Uuid
+  personId              String                @map("person_id") @db.Uuid
+  targetType            NoticeTargetType      @default(ENTIRE_SOCIETY) @map("target_type")
+  acknowledgementStatus AcknowledgementStatus @default(PENDING) @map("acknowledgement_status")
+  readAt                DateTime?             @map("read_at")
+  acknowledgedAt        DateTime?             @map("acknowledged_at")
+  createdAt             DateTime              @default(now()) @map("created_at")
+
+  notice Notice @relation(fields: [noticeId], references: [id], onDelete: Cascade)
+  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@index([noticeId])
+  @@index([personId])
+  @@index([acknowledgementStatus])
+  @@map("notice_recipients")
+}
+
+model NoticeTemplate {
+  id           String         @id @default(uuid()) @db.Uuid
+  societyId    String         @map("society_id") @db.Uuid
+  templateName String         @map("template_name") @db.VarChar(255)
+  category     NoticeCategory
+  title        String         @db.VarChar(255)
+  description  String         @db.Text
+  active       Boolean        @default(true)
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  @@index([societyId])
+  @@map("notice_templates")
+}
+
+
+

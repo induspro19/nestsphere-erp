@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nestsphere-backend-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: nestsphere-backend
+  ports:
+    - port: 3000
+      targetPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nestsphere-frontend-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: nestsphere-frontend
+  ports:
+    - port: 80
+      targetPort: 80

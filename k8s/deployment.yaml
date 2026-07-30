@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nestsphere-backend
+  labels:
+    app: nestsphere-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nestsphere-backend
+  template:
+    metadata:
+      labels:
+        app: nestsphere-backend
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/nestsphere/backend:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: nestsphere-config
+            - secretRef:
+                name: nestsphere-secrets
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nestsphere-frontend
+  labels:
+    app: nestsphere-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nestsphere-frontend
+  template:
+    metadata:
+      labels:
+        app: nestsphere-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: ghcr.io/nestsphere/frontend:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
