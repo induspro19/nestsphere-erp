@@ -717,6 +717,8 @@ model Society {
   meetingTemplates MeetingTemplate[]
   notices          Notice[]
   noticeTemplates  NoticeTemplate[]
+  elections        Election[]
+  committees       Committee[]
 
   @@index([isDeleted])
   @@map("societies")
@@ -3034,4 +3036,138 @@ model NoticeTemplate {
 }
 
 
+// ======================================================
+// PHASE 38: ENTERPRISE ELECTION & COMMITTEE MANAGEMENT
+// ======================================================
 
+model Election {
+  id                  String    @id @default(uuid()) @db.Uuid
+  societyId           String    @map("society_id") @db.Uuid
+  title               String    @db.VarChar(255)
+  description         String?   @db.Text
+  electionType        String    @map("election_type") @db.VarChar(50)
+  status              String    @default("DRAFT") @db.VarChar(30)
+  returningOfficerId  String?   @map("returning_officer_id") @db.Uuid
+  quorumPercentage    Int       @default(50) @map("quorum_percentage")
+  isSecretBallot      Boolean   @default(true) @map("is_secret_ballot")
+  allowProxy          Boolean   @default(false) @map("allow_proxy")
+  votingRule          String    @default("ONE_VOTE_PER_FLAT") @map("voting_rule") @db.VarChar(50)
+  nominationStartDate DateTime? @map("nomination_start_date")
+  nominationEndDate   DateTime? @map("nomination_end_date")
+  scrutinyEndDate     DateTime? @map("scrutiny_end_date")
+  withdrawalEndDate   DateTime? @map("withdrawal_end_date")
+  campaignStartDate   DateTime? @map("campaign_start_date")
+  campaignEndDate     DateTime? @map("campaign_end_date")
+  votingStartDate     DateTime? @map("voting_start_date")
+  votingEndDate       DateTime? @map("voting_end_date")
+  resultDate          DateTime? @map("result_date")
+  appealEndDate       DateTime? @map("appeal_end_date")
+  certifiedAt         DateTime? @map("certified_at")
+  isDeleted           Boolean   @default(false) @map("is_deleted")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+  createdBy           String?   @map("created_by") @db.Uuid
+
+  society   Society            @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  positions ElectionPosition[]
+  auditLogs ElectionAuditLog[]
+
+  @@index([societyId, status])
+  @@map("elections")
+}
+
+model ElectionPosition {
+  id            String  @id @default(uuid()) @db.Uuid
+  electionId    String  @map("election_id") @db.Uuid
+  positionTitle String  @map("position_title") @db.VarChar(100)
+  seats         Int     @default(1)
+  description   String? @db.VarChar(500)
+
+  election   Election            @relation(fields: [electionId], references: [id], onDelete: Cascade)
+  candidates ElectionCandidate[]
+  votes      ElectionVote[]
+
+  @@map("election_positions")
+}
+
+model ElectionCandidate {
+  id              String    @id @default(uuid()) @db.Uuid
+  positionId      String    @map("position_id") @db.Uuid
+  personId        String    @map("person_id") @db.Uuid
+  candidateName   String    @default("Candidate") @map("candidate_name") @db.VarChar(255)
+  nominationType  String    @default("SELF") @map("nomination_type") @db.VarChar(20)
+  status          String    @default("DRAFT") @map("status") @db.VarChar(30)
+  manifesto       String?   @db.Text
+  manifestoPdfUrl String?   @map("manifesto_pdf_url") @db.VarChar(500)
+  photoUrl        String?   @map("photo_url") @db.VarChar(500)
+  videoUrl        String?   @map("video_url") @db.VarChar(500)
+  rejectionReason String?   @map("rejection_reason") @db.VarChar(500)
+  submittedAt     DateTime? @map("submitted_at")
+  approvedAt      DateTime? @map("approved_at")
+  withdrawnAt     DateTime? @map("withdrawn_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  position ElectionPosition @relation(fields: [positionId], references: [id], onDelete: Cascade)
+
+  @@map("election_candidates")
+}
+
+model ElectionVote {
+  id          String   @id @default(uuid()) @db.Uuid
+  positionId  String   @map("position_id") @db.Uuid
+  voterHash   String   @map("voter_hash") @db.VarChar(128)
+  candidateId String   @map("candidate_id") @db.Uuid
+  source      String   @default("APP") @db.VarChar(10)
+  proxyId     String?  @map("proxy_id") @db.Uuid
+  castAt      DateTime @default(now()) @map("cast_at")
+
+  position ElectionPosition @relation(fields: [positionId], references: [id], onDelete: Cascade)
+
+  @@unique([positionId, voterHash])
+  @@map("election_votes")
+}
+
+model ElectionAuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  electionId String   @map("election_id") @db.Uuid
+  action     String   @db.VarChar(100)
+  actorId    String   @map("actor_id") @db.Uuid
+  actorRole  String   @map("actor_role") @db.VarChar(50)
+  details    String?  @db.Text
+  timestamp  DateTime @default(now())
+
+  election Election @relation(fields: [electionId], references: [id], onDelete: Cascade)
+
+  @@index([electionId, timestamp])
+  @@map("election_audit_logs")
+}
+
+model Committee {
+  id              String   @id @default(uuid()) @db.Uuid
+  societyId       String   @map("society_id") @db.Uuid
+  electionId      String?  @map("election_id") @db.Uuid
+  name            String   @db.VarChar(255)
+  tenureStartDate DateTime @map("tenure_start_date")
+  tenureEndDate   DateTime @map("tenure_end_date")
+  status          String   @default("ACTIVE") @db.VarChar(20)
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  society Society           @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  members CommitteeMember[]
+
+  @@index([societyId, status])
+  @@map("committees")
+}
+
+model CommitteeMember {
+  id          String   @id @default(uuid()) @db.Uuid
+  committeeId String   @map("committee_id") @db.Uuid
+  personId    String   @map("person_id") @db.Uuid
+  memberName  String   @default("Member") @map("member_name") @db.VarChar(255)
+  position    String   @db.VarChar(100)
+  joinedAt    DateTime @default(now()) @map("joined_at")
+
+  committee Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
+
+  @@map("committee_members")
+}

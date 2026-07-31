@@ -33,6 +33,14 @@ const CreatePollPage = React.lazy(() => import('../pages/polls/CreatePollPage').
 const PollResultsPage = React.lazy(() => import('../pages/polls/PollResultsPage').then(m => ({ default: m.PollResultsPage })));
 const PollAnalyticsPage = React.lazy(() => import('../pages/polls/PollAnalyticsPage').then(m => ({ default: m.PollAnalyticsPage })));
 const ResidentPollsPage = React.lazy(() => import('../pages/resident/ResidentPollsPage').then(m => ({ default: m.ResidentPollsPage })));
+const ElectionDashboardPage = React.lazy(() => import('../pages/elections/ElectionDashboardPage').then(m => ({ default: m.ElectionDashboardPage })));
+const ElectionListPage = React.lazy(() => import('../pages/elections/ElectionListPage').then(m => ({ default: m.ElectionListPage })));
+const CreateElectionPage = React.lazy(() => import('../pages/elections/CreateElectionPage').then(m => ({ default: m.CreateElectionPage })));
+const CandidateManagementPage = React.lazy(() => import('../pages/elections/CandidateManagementPage').then(m => ({ default: m.CandidateManagementPage })));
+const ElectionResultsPage = React.lazy(() => import('../pages/elections/ElectionResultsPage').then(m => ({ default: m.ElectionResultsPage })));
+const ElectionAnalyticsPage = React.lazy(() => import('../pages/elections/ElectionAnalyticsPage').then(m => ({ default: m.ElectionAnalyticsPage })));
+const CommitteeManagementPage = React.lazy(() => import('../pages/elections/CommitteeManagementPage').then(m => ({ default: m.CommitteeManagementPage })));
+const ResidentElectionsPage = React.lazy(() => import('../pages/resident/ResidentElectionsPage').then(m => ({ default: m.ResidentElectionsPage })));
 const ResidentDashboardPage = React.lazy(() => import('../pages/resident/ResidentDashboardPage').then(m => ({ default: m.ResidentDashboardPage })));
 const ResidentProfilePage = React.lazy(() => import('../pages/resident/ResidentProfilePage').then(m => ({ default: m.ResidentProfilePage })));
 const ResidentBillsPage = React.lazy(() => import('../pages/resident/ResidentBillsPage').then(m => ({ default: m.ResidentBillsPage })));
@@ -110,6 +118,13 @@ export const AppRoutes: React.FC = () => {
             <Route path="/polls/create" element={<CreatePollPage />} />
             <Route path="/polls/results/:id" element={<PollResultsPage />} />
             <Route path="/polls/analytics" element={<PollAnalyticsPage />} />
+            <Route path="/elections" element={<ElectionDashboardPage />} />
+            <Route path="/elections/list" element={<ElectionListPage />} />
+            <Route path="/elections/create" element={<CreateElectionPage />} />
+            <Route path="/elections/candidates/:id" element={<CandidateManagementPage />} />
+            <Route path="/elections/results/:id" element={<ElectionResultsPage />} />
+            <Route path="/elections/analytics" element={<ElectionAnalyticsPage />} />
+            <Route path="/elections/committee" element={<CommitteeManagementPage />} />
           </Route>
 
           {/* Dedicated Resident Mobile Portal App Shell */}
@@ -125,6 +140,7 @@ export const AppRoutes: React.FC = () => {
             <Route path="/resident/parking" element={<ResidentParkingPage />} />
             <Route path="/resident/documents" element={<ResidentDocumentsPage />} />
             <Route path="/resident/polls" element={<ResidentPollsPage />} />
+            <Route path="/resident/elections" element={<ResidentElectionsPage />} />
             <Route path="/resident/sos" element={<ResidentSosPage />} />
             <Route path="/resident/more" element={<ResidentMorePage />} />
           </Route>
