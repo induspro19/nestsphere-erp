@@ -1,0 +1,6 @@
+import{h as s,u as a,j as e,b as o}from"./index-hl2KRxIO.js";import{A as r}from"./arrow-left-BGloj6HF.js";/**
+ * @license lucide-react v0.378.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const n=s("FileQuestion",[["path",{d:"M12 17h.01",key:"p32p05"}],["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z",key:"1mlx9k"}],["path",{d:"M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3",key:"mhlwft"}]]),l=()=>{const t=a();return e.jsxs("div",{className:"min-h-[70vh] flex flex-col items-center justify-center text-center p-6 space-y-4",children:[e.jsx("div",{className:"h-16 w-16 rounded-full bg-accent text-muted-foreground flex items-center justify-center",children:e.jsx(n,{className:"h-8 w-8"})}),e.jsxs("div",{className:"space-y-1",children:[e.jsx("h1",{className:"text-3xl font-bold font-display",children:"404 - Page Not Found"}),e.jsx("p",{className:"text-sm text-muted-foreground max-w-sm",children:"The view or route you requested does not exist in the platform."})]}),e.jsxs(o,{onClick:()=>t("/dashboard"),className:"rounded-xl mt-2",children:[e.jsx(r,{className:"mr-2 h-4 w-4"})," Return to Dashboard"]})]})};export{l as NotFoundPage};
