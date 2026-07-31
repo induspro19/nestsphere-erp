@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Home,
   Sliders,
+  Vote,
 } from 'lucide-react';
 
 export const ResidentMorePage: React.FC = () => {
@@ -21,6 +22,8 @@ export const ResidentMorePage: React.FC = () => {
     {
       title: 'Resident Portal Services',
       items: [
+        { title: 'Polls & Decision Voting', path: '/resident/polls', icon: Vote, desc: 'Vote on society resolutions, surveys, and sinking fund rates' },
+        { title: 'Committee Elections', path: '/resident/elections', icon: Vote, desc: 'Digital candidate manifestos and secret ballot elections' },
         { title: 'My Profile & Unit', path: '/resident/profile', icon: User, desc: 'Digital ID, family members, emergency contacts' },
         { title: 'Meetings & AGM', path: '/resident/meetings', icon: CalendarCheck, desc: 'Agendas, Google Meet online link, minutes' },
         { title: 'Pre-Approve Visitors', path: '/resident/visitors', icon: UserCheck, desc: 'Gate passes, Universal QR code generation' },

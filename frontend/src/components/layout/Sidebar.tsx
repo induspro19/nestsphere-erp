@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Building2, Shield, Settings, ChevronLeft, Sliders, Users, DoorOpen, Radio, GitMerge, Boxes, UserCheck, FileText, DollarSign, BarChart3, LifeBuoy, Wrench, Landmark, CalendarCheck, ParkingCircle, Briefcase, Bell, Smartphone } from 'lucide-react';
+import { LayoutDashboard, Building2, Shield, Settings, ChevronLeft, Sliders, Users, DoorOpen, Radio, GitMerge, Boxes, UserCheck, FileText, DollarSign, BarChart3, LifeBuoy, Wrench, Landmark, CalendarCheck, ParkingCircle, Briefcase, Bell, Smartphone, Vote } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { Button } from '../ui/button';
 
@@ -16,6 +16,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse 
     { title: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { title: 'Resident Portal', path: '/resident/dashboard', icon: Smartphone },
     { title: 'Gatekeeper Kiosk', path: '/gatekeeper/dashboard', icon: Shield },
+    { title: 'Polls & Voting', path: '/polls', icon: Vote },
+    { title: 'Committee Elections', path: '/elections', icon: Vote },
     { title: 'Property Engine', path: '/property-management', icon: Sliders },
     { title: 'People Directory', path: '/people', icon: Users },
     { title: 'Access Control', path: '/access-control', icon: DoorOpen },
