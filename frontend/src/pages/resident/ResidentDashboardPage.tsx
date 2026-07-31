@@ -27,15 +27,21 @@ import {
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
+// In-memory cache for smooth SPA navigation without reload loops
+let cachedDashboardData: ResidentSummary | null = null;
+
 export const ResidentDashboardPage: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<ResidentSummary | null>(null);
+  const [loading, setLoading] = useState(!cachedDashboardData);
+  const [data, setData] = useState<ResidentSummary | null>(cachedDashboardData);
   const navigate = useNavigate();
 
   useEffect(() => {
     residentApi
       .getResidentDashboard()
-      .then(setData)
+      .then((res) => {
+        cachedDashboardData = res;
+        setData(res);
+      })
       .catch(() => toast.error('Failed to load resident dashboard'))
       .finally(() => setLoading(false));
   }, []);
@@ -54,7 +60,7 @@ export const ResidentDashboardPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 animate-in fade-in duration-300">
       {/* Welcome Header & Unit Card */}
       <div className="p-6 rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
