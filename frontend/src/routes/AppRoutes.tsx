@@ -27,6 +27,12 @@ const ParkingManagementPage = React.lazy(() => import('../pages/ParkingManagemen
 const VendorAmcPage = React.lazy(() => import('../pages/VendorAmcPage').then(m => ({ default: m.VendorAmcPage })));
 const MeetingsPage = React.lazy(() => import('../pages/MeetingsPage').then(m => ({ default: m.MeetingsPage })));
 const NoticeBoardPage = React.lazy(() => import('../pages/NoticeBoardPage').then(m => ({ default: m.NoticeBoardPage })));
+const PollDashboardPage = React.lazy(() => import('../pages/polls/PollDashboardPage').then(m => ({ default: m.PollDashboardPage })));
+const PollListPage = React.lazy(() => import('../pages/polls/PollListPage').then(m => ({ default: m.PollListPage })));
+const CreatePollPage = React.lazy(() => import('../pages/polls/CreatePollPage').then(m => ({ default: m.CreatePollPage })));
+const PollResultsPage = React.lazy(() => import('../pages/polls/PollResultsPage').then(m => ({ default: m.PollResultsPage })));
+const PollAnalyticsPage = React.lazy(() => import('../pages/polls/PollAnalyticsPage').then(m => ({ default: m.PollAnalyticsPage })));
+const ResidentPollsPage = React.lazy(() => import('../pages/resident/ResidentPollsPage').then(m => ({ default: m.ResidentPollsPage })));
 const ResidentDashboardPage = React.lazy(() => import('../pages/resident/ResidentDashboardPage').then(m => ({ default: m.ResidentDashboardPage })));
 const ResidentProfilePage = React.lazy(() => import('../pages/resident/ResidentProfilePage').then(m => ({ default: m.ResidentProfilePage })));
 const ResidentBillsPage = React.lazy(() => import('../pages/resident/ResidentBillsPage').then(m => ({ default: m.ResidentBillsPage })));
@@ -99,6 +105,11 @@ export const AppRoutes: React.FC = () => {
             <Route path="/vendors" element={<VendorAmcPage />} />
             <Route path="/meetings" element={<MeetingsPage />} />
             <Route path="/notices" element={<NoticeBoardPage />} />
+            <Route path="/polls" element={<PollDashboardPage />} />
+            <Route path="/polls/list" element={<PollListPage />} />
+            <Route path="/polls/create" element={<CreatePollPage />} />
+            <Route path="/polls/results/:id" element={<PollResultsPage />} />
+            <Route path="/polls/analytics" element={<PollAnalyticsPage />} />
           </Route>
 
           {/* Dedicated Resident Mobile Portal App Shell */}
@@ -113,6 +124,7 @@ export const AppRoutes: React.FC = () => {
             <Route path="/resident/amenities" element={<ResidentAmenitiesPage />} />
             <Route path="/resident/parking" element={<ResidentParkingPage />} />
             <Route path="/resident/documents" element={<ResidentDocumentsPage />} />
+            <Route path="/resident/polls" element={<ResidentPollsPage />} />
             <Route path="/resident/sos" element={<ResidentSosPage />} />
             <Route path="/resident/more" element={<ResidentMorePage />} />
           </Route>

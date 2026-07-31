@@ -27,6 +27,7 @@ import { MeetingsModule } from './modules/meetings/meetings.module';
 import { NoticesModule } from './modules/notices/notices.module';
 import { SuperAdminModule } from './modules/super-admin/super-admin.module';
 import { PaymentModule } from './modules/payment/payment.module';
+import { PollsModule } from './modules/polls/polls.module';
 import { HealthController } from './modules/health/health.controller';
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 
@@ -75,6 +76,7 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     NoticesModule,
     SuperAdminModule,
     PaymentModule,
+    PollsModule,
   ],
   controllers: [HealthController],
   providers: [
