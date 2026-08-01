@@ -11,6 +11,8 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PeopleManagementService } from './people-management.service';
@@ -40,6 +42,20 @@ export class PeopleManagementController {
   @ApiOperation({ summary: 'Export People Registry to Dataset' })
   async export(@CurrentTenant() societyId: string) {
     return this.peopleService.bulkExport(societyId);
+  }
+
+  @Get('me')
+  @ApiOperation({ summary: 'Get Current Person Profile' })
+  async findMe(
+    @CurrentTenant() societyId: string, 
+    @ActiveUser('sub') actorId: string,
+    @ActiveUser('email') email: string
+  ) {
+    if (!actorId) {
+      throw new UnauthorizedException('Authentication token missing or invalid');
+    }
+    
+    return await this.peopleService.findMeProfile(societyId, actorId, email);
   }
 
   @Get(':id')

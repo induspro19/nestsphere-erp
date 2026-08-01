@@ -52,6 +52,7 @@ const ResidentAmenitiesPage = React.lazy(() => import('../pages/resident/Residen
 const ResidentParkingPage = React.lazy(() => import('../pages/resident/ResidentParkingPage').then(m => ({ default: m.ResidentParkingPage })));
 const ResidentDocumentsPage = React.lazy(() => import('../pages/resident/ResidentDocumentsPage').then(m => ({ default: m.ResidentDocumentsPage })));
 const ResidentSosPage = React.lazy(() => import('../pages/resident/ResidentSosPage').then(m => ({ default: m.ResidentSosPage })));
+const ResidentReportsPage = React.lazy(() => import('../pages/resident/ResidentReportsPage').then(m => ({ default: m.ResidentReportsPage })));
 const ResidentPortalLayout = React.lazy(() => import('../components/layout/resident/ResidentPortalLayout').then(m => ({ default: m.ResidentPortalLayout })));
 const ResidentMorePage = React.lazy(() => import('../pages/resident/ResidentMorePage').then(m => ({ default: m.ResidentMorePage })));
 
@@ -141,6 +142,7 @@ export const AppRoutes: React.FC = () => {
             <Route path="/resident/documents" element={<ResidentDocumentsPage />} />
             <Route path="/resident/polls" element={<ResidentPollsPage />} />
             <Route path="/resident/elections" element={<ResidentElectionsPage />} />
+            <Route path="/resident/reports" element={<ResidentReportsPage />} />
             <Route path="/resident/sos" element={<ResidentSosPage />} />
             <Route path="/resident/more" element={<ResidentMorePage />} />
           </Route>

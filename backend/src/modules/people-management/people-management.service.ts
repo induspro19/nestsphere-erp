@@ -98,6 +98,49 @@ export class PeopleManagementService {
     return person;
   }
 
+  // 2.5 Get Current User's Profile
+  async findMeProfile(societyId: string, actorId: string, email: string) {
+    let person = null;
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(actorId);
+
+    if (isUuid) {
+      // First try to match by userId (actorId from JWT is usually the User.id)
+      person = await this.prisma.person.findFirst({
+        where: { userId: actorId, societyId, isDeleted: false },
+        include: { roles: true, unitMappings: { include: { unit: true } }, vehicles: true },
+      });
+      // Fallback: in case actorId was literally the Person.id
+      if (!person) {
+        person = await this.prisma.person.findFirst({
+          where: { id: actorId, societyId, isDeleted: false },
+          include: { roles: true, unitMappings: { include: { unit: true } }, vehicles: true },
+        });
+      }
+    }
+
+    // If still not found or not a UUID, try matching by email
+    if (!person && email) {
+      person = await this.prisma.person.findFirst({
+        where: { email, societyId, isDeleted: false },
+        include: { roles: true, unitMappings: { include: { unit: true } }, vehicles: true },
+      });
+    }
+    
+    // In test mocks, the actorId itself might be the email
+    if (!person && !isUuid && actorId && actorId.includes('@')) {
+      person = await this.prisma.person.findFirst({
+        where: { email: actorId, societyId, isDeleted: false },
+        include: { roles: true, unitMappings: { include: { unit: true } }, vehicles: true },
+      });
+    }
+
+    if (!person) {
+      throw new NotFoundException('Current user profile not found in society');
+    }
+
+    return person;
+  }
+
   // 3. Create Master Person Record
   async create(societyId: string, dto: CreatePersonDto, actorId: string) {
     // Generate Digital ID (e.g. PRN-94820)

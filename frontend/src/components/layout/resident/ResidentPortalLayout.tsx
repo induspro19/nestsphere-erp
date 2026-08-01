@@ -20,6 +20,7 @@ import {
   UserCheck,
   ParkingCircle,
   FileText,
+  PieChart,
   X,
   ChevronLeft,
 } from 'lucide-react';
@@ -53,6 +54,7 @@ export const ResidentPortalLayout: React.FC = () => {
     { title: 'Amenities', path: '/resident/amenities', icon: CalendarCheck },
     { title: 'Parking', path: '/resident/parking', icon: ParkingCircle },
     { title: 'Documents', path: '/resident/documents', icon: FileText },
+    { title: 'Reports', path: '/resident/reports', icon: PieChart },
     { title: 'My Profile', path: '/resident/profile', icon: User },
     { title: 'Emergency SOS', path: '/resident/sos', icon: ShieldAlert },
   ];
@@ -163,7 +165,7 @@ export const ResidentPortalLayout: React.FC = () => {
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => navigate('/notifications')}
+                onClick={() => navigate('/resident/notices')}
                 className="h-9 w-9 p-0 rounded-full relative min-h-[44px] min-w-[44px]"
                 aria-label="Notifications"
               >

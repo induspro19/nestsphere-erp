@@ -55,8 +55,21 @@ export const ResidentDashboardPage: React.FC = () => {
     }
   };
 
-  if (loading || !data) {
+  if (loading) {
     return <LoadingSpinner message="Loading Resident Portal..." />;
+  }
+
+  if (!data) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center">
+        <ShieldAlert className="h-12 w-12 text-rose-500 mb-4" />
+        <h2 className="text-xl font-bold text-foreground">Dashboard Unavailable</h2>
+        <p className="text-muted-foreground mt-2">We could not load your dashboard data.</p>
+        <Button onClick={() => window.location.reload()} className="mt-4" variant="outline">
+          Retry
+        </Button>
+      </div>
+    );
   }
 
   return (
