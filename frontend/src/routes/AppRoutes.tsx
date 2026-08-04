@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ProtectedRoute } from './ProtectedRoute';
 import { MainLayout } from '../components/layout/MainLayout';
-import { LoadingSpinner } from '../components/shared/LoadingSpinner';
+import { PageSkeleton } from '../components/shared/SkeletonLoader';
 
 const LoginPage = React.lazy(() => import('../pages/LoginPage').then(m => ({ default: m.LoginPage })));
 const DashboardShell = React.lazy(() => import('../pages/DashboardShell').then(m => ({ default: m.DashboardShell })));
@@ -84,7 +84,7 @@ const DeviceSettingsPage = React.lazy(() => import('../pages/DeviceSettingsPage'
 
 export const AppRoutes: React.FC = () => {
   return (
-    <Suspense fallback={<LoadingSpinner message="Loading..." />}>
+    <Suspense fallback={<PageSkeleton />}>
       <Routes>
         {/* Public Unauthenticated Routes */}
         <Route path="/login" element={<LoginPage />} />
@@ -93,6 +93,7 @@ export const AppRoutes: React.FC = () => {
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<DashboardShell />} />
+            <Route path="/admin/dashboard" element={<DashboardShell />} />
             <Route path="/property-management" element={<PropertySettingsPage />} />
             <Route path="/people" element={<PeopleManagementPage />} />
             <Route path="/access-control" element={<AccessControlPage />} />

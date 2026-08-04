@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, useNavigate, NavLink } from 'react-router-dom';
+import { Outlet, useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { ResidentBottomNav } from './ResidentBottomNav';
 import { OfflineBanner } from '../../pwa/OfflineBanner';
 import { PwaInstallPrompt } from '../../pwa/PwaInstallPrompt';
@@ -8,6 +8,7 @@ import { useAuthStore } from '../../../store/authStore';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
+import { AnimatedPageWrapper } from '../../shared/AnimatedPageWrapper';
 import {
   Bell,
   Home,
@@ -30,6 +31,7 @@ export const ResidentPortalLayout: React.FC = () => {
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [unreadNotifications] = useState(3);
   const [showSearchModal, setShowSearchModal] = useState(false);
@@ -60,58 +62,78 @@ export const ResidentPortalLayout: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col antialiased">
+    <div className="min-h-screen bg-[#F8FAFC] text-foreground flex flex-col antialiased">
       <OfflineBanner />
       <PwaUpdatePrompt />
       <PwaInstallPrompt />
 
       <div className="flex-1 flex">
-        {/* Responsive Desktop/Tablet Sidebar Layout */}
+        {/* Responsive Desktop/Tablet Sidebar Layout (280px vs 72px) */}
         <aside
-          className={`hidden md:flex fixed top-0 left-0 z-40 h-screen transition-all duration-300 border-r border-border/40 bg-card/90 backdrop-blur-xl flex-col ${
-            isSidebarCollapsed ? 'w-20' : 'w-64'
+          aria-label="Resident Portal navigation"
+          aria-expanded={!isSidebarCollapsed}
+          className={`hidden md:flex fixed top-0 left-0 z-40 h-screen transition-all duration-250 ease-in-out border-r border-gray-200 bg-white flex-col shadow-[0_6px_20px_rgba(0,0,0,0.05)] ${
+            isSidebarCollapsed ? 'w-[72px]' : 'w-[280px]'
           }`}
         >
           {/* Header */}
-          <div className="h-16 flex items-center justify-between px-4 border-b border-border/40">
+          <div className="h-16 flex items-center justify-between px-4 border-b border-gray-100 shrink-0">
             {!isSidebarCollapsed && (
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-primary/20 text-primary font-bold flex items-center justify-center text-sm">
+              <div className="flex items-center gap-2.5 overflow-hidden">
+                <div className="h-9 w-9 rounded-[10px] bg-blue-600 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-xs">
                   NS
                 </div>
-                <span className="font-bold font-display text-sm truncate">Resident Portal</span>
+                <span className="font-semibold text-[15px] text-gray-900 truncate">Resident Portal</span>
+              </div>
+            )}
+            {isSidebarCollapsed && (
+              <div className="h-9 w-9 rounded-[10px] bg-blue-600 text-white font-bold flex items-center justify-center text-xs shrink-0 mx-auto">
+                NS
               </div>
             )}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              className="h-8 w-8 rounded-lg"
               aria-label="Toggle Sidebar"
+              className="h-8 w-8 rounded-[8px] hover:bg-gray-100 text-gray-500"
             >
               <ChevronLeft className={`h-4 w-4 transition-transform ${isSidebarCollapsed ? 'rotate-180' : ''}`} />
             </Button>
           </div>
 
           {/* Navigation Links */}
-          <div className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+          <div className="flex-1 py-3 px-2 space-y-1.5 overflow-y-auto no-scrollbar overflow-x-hidden">
             {desktopNavItems.map((item) => {
               const Icon = item.icon;
               return (
                 <NavLink
                   key={item.path}
                   to={item.path}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all min-h-[44px] ${
+                  className={({ isActive }) => {
+                    if (isSidebarCollapsed) {
+                      return `group relative flex items-center justify-center h-11 w-11 mx-auto rounded-[12px] transition-all duration-200 ${
+                        isActive
+                          ? 'bg-blue-600 text-white shadow-sm font-medium'
+                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                      }`;
+                    }
+                    return `flex items-center gap-3.5 px-3.5 h-[46px] rounded-[14px] font-medium text-[15px] transition-all duration-200 ${
                       isActive
-                        ? 'bg-primary text-primary-foreground shadow-md'
-                        : 'text-muted-foreground hover:bg-accent/60 hover:text-foreground'
-                    } ${isSidebarCollapsed ? 'justify-center px-0' : ''}`
-                  }
+                        ? 'bg-blue-600 text-white shadow-sm font-medium'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    }`;
+                  }}
                   title={isSidebarCollapsed ? item.title : undefined}
                 >
                   <Icon className="h-5 w-5 shrink-0" />
-                  {!isSidebarCollapsed && <span className="truncate">{item.title}</span>}
+                  {!isSidebarCollapsed && <span className="truncate text-[14px]">{item.title}</span>}
+
+                  {isSidebarCollapsed && (
+                    <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-[8px] bg-gray-900 text-white text-[12px] font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-md">
+                      {item.title}
+                    </span>
+                  )}
                 </NavLink>
               );
             })}
@@ -119,61 +141,85 @@ export const ResidentPortalLayout: React.FC = () => {
         </aside>
 
         {/* Main Content Body */}
-        <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${isSidebarCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
-          {/* Sticky Header */}
-          <header className="sticky top-0 z-30 bg-card/90 backdrop-blur-xl border-b border-border/40 px-4 md:px-6 h-16 flex items-center justify-between shadow-sm">
+        <div className={`flex-1 flex flex-col min-h-screen transition-all duration-250 ease-in-out ${isSidebarCollapsed ? 'md:pl-[72px]' : 'md:pl-[280px]'}`}>
+          {/* Global Resident Header (Clean, Zero Duplication, Height: 64px max) */}
+          <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 px-4 md:px-6 h-16 flex items-center justify-between shadow-xs shrink-0">
             <div className="flex items-center gap-3">
+              {window.location.pathname !== '/resident/dashboard' && (
+                <Button
+                  data-testid="resident-back-button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => navigate(-1)}
+                  className="h-8 px-2.5 rounded-[8px] gap-1 text-xs font-medium text-gray-700 hover:bg-gray-100 border-gray-200"
+                  title="Go Back"
+                >
+                  <ChevronLeft className="h-3.5 w-3.5 text-gray-500" />
+                  <span className="hidden sm:inline">Back</span>
+                </Button>
+              )}
+
+              {/* Resident Avatar: 40px x 40px */}
               <div
                 onClick={() => navigate('/resident/profile')}
-                className="h-9 w-9 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center border border-primary/30 cursor-pointer min-h-[44px] min-w-[44px]"
+                className="h-10 w-10 rounded-full bg-blue-50 text-blue-600 font-bold text-xs flex items-center justify-center border border-gray-200 shadow-xs cursor-pointer shrink-0"
                 role="button"
                 aria-label="View Resident Profile"
               >
                 {user?.avatarUrl ? (
                   <img src={user.avatarUrl} alt="Avatar" className="h-full w-full rounded-full object-cover" />
                 ) : (
-                  <span>{user?.firstName?.[0] || 'R'}{user?.lastName?.[0] || ''}</span>
+                  <span>{user?.firstName?.[0] || 'R'}{user?.lastName?.[0] || 'V'}</span>
                 )}
               </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="font-bold text-xs font-display text-foreground">
-                    {user?.firstName ? `${user.firstName} ${user.lastName}` : 'Resident User'}
-                  </span>
-                  <Badge className="bg-primary/20 text-primary border-primary/30 text-[9px] px-1.5 py-0 font-mono">
-                    {user?.societyName || 'Grand Heights'}
-                  </Badge>
-                </div>
-                <p className="text-[10px] text-muted-foreground">
-                  {user?.email || 'resident@society.com'}
+
+              {/* Resident Name & Role Title (Flat Number removed to eliminate duplication) */}
+              <div className="flex flex-col">
+                <span className="font-semibold text-[16px] text-gray-900 leading-tight">
+                  {user?.firstName ? `${user.firstName} ${user.lastName}` : 'Rahul Verma'}
+                </span>
+                <p className="text-[12px] font-normal text-[#6B7280] leading-tight">
+                  Resident
                 </p>
               </div>
             </div>
 
+            {/* Center: Global Search Bar */}
+            <div className="flex-1 max-w-md mx-4 hidden md:block">
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setShowSearchModal(true)}
+                className="w-full h-10 px-3.5 rounded-[10px] justify-start gap-2 text-xs text-gray-500 bg-gray-50 hover:bg-gray-100 border border-gray-200"
+                aria-label="Search ERP"
+              >
+                <Search className="h-4 w-4 text-gray-400" />
+                <span className="font-normal">Search ERP...</span>
+              </Button>
+            </div>
+
+            {/* Right: Notifications, SOS & Profile Controls */}
             <div className="flex items-center gap-2">
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => setShowSearchModal(true)}
-                className="h-9 w-9 md:w-auto md:px-3 p-0 rounded-xl gap-2 text-xs text-muted-foreground min-h-[44px]"
-                aria-label="Universal Search"
+                className="h-10 w-10 p-0 md:hidden rounded-[10px] text-gray-500 bg-gray-50 hover:bg-gray-100 border border-gray-200 flex items-center justify-center"
+                aria-label="Search ERP"
               >
-                <Search className="h-4 w-4" />
-                <span className="hidden md:inline">Search...</span>
+                <Search className="h-4 w-4 text-gray-400" />
               </Button>
 
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => navigate('/resident/notices')}
-                className="h-9 w-9 p-0 rounded-full relative min-h-[44px] min-w-[44px]"
+                className="h-10 w-10 p-0 rounded-[10px] relative text-gray-600 hover:bg-gray-100 border border-gray-200"
                 aria-label="Notifications"
               >
                 <Bell className="h-4 w-4" />
                 {unreadNotifications > 0 && (
-                  <span className="absolute top-1 right-1 h-4 w-4 bg-primary text-primary-foreground text-[9px] font-bold rounded-full flex items-center justify-center">
-                    {unreadNotifications}
-                  </span>
+                  <span className="absolute top-2 right-2 h-2 w-2 bg-blue-600 rounded-full ring-2 ring-white" />
                 )}
               </Button>
 
@@ -181,18 +227,20 @@ export const ResidentPortalLayout: React.FC = () => {
                 size="sm"
                 variant="destructive"
                 onClick={() => navigate('/resident/sos')}
-                className="h-9 px-2.5 rounded-xl gap-1 text-xs shadow-sm font-semibold min-h-[44px]"
+                className="h-10 px-4 rounded-[10px] gap-1.5 text-[14px] font-semibold shadow-xs"
                 aria-label="Emergency SOS"
               >
                 <ShieldAlert className="h-4 w-4" />
-                <span className="hidden sm:inline">SOS</span>
+                <span>SOS</span>
               </Button>
             </div>
           </header>
 
-          {/* Main View Outlet */}
-          <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-5xl w-full mx-auto pb-24 md:pb-8">
-            <Outlet />
+          {/* Main View Outlet (Animated 180ms GPU-accelerated page transitions) */}
+          <main className="flex-1 p-3.5 md:p-4 lg:p-5 max-w-[1600px] w-full mx-auto pb-24 md:pb-8">
+            <AnimatedPageWrapper key={location.pathname}>
+              <Outlet />
+            </AnimatedPageWrapper>
           </main>
         </div>
       </div>
@@ -202,11 +250,11 @@ export const ResidentPortalLayout: React.FC = () => {
 
       {/* Universal Search Dialog Modal */}
       {showSearchModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start justify-center pt-20 p-4">
-          <div className="bg-card border border-border/60 rounded-2xl w-full max-w-md p-4 space-y-3 shadow-2xl animate-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-start justify-center pt-20 p-4">
+          <div className="bg-white border border-gray-200 rounded-[18px] w-full max-w-md p-5 space-y-3 shadow-2xl animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-xs uppercase tracking-wider text-muted-foreground">Universal Resident Search</h3>
-              <Button size="sm" variant="ghost" onClick={() => setShowSearchModal(false)} className="h-6 w-6 p-0">
+              <h3 className="font-semibold text-xs uppercase tracking-wider text-gray-500">Universal Resident Search</h3>
+              <Button size="sm" variant="ghost" onClick={() => setShowSearchModal(false)} className="h-6 w-6 p-0 rounded-[6px]">
                 <X className="h-4 w-4" />
               </Button>
             </div>
@@ -214,10 +262,10 @@ export const ResidentPortalLayout: React.FC = () => {
               placeholder="Search bills, notices, meetings, documents..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="text-xs"
+              className="text-xs min-h-[40px]"
               autoFocus
             />
-            <div className="space-y-1 text-xs text-muted-foreground pt-2">
+            <div className="space-y-1 text-xs text-gray-500 pt-2">
               <p className="text-[10px] uppercase tracking-wider font-semibold">Quick Categories:</p>
               <div className="flex flex-wrap gap-1.5 pt-1">
                 <Badge onClick={() => navigate('/resident/bills')} className="cursor-pointer">Bills</Badge>

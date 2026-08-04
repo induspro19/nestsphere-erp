@@ -47,7 +47,7 @@ export class PeopleManagementController {
   @Get('me')
   @ApiOperation({ summary: 'Get Current Person Profile' })
   async findMe(
-    @CurrentTenant() societyId: string, 
+    @CurrentTenant({ optional: true }) societyId: string | null, 
     @ActiveUser('sub') actorId: string,
     @ActiveUser('email') email: string
   ) {

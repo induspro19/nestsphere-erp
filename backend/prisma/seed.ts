@@ -1,9 +1,10 @@
 import { PrismaClient, RoleType } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Executing Database Seed Architecture (System Roles & Permissions)...');
+  console.log('🌱 Executing Database Seed Architecture (System Roles & Seed Users)...');
 
   // 1. Seed Enterprise System Roles
   const roles: { code: RoleType; name: string; description: string }[] = [
@@ -45,7 +46,121 @@ async function main() {
     });
   }
 
-  console.log('✅ Database Seed Architecture complete. Zero demo/placeholder data created.');
+  // 3. Seed Default Foundation Society
+  const society = await prisma.society.upsert({
+    where: { code: 'GFH-001' },
+    update: {},
+    create: {
+      name: 'Greenfield Heights Cooperative Society',
+      code: 'GFH-001',
+      registrationNo: 'SOC-2026-001',
+      societyTypeCode: 'HOUSING',
+      addressLine1: '123 Palm Avenue, Bandra West',
+      pincode: '400050',
+      contactEmail: 'admin@greenfield.com',
+      contactPhone: '9876543210',
+      status: 'ACTIVE',
+      isOnboarded: true,
+    },
+  });
+
+  // 4. Seed E2E Test Resident User & Person Profile
+  const passwordHash = await bcrypt.hash('password123', 10);
+
+  const residentRole = await prisma.role.findUnique({ where: { code: RoleType.RESIDENT } });
+
+  const residentUser = await prisma.user.upsert({
+    where: { email: 'resident@nestsphere.local' },
+    update: { passwordHash, status: 'ACTIVE', societyId: society.id },
+    create: {
+      email: 'resident@nestsphere.local',
+      phone: '9876543211',
+      passwordHash,
+      firstName: 'Resident',
+      lastName: 'User',
+      societyId: society.id,
+      status: 'ACTIVE',
+    },
+  });
+
+  if (residentRole) {
+    await prisma.userRole.upsert({
+      where: { id: `ur-${residentUser.id}` },
+      update: {},
+      create: {
+        id: `ur-${residentUser.id}`,
+        userId: residentUser.id,
+        roleId: residentRole.id,
+      },
+    }).catch(() => {});
+  }
+
+  await prisma.person.upsert({
+    where: { digitalId: 'PRN-00001' },
+    update: { email: 'resident@nestsphere.local', userId: residentUser.id },
+    create: {
+      societyId: society.id,
+      userId: residentUser.id,
+      digitalId: 'PRN-00001',
+      digitalIdQrToken: 'QR-RESIDENT-00001',
+      firstName: 'Resident',
+      lastName: 'User',
+      email: 'resident@nestsphere.local',
+      phone: '9876543211',
+      gender: 'MALE',
+      kycStatus: 'VERIFIED',
+      status: 'ACTIVE',
+    },
+  });
+
+  // 5. Seed E2E Test Admin User & Person Profile
+  const adminRole = await prisma.role.findUnique({ where: { code: RoleType.SOCIETY_ADMIN } });
+
+  const adminUser = await prisma.user.upsert({
+    where: { email: 'admin@nestsphere.local' },
+    update: { passwordHash, status: 'ACTIVE', societyId: society.id },
+    create: {
+      email: 'admin@nestsphere.local',
+      phone: '9876543212',
+      passwordHash,
+      firstName: 'Admin',
+      lastName: 'User',
+      societyId: society.id,
+      status: 'ACTIVE',
+    },
+  });
+
+  if (adminRole) {
+    await prisma.userRole.upsert({
+      where: { id: `ur-${adminUser.id}` },
+      update: {},
+      create: {
+        id: `ur-${adminUser.id}`,
+        userId: adminUser.id,
+        roleId: adminRole.id,
+      },
+    }).catch(() => {});
+  }
+
+  await prisma.person.upsert({
+    where: { digitalId: 'PRN-00002' },
+    update: { email: 'admin@nestsphere.local', userId: adminUser.id },
+    create: {
+      societyId: society.id,
+      userId: adminUser.id,
+      digitalId: 'PRN-00002',
+      digitalIdQrToken: 'QR-ADMIN-00002',
+      firstName: 'Admin',
+      lastName: 'User',
+      email: 'admin@nestsphere.local',
+      phone: '9876543212',
+      gender: 'MALE',
+      kycStatus: 'VERIFIED',
+      status: 'ACTIVE',
+    },
+  });
+
+  console.log('✅ Database Seed Architecture complete. Seeded resident@nestsphere.local for E2E testing.');
 }
 
 main()

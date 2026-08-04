@@ -6,6 +6,7 @@ import { Badge } from '../components/ui/badge';
 import { LoadingSpinner } from '../components/shared/LoadingSpinner';
 import { DataTable } from '../components/shared/DataTable';
 import { StatCard } from '../components/shared/StatCard';
+import { toast } from 'sonner';
 import {
   notificationsApi,
   AppNotification,
@@ -17,15 +18,9 @@ import {
   Send,
   FileCode,
   Smartphone,
-  Mail,
-  MessageSquare,
   CheckCheck,
   Plus,
-  Info,
-  AlertTriangle,
-  CheckCircle,
   X,
-  RefreshCw,
 } from 'lucide-react';
 
 export const NotificationsPage: React.FC = () => {
@@ -34,6 +29,7 @@ export const NotificationsPage: React.FC = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [total, setTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState<'INBOX' | 'BROADCAST' | 'TEMPLATES'>('INBOX');
 
   // Broadcast Modal / Form state
@@ -75,18 +71,31 @@ export const NotificationsPage: React.FC = () => {
 
   const handleBroadcast = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!broadcastTitle || !broadcastMessage) {
+      toast.error('Broadcast title and message are required.');
+      return;
+    }
+    setIsSubmitting(true);
     try {
-      await notificationsApi.broadcast({
+      const res = await notificationsApi.broadcast({
         title: broadcastTitle,
         message: broadcastMessage,
         category: broadcastCategory,
       });
-      setIsBroadcastModalOpen(false);
-      setBroadcastTitle('');
-      setBroadcastMessage('');
-      fetchData();
+      if (res.success !== false) {
+        toast.success(res.message || `Broadcast dispatched successfully to ${res.broadcastCount || 0} occupant(s)!`);
+        setIsBroadcastModalOpen(false);
+        setBroadcastTitle('');
+        setBroadcastMessage('');
+        fetchData();
+      } else {
+        toast.error(res.message || 'Unable to save broadcast.');
+      }
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to send broadcast');
+      const errorMsg = err.response?.data?.message || 'Server temporarily unavailable.';
+      toast.error(errorMsg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -102,6 +111,7 @@ export const NotificationsPage: React.FC = () => {
         bodyTemplate,
         variables: ['name', 'societyName'],
       });
+      toast.success('Notification template saved successfully!');
       setIsTemplateModalOpen(false);
       setTemplateCode('');
       setTemplateName('');
@@ -109,16 +119,17 @@ export const NotificationsPage: React.FC = () => {
       setBodyTemplate('');
       fetchData();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to create template');
+      toast.error(err.response?.data?.message || 'Failed to create template');
     }
   };
 
   const handleMarkAllRead = async () => {
     try {
       await notificationsApi.markAllAsRead();
+      toast.success('All notifications marked as read.');
       fetchData();
     } catch {
-      alert('Failed to mark all as read');
+      toast.error('Failed to mark notifications as read.');
     }
   };
 
@@ -300,11 +311,11 @@ export const NotificationsPage: React.FC = () => {
               </div>
 
               <div className="flex justify-end gap-2 pt-3 border-t border-border/40">
-                <Button type="button" variant="outline" onClick={() => setIsBroadcastModalOpen(false)} className="rounded-xl">
+                <Button type="button" variant="outline" onClick={() => setIsBroadcastModalOpen(false)} className="rounded-xl" disabled={isSubmitting}>
                   Cancel
                 </Button>
-                <Button type="submit" className="rounded-xl">
-                  Dispatch Broadcast
+                <Button type="submit" className="rounded-xl" disabled={isSubmitting}>
+                  {isSubmitting ? 'Dispatching...' : 'Dispatch Broadcast'}
                 </Button>
               </div>
             </form>

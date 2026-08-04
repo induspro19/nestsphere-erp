@@ -7,7 +7,7 @@ export default defineConfig({
   screenshotsFolder: "cypress/screenshots",
   videosFolder: "cypress/videos",
   e2e: {
-    baseUrl: "http://localhost:3000",
+    baseUrl: "http://localhost:5173",
     supportFile: "cypress/support/e2e.js",
     specPattern: "cypress/e2e/**/*.cy.js"
   }

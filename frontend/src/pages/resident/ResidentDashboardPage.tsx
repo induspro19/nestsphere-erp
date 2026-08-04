@@ -73,131 +73,178 @@ export const ResidentDashboardPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 pb-12 animate-in fade-in duration-300">
-      {/* Welcome Header & Unit Card */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-3.5 pb-12 animate-in fade-in duration-200">
+      {/* Professional Enterprise Resident Dashboard Header (80px–90px Height) */}
+      <div className="p-4 md:p-5 rounded-[14px] bg-gradient-to-r from-blue-50/80 via-indigo-50/40 to-white border border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
         <div className="space-y-1">
-          <Badge className="bg-primary/20 text-primary border-primary/30 font-mono text-[10px]">
-            {data.person.digitalId}
-          </Badge>
-          <h1 className="text-2xl font-bold font-display tracking-tight text-foreground">
-            Welcome Back, {data.person.firstName}! 👋
-          </h1>
-          <p className="text-xs text-muted-foreground flex items-center gap-2">
-            <Home className="h-3.5 w-3.5 text-primary" /> Flat {data.unit?.flatNumber} • {data.unit?.buildingName} ({data.unit?.wingName})
+          <div className="flex items-center gap-2">
+            <h1 className="text-[24px] font-semibold tracking-tight text-gray-900 leading-tight">
+              Resident Dashboard
+            </h1>
+            <span className="h-[22px] px-2 text-[11px] font-mono font-medium rounded-full bg-blue-100/70 text-blue-700 border border-blue-200 flex items-center shrink-0">
+              {data.person.digitalId}
+            </span>
+          </div>
+          <p className="text-[13px] text-gray-600 font-normal flex items-center gap-1.5 leading-tight">
+            <Home className="h-3.5 w-3.5 text-blue-600 shrink-0" />
+            <span>Flat {data.unit?.flatNumber || 'A-402'} • {data.unit?.buildingName || 'Tower A'} - {data.unit?.wingName || 'Grand Heights'}</span>
           </p>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <Button onClick={() => navigate('/resident/visitors')} size="sm" className="gap-1.5 text-xs shadow-md">
-            <QrCode className="h-4 w-4" /> Pre-Approve Visitor
+
+        {/* Compact Enterprise Buttons (40px Height, 14px Font) */}
+        <div className="flex items-center gap-2.5 shrink-0">
+          <Button
+            onClick={() => navigate('/resident/visitors')}
+            className="h-10 px-4 rounded-[10px] text-[14px] font-semibold bg-blue-600 hover:bg-blue-700 text-white gap-2 shadow-xs"
+          >
+            <QrCode className="h-[18px] w-[18px]" /> Pre-Approve Visitor
           </Button>
-          <Button onClick={() => navigate('/resident/complaints')} size="sm" variant="outline" className="gap-1.5 text-xs">
-            <Plus className="h-4 w-4" /> Raise Ticket
+          <Button
+            onClick={() => navigate('/resident/complaints')}
+            variant="outline"
+            className="h-10 px-4 rounded-[10px] text-[14px] font-semibold border-gray-200 hover:bg-gray-100 text-gray-800 gap-2"
+          >
+            <Plus className="h-[18px] w-[18px]" /> Raise Ticket
           </Button>
         </div>
       </div>
 
       {/* Emergency SOS Quick Bar */}
-      <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 space-y-2">
+      <div className="p-3.5 rounded-[12px] bg-rose-50 border border-rose-200/80 space-y-2">
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-xs text-rose-500 flex items-center gap-1.5 uppercase tracking-wider">
+          <h3 className="font-semibold text-[12px] text-rose-700 flex items-center gap-1.5 uppercase tracking-wider">
             <ShieldAlert className="h-4 w-4" /> Emergency SOS Dispatch
           </h3>
-          <span className="text-[10px] text-muted-foreground">1-Tap Immediate Security Alert</span>
+          <span className="text-[11px] text-rose-500 font-medium">1-Tap Immediate Security Alert</span>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-          <Button size="sm" variant="destructive" className="text-xs gap-1 py-1.5" onClick={() => handleSos('SECURITY')}>
+          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px]" onClick={() => handleSos('SECURITY')}>
             <Shield className="h-3.5 w-3.5" /> Security
           </Button>
-          <Button size="sm" variant="destructive" className="text-xs gap-1 py-1.5" onClick={() => handleSos('MAINTENANCE')}>
+          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px]" onClick={() => handleSos('MAINTENANCE')}>
             <Wrench className="h-3.5 w-3.5" /> Maintenance
           </Button>
-          <Button size="sm" variant="destructive" className="text-xs gap-1 py-1.5" onClick={() => handleSos('FIRE')}>
+          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px]" onClick={() => handleSos('FIRE')}>
             <Flame className="h-3.5 w-3.5" /> Fire
           </Button>
-          <Button size="sm" variant="destructive" className="text-xs gap-1 py-1.5" onClick={() => handleSos('AMBULANCE')}>
+          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px]" onClick={() => handleSos('AMBULANCE')}>
             <Ambulance className="h-3.5 w-3.5" /> Medical
           </Button>
-          <Button size="sm" variant="destructive" className="text-xs gap-1 py-1.5" onClick={() => handleSos('POLICE')}>
+          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px]" onClick={() => handleSos('POLICE')}>
             <PhoneCall className="h-3.5 w-3.5" /> Police
           </Button>
-          <Button size="sm" variant="destructive" className="text-xs gap-1 py-1.5" onClick={() => handleSos('OFFICE')}>
+          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px]" onClick={() => handleSos('OFFICE')}>
             <Building className="h-3.5 w-3.5" /> Office
           </Button>
         </div>
       </div>
 
-      {/* 7 KPI StatCards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <StatCard title="Outstanding Maintenance" value={`₹${data.metrics.outstandingDues.toLocaleString()}`} icon={CreditCard} description="Due in 5 Days" />
-        <StatCard title="Active Complaints" value={data.metrics.activeComplaints} icon={LifeBuoy} description="In Progress" />
-        <StatCard title="Upcoming Meetings" value={data.metrics.upcomingMeetings} icon={CalendarCheck} description="AGM Scheduled" />
-        <StatCard title="New Notices" value={data.metrics.newNotices} icon={Bell} description="Unread Circulars" />
-        <StatCard title="Active Bookings" value={data.metrics.activeBookings} icon={CalendarCheck} description="Clubhouse Slot" />
-        <StatCard title="Visitors Today" value={data.metrics.todayVisitors} icon={UserCheck} description="Pre-Approved" />
-        <StatCard title="Parking & Vehicles" value={`${data.metrics.assignedVehicles} Vehicles`} icon={ParkingCircle} description="Slot A-402" />
+      {/* 7 KPI StatCards (Equal 140px Height) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
+        <StatCard
+          title="Outstanding Maintenance"
+          value={`₹${data.metrics.outstandingDues.toLocaleString()}`}
+          subRows={["Due in 5 Days", <span key="st" className="text-amber-600 font-medium">Pending Invoice</span>]}
+          icon={CreditCard}
+        />
+        <StatCard
+          title="Active Complaints"
+          value={data.metrics.activeComplaints}
+          subRows={["In Progress: 2", <span key="st" className="text-blue-600 font-medium">Assigned to Electrician</span>]}
+          icon={LifeBuoy}
+        />
+        <StatCard
+          title="Upcoming Meetings"
+          value={data.metrics.upcomingMeetings}
+          subRows={["AGM Scheduled", "Aug 12 • 06:00 PM"]}
+          icon={CalendarCheck}
+        />
+        <StatCard
+          title="New Notices"
+          value={data.metrics.newNotices}
+          subRows={["Unread Circulars", <span key="st" className="text-blue-600 font-medium">Water Cut Off Circular</span>]}
+          icon={Bell}
+        />
+        <StatCard
+          title="Active Bookings"
+          value={data.metrics.activeBookings}
+          subRows={["Clubhouse Slot", "Tomorrow 07:00 AM"]}
+          icon={CalendarCheck}
+        />
+        <StatCard
+          title="Visitors Today"
+          value={data.metrics.todayVisitors}
+          subRows={["Pre-Approved: 3", "Checked In: 1"]}
+          icon={UserCheck}
+        />
+        <StatCard
+          title="Parking & Vehicles"
+          value={`${data.metrics.assignedVehicles} Vehicles`}
+          subRows={["Assigned Slot: A-402", "Sticker Verified"]}
+          icon={ParkingCircle}
+        />
       </div>
 
       {/* Quick Navigation Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div onClick={() => navigate('/resident/bills')} className="p-4 rounded-xl bg-card border border-border/40 hover:border-primary/50 cursor-pointer transition-all space-y-2 group">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+        <div onClick={() => navigate('/resident/bills')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <h4 className="font-bold text-sm font-display group-hover:text-primary transition-colors flex items-center gap-2">
-              <CreditCard className="h-4 w-4 text-primary" /> My Maintenance Bills
+            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2">
+              <CreditCard className="h-4 w-4 text-blue-600" /> My Maintenance Bills
             </h4>
-            <Badge variant="outline">Pay Online</Badge>
+            <Badge variant="outline" className="text-[11px] font-medium border-gray-200">Pay Online</Badge>
           </div>
-          <p className="text-xs text-muted-foreground">View invoice PDF receipts, late fees, and payment status timeline.</p>
+          <p className="text-xs text-gray-500">View invoice PDF receipts, late fees, and payment status timeline.</p>
         </div>
 
-        <div onClick={() => navigate('/resident/complaints')} className="p-4 rounded-xl bg-card border border-border/40 hover:border-primary/50 cursor-pointer transition-all space-y-2 group">
+        <div onClick={() => navigate('/resident/complaints')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <h4 className="font-bold text-sm font-display group-hover:text-primary transition-colors flex items-center gap-2">
-              <LifeBuoy className="h-4 w-4 text-primary" /> My Complaints & Tickets
+            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2">
+              <LifeBuoy className="h-4 w-4 text-blue-600" /> My Complaints & Tickets
             </h4>
-            <Badge variant="outline">Track Progress</Badge>
+            <Badge variant="outline" className="text-[11px] font-medium border-gray-200">Track Progress</Badge>
           </div>
-          <p className="text-xs text-muted-foreground">Raise ticket, upload photo, technician details, service ratings.</p>
+          <p className="text-xs text-gray-500">Raise ticket, upload photo, technician details, service ratings.</p>
         </div>
 
-        <div onClick={() => navigate('/resident/notices')} className="p-4 rounded-xl bg-card border border-border/40 hover:border-primary/50 cursor-pointer transition-all space-y-2 group">
+        <div onClick={() => navigate('/resident/notices')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <h4 className="font-bold text-sm font-display group-hover:text-primary transition-colors flex items-center gap-2">
-              <Bell className="h-4 w-4 text-primary" /> Society Notices & Circulars
+            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2">
+              <Bell className="h-4 w-4 text-blue-600" /> Society Notices & Circulars
             </h4>
-            <Badge variant="outline">Read Receipts</Badge>
+            <Badge variant="outline" className="text-[11px] font-medium border-gray-200">Read Receipts</Badge>
           </div>
-          <p className="text-xs text-muted-foreground">Emergency alerts, water shut-off circulars, read receipt acknowledgements.</p>
+          <p className="text-xs text-gray-500">Emergency alerts, water shut-off circulars, read receipt acknowledgements.</p>
         </div>
 
-        <div onClick={() => navigate('/resident/meetings')} className="p-4 rounded-xl bg-card border border-border/40 hover:border-primary/50 cursor-pointer transition-all space-y-2 group">
+        <div onClick={() => navigate('/resident/meetings')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <h4 className="font-bold text-sm font-display group-hover:text-primary transition-colors flex items-center gap-2">
-              <CalendarCheck className="h-4 w-4 text-primary" /> Meetings & AGM
+            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2">
+              <CalendarCheck className="h-4 w-4 text-blue-600" /> Meetings & AGM
             </h4>
-            <Badge variant="outline">Join Online</Badge>
+            <Badge variant="outline" className="text-[11px] font-medium border-gray-200">Join Online</Badge>
           </div>
-          <p className="text-xs text-muted-foreground">Agendas, online Google Meet link, voting results, MoM downloads.</p>
+          <p className="text-xs text-gray-500">Agendas, online Google Meet link, voting results, MoM downloads.</p>
         </div>
 
-        <div onClick={() => navigate('/resident/visitors')} className="p-4 rounded-xl bg-card border border-border/40 hover:border-primary/50 cursor-pointer transition-all space-y-2 group">
+        <div onClick={() => navigate('/resident/visitors')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <h4 className="font-bold text-sm font-display group-hover:text-primary transition-colors flex items-center gap-2">
-              <UserCheck className="h-4 w-4 text-primary" /> Pre-Approve Visitors
+            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2">
+              <UserCheck className="h-4 w-4 text-blue-600" /> Pre-Approve Visitors
             </h4>
-            <Badge variant="outline">QR Gate Pass</Badge>
+            <Badge variant="outline" className="text-[11px] font-medium border-gray-200">QR Gate Pass</Badge>
           </div>
-          <p className="text-xs text-muted-foreground">Pre-approve guests, generate QR passes, track delivery entries.</p>
+          <p className="text-xs text-gray-500">Pre-approve guests, generate QR passes, track delivery entries.</p>
         </div>
 
-        <div onClick={() => navigate('/resident/amenities')} className="p-4 rounded-xl bg-card border border-border/40 hover:border-primary/50 cursor-pointer transition-all space-y-2 group">
+        <div onClick={() => navigate('/resident/amenities')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <h4 className="font-bold text-sm font-display group-hover:text-primary transition-colors flex items-center gap-2">
-              <CalendarCheck className="h-4 w-4 text-primary" /> Book Amenities
+            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2">
+              <CalendarCheck className="h-4 w-4 text-blue-600" /> Book Amenities
             </h4>
-            <Badge variant="outline">Clubhouse</Badge>
+            <Badge variant="outline" className="text-[11px] font-medium border-gray-200">Clubhouse</Badge>
           </div>
-          <p className="text-xs text-muted-foreground">Check slot availability for tennis court, swimming pool, clubhouse hall.</p>
+          <p className="text-xs text-gray-500">Check slot availability for tennis court, swimming pool, clubhouse hall.</p>
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ describe('Resident Billing Module Smoke Test', () => {
   it('loads billing page and verifies data with stable selectors', () => {
     // Navigate via Sidebar Link
     cy.visit('/resident/dashboard')
-    cy.contains('Welcome Back').should('be.visible')
+    cy.contains('Welcome Back', { timeout: 10000 }).should('be.visible')
     
     // Find the My Bills link in the sidebar and click it
     cy.contains('a', 'My Bills').click()

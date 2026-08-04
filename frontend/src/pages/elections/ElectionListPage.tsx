@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { DataTable } from '../../components/shared/DataTable';
+import { EnterprisePageHeader } from '../../components/shared/EnterprisePageHeader';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
-import { Vote, Eye } from 'lucide-react';
+import { Vote, Eye, PlusCircle, BarChart3, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const ElectionListPage: React.FC = () => {
@@ -39,10 +40,31 @@ export const ElectionListPage: React.FC = () => {
 
   return (
     <div className="animate-in fade-in duration-300 space-y-6">
-      <div className="flex items-center gap-2">
-        <Vote className="w-8 h-8 text-primary" />
-        <h1 className="text-3xl font-display font-bold">Elections</h1>
-      </div>
+      <EnterprisePageHeader
+        icon={Vote}
+        title="Society Elections Directory"
+        description="View, monitor, and manage active, upcoming, and archived society elections and voting statuses."
+        actions={[
+          {
+            label: 'Create Election',
+            onClick: () => navigate('/elections/create'),
+            icon: PlusCircle,
+            variant: 'default',
+          },
+          {
+            label: 'View Committee',
+            onClick: () => navigate('/elections/committee'),
+            icon: Users,
+            variant: 'outline',
+          },
+          {
+            label: 'View Results',
+            onClick: () => navigate('/elections/results'),
+            icon: BarChart3,
+            variant: 'outline',
+          },
+        ]}
+      />
 
       <Card>
         <CardHeader>

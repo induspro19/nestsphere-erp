@@ -1,39 +1,52 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
-import { Breadcrumb } from './Breadcrumb';
 import { Footer } from './Footer';
 import { OfflineBanner } from '../pwa/OfflineBanner';
 import { PwaInstallPrompt } from '../pwa/PwaInstallPrompt';
 import { PwaUpdatePrompt } from '../pwa/PwaUpdatePrompt';
+import { AnimatedPageWrapper } from '../shared/AnimatedPageWrapper';
 
 export const MainLayout: React.FC = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="min-h-screen bg-[#F8FAFC] text-foreground flex flex-col font-sans">
       <OfflineBanner />
       <PwaUpdatePrompt />
       <PwaInstallPrompt />
-      
-      <div className="flex-1 flex">
-        {/* Collapsible Sidebar */}
+
+      <div className="flex-1 flex relative">
+        {/* Enterprise Collapsible Sidebar (Permanently Mounted & Stable) */}
         <Sidebar
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
+          isMobileOpen={isMobileOpen}
+          onCloseMobile={() => setIsMobileOpen(false)}
         />
 
-        {/* Main Content Area */}
+        {/* Main Content Area (Smooth Margin Shift & Zero Layout Flicker) */}
         <div
-          className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${
-            isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'
+          className={`flex-1 flex flex-col min-h-screen transition-all duration-250 ease-in-out ${
+            isSidebarCollapsed ? 'lg:pl-[72px]' : 'lg:pl-[280px]'
           }`}
         >
-          <Header onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)} />
-          <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
-            <Breadcrumb />
-            <Outlet />
+          <Header
+            onToggleSidebar={() => {
+              if (window.innerWidth < 1024) {
+                setIsMobileOpen((prev) => !prev);
+              } else {
+                setIsSidebarCollapsed((prev) => !prev);
+              }
+            }}
+          />
+          <main className="flex-1 p-3.5 md:p-4 lg:p-5 max-w-[1600px] w-full mx-auto space-y-3.5">
+            <AnimatedPageWrapper key={location.pathname}>
+              <Outlet />
+            </AnimatedPageWrapper>
           </main>
           <Footer />
         </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { StatCard } from '../../components/shared/StatCard';
-import { Button } from '../../components/ui/button';
+import { EnterprisePageHeader } from '../../components/shared/EnterprisePageHeader';
 import { Vote, Users, PlusCircle, BarChart3, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,7 +19,6 @@ export const ElectionDashboardPage: React.FC = () => {
         });
         const data = await res.json();
         setActiveElections(data.data || []);
-        // Mock stats
         setStats({
           activeElections: data.data?.length || 0,
           registeredCandidates: 24,
@@ -35,17 +34,31 @@ export const ElectionDashboardPage: React.FC = () => {
 
   return (
     <div className="animate-in fade-in duration-300 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-display font-bold flex items-center gap-2">
-          <Vote className="w-8 h-8" />
-          Enterprise Election & Committee Management Engine
-        </h1>
-        <div className="space-x-2">
-          <Button onClick={() => navigate('/elections/create')}><PlusCircle className="w-4 h-4 mr-2" /> Create Election</Button>
-          <Button variant="outline" onClick={() => navigate('/elections/results')}><BarChart3 className="w-4 h-4 mr-2" /> View Results</Button>
-          <Button variant="outline" onClick={() => navigate('/elections/committee')}><Users className="w-4 h-4 mr-2" /> View Committee</Button>
-        </div>
-      </div>
+      <EnterprisePageHeader
+        icon={Vote}
+        title="Enterprise Election & Committee Management Engine"
+        description="Manage society elections, candidate nominations, voting channels, committee formations, and automated election results."
+        actions={[
+          {
+            label: 'Create Election',
+            onClick: () => navigate('/elections/create'),
+            icon: PlusCircle,
+            variant: 'default',
+          },
+          {
+            label: 'View Committee',
+            onClick: () => navigate('/elections/committee'),
+            icon: Users,
+            variant: 'outline',
+          },
+          {
+            label: 'View Results',
+            onClick: () => navigate('/elections/results'),
+            icon: BarChart3,
+            variant: 'outline',
+          },
+        ]}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <StatCard title="Active Elections" value={stats.activeElections} icon={Vote} />

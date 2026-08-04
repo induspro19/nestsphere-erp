@@ -99,20 +99,25 @@ export class PeopleManagementService {
   }
 
   // 2.5 Get Current User's Profile
-  async findMeProfile(societyId: string, actorId: string, email: string) {
+  async findMeProfile(societyId: string | null | undefined, actorId: string, email: string) {
     let person = null;
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(actorId);
+
+    const whereBase: any = { isDeleted: false };
+    if (societyId) {
+      whereBase.societyId = societyId;
+    }
 
     if (isUuid) {
       // First try to match by userId (actorId from JWT is usually the User.id)
       person = await this.prisma.person.findFirst({
-        where: { userId: actorId, societyId, isDeleted: false },
+        where: { ...whereBase, userId: actorId },
         include: { roles: true, unitMappings: { include: { unit: true } }, vehicles: true },
       });
       // Fallback: in case actorId was literally the Person.id
       if (!person) {
         person = await this.prisma.person.findFirst({
-          where: { id: actorId, societyId, isDeleted: false },
+          where: { ...whereBase, id: actorId },
           include: { roles: true, unitMappings: { include: { unit: true } }, vehicles: true },
         });
       }
@@ -121,7 +126,7 @@ export class PeopleManagementService {
     // If still not found or not a UUID, try matching by email
     if (!person && email) {
       person = await this.prisma.person.findFirst({
-        where: { email, societyId, isDeleted: false },
+        where: { ...whereBase, email },
         include: { roles: true, unitMappings: { include: { unit: true } }, vehicles: true },
       });
     }
@@ -129,7 +134,7 @@ export class PeopleManagementService {
     // In test mocks, the actorId itself might be the email
     if (!person && !isUuid && actorId && actorId.includes('@')) {
       person = await this.prisma.person.findFirst({
-        where: { email: actorId, societyId, isDeleted: false },
+        where: { ...whereBase, email: actorId },
         include: { roles: true, unitMappings: { include: { unit: true } }, vehicles: true },
       });
     }

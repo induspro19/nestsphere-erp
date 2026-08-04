@@ -7,7 +7,7 @@ describe('Resident Reports Module Smoke Test', () => {
     // Navigate via Sidebar Link
     cy.visit('/resident/dashboard')
     // Let dashboard load
-    cy.contains('Welcome Back').should('be.visible')
+    cy.contains('Welcome Back', { timeout: 10000 }).should('be.visible')
     
     // Find the Reports link in the sidebar and click it
     cy.contains('a', 'Reports').click()

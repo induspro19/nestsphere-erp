@@ -1,14 +1,14 @@
 import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 
 export const CurrentTenant = createParamDecorator(
-  (_data: unknown, ctx: ExecutionContext): string => {
+  (data: { optional?: boolean } | undefined, ctx: ExecutionContext): string | null => {
     const request = ctx.switchToHttp().getRequest();
     const societyId = request.user?.societyId || request.headers['x-society-id'];
 
-    if (!societyId) {
-      throw new UnauthorizedException('Tenant context (societyId) missing');
+    if (!societyId && !data?.optional) {
+      return null;
     }
 
-    return societyId;
+    return societyId || null;
   },
 );

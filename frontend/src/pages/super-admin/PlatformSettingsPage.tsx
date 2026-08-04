@@ -1,14 +1,29 @@
-import React from 'react';
-import { Settings, Save, Server, Mail, MessageSquare, HardDrive, Shield, Sliders } from 'lucide-react';
+import React, { useState } from 'react';
+import { Settings, Save, Mail, MessageSquare, HardDrive, Shield, Sliders, IndianRupee } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { toast } from 'sonner';
+import {
+  getGlobalCurrencyConfig,
+  setGlobalCurrencyConfig,
+  formatCurrency,
+  CurrencyConfig,
+} from '../../utils/currencyFormatter';
 
 export default function PlatformSettingsPage() {
+  const [currencyConfig, setCurrencyConfig] = useState<CurrencyConfig>(getGlobalCurrencyConfig());
+
+  const updateCurrency = (patch: Partial<CurrencyConfig>) => {
+    const updated = { ...currencyConfig, ...patch };
+    setCurrencyConfig(updated);
+    setGlobalCurrencyConfig(updated);
+  };
+
   const handleSave = () => {
-    toast.success('Settings saved successfully');
+    setGlobalCurrencyConfig(currencyConfig);
+    toast.success('Global Platform & Currency Settings saved successfully!');
   };
 
   const handleTest = (service: string) => {
@@ -29,6 +44,122 @@ export default function PlatformSettingsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Global Currency & Financial Settings */}
+        <Card className="md:col-span-2 border-primary/20 bg-gradient-to-r from-card via-card/95 to-primary/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <IndianRupee className="h-5 w-5 text-primary" />
+              Global Currency & Financial Formatting Configuration
+            </CardTitle>
+            <CardDescription>
+              Centralized currency rules, symbols, positioning, and digit grouping applied globally across all ERP modules.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase text-muted-foreground">Currency Name</label>
+                <select
+                  value={currencyConfig.currencyName}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === 'Indian Rupee') {
+                      updateCurrency({ currencyName: 'Indian Rupee', symbol: '₹', code: 'INR', locale: 'en-IN' });
+                    } else if (val === 'US Dollar') {
+                      updateCurrency({ currencyName: 'US Dollar', symbol: '$', code: 'USD', locale: 'en-US' });
+                    } else if (val === 'Euro') {
+                      updateCurrency({ currencyName: 'Euro', symbol: '€', code: 'EUR', locale: 'de-DE' });
+                    } else if (val === 'British Pound') {
+                      updateCurrency({ currencyName: 'British Pound', symbol: '£', code: 'GBP', locale: 'en-GB' });
+                    }
+                  }}
+                  className="w-full h-10 px-3 rounded-xl border border-input bg-background/50 text-xs font-medium"
+                >
+                  <option value="Indian Rupee">Indian Rupee (INR - ₹)</option>
+                  <option value="US Dollar">US Dollar (USD - $)</option>
+                  <option value="Euro">Euro (EUR - €)</option>
+                  <option value="British Pound">British Pound (GBP - £)</option>
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase text-muted-foreground">Currency Symbol</label>
+                <Input
+                  value={currencyConfig.symbol}
+                  onChange={(e) => updateCurrency({ symbol: e.target.value })}
+                  className="text-xs font-mono font-bold"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase text-muted-foreground">Currency Code</label>
+                <Input
+                  value={currencyConfig.code}
+                  onChange={(e) => updateCurrency({ code: e.target.value })}
+                  className="text-xs font-mono font-bold"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase text-muted-foreground">Symbol Position</label>
+                <select
+                  value={currencyConfig.symbolPosition}
+                  onChange={(e) => updateCurrency({ symbolPosition: e.target.value as 'before' | 'after' })}
+                  className="w-full h-10 px-3 rounded-xl border border-input bg-background/50 text-xs font-medium"
+                >
+                  <option value="before">Before Amount (e.g. ₹ 1,25,000.00)</option>
+                  <option value="after">After Amount (e.g. 1,25,000.00 ₹)</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase text-muted-foreground">Decimal Places</label>
+                <Input
+                  type="number"
+                  min={0}
+                  max={4}
+                  value={currencyConfig.decimalPlaces}
+                  onChange={(e) => updateCurrency({ decimalPlaces: parseInt(e.target.value) || 2 })}
+                  className="text-xs font-mono"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase text-muted-foreground">Thousands Separator</label>
+                <Input
+                  value={currencyConfig.thousandsSeparator}
+                  onChange={(e) => updateCurrency({ thousandsSeparator: e.target.value })}
+                  className="text-xs font-mono"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase text-muted-foreground">Decimal Separator</label>
+                <Input
+                  value={currencyConfig.decimalSeparator}
+                  onChange={(e) => updateCurrency({ decimalSeparator: e.target.value })}
+                  className="text-xs font-mono"
+                />
+              </div>
+            </div>
+
+            {/* Live Formatted Output Preview */}
+            <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-primary uppercase tracking-wider">Live Currency Formatting Preview</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Indian Numbering System (Lakhs/Crores grouping: 1,23,45,678.90)</p>
+              </div>
+              <div className="text-right">
+                <span className="text-xl font-bold font-mono text-primary">
+                  {formatCurrency(12345678.9)}
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Email Configuration */}
         <Card>
           <CardHeader>
@@ -167,94 +298,6 @@ export default function PlatformSettingsPage() {
             <div className="grid grid-cols-3 items-center gap-4">
               <span className="text-sm font-medium">Cache TTL</span>
               <Input className="col-span-2" readOnly defaultValue="3600s" />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Security Policies */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-muted-foreground" />
-              Security Policies
-            </CardTitle>
-            <CardDescription>Global authentication rules</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-3 items-center gap-4">
-              <span className="text-sm font-medium">Password Min Length</span>
-              <Input className="col-span-2" readOnly defaultValue="8" />
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <span className="text-sm font-medium">Require MFA</span>
-              <div className="col-span-2">
-                <Badge variant="success">Enabled</Badge>
-              </div>
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <span className="text-sm font-medium">JWT Expiry</span>
-              <Input className="col-span-2" readOnly defaultValue="15 minutes" />
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <span className="text-sm font-medium">Refresh Token Expiry</span>
-              <Input className="col-span-2" readOnly defaultValue="7 days" />
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <span className="text-sm font-medium">Session Timeout</span>
-              <Input className="col-span-2" readOnly defaultValue="30 minutes" />
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <span className="text-sm font-medium">Max Failed Logins</span>
-              <Input className="col-span-2" readOnly defaultValue="5" />
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <span className="text-sm font-medium">Lockout Duration</span>
-              <Input className="col-span-2" readOnly defaultValue="15 minutes" />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Platform Controls */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Sliders className="h-5 w-5 text-muted-foreground" />
-              Platform Controls
-            </CardTitle>
-            <CardDescription>Feature flags and global toggles</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-3 items-center gap-4">
-              <span className="text-sm font-medium">Maintenance Mode</span>
-              <div className="col-span-2">
-                <Badge variant="secondary">Off</Badge>
-              </div>
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <span className="text-sm font-medium">Global Announcement</span>
-              <Input className="col-span-2" readOnly placeholder="No active announcements" />
-            </div>
-            
-            <div className="pt-4 border-t mt-4">
-              <h4 className="text-sm font-medium mb-4">Feature Flags</h4>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Beta Features</span>
-                  <Badge variant="success">Enabled</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Dark Mode</span>
-                  <Badge variant="success">Enabled</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Advanced Analytics</span>
-                  <Badge variant="secondary">Disabled</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">AI Suggestions</span>
-                  <Badge variant="secondary">Disabled</Badge>
-                </div>
-              </div>
             </div>
           </CardContent>
         </Card>

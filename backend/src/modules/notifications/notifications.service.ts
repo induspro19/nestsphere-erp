@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { PrismaService } from '../../common/prisma/prisma.service';
 import { SendNotificationDto } from './dto/send-notification.dto';
 import { CreateTemplateDto } from './dto/create-template.dto';
@@ -9,6 +9,8 @@ import { ActivityAction } from '@prisma/client';
 
 @Injectable()
 export class NotificationsService {
+  private readonly logger = new Logger(NotificationsService.name);
+
   constructor(
     private prisma: PrismaService,
     private gateway: NotificationsGateway,
@@ -98,51 +100,111 @@ export class NotificationsService {
     return dispatch;
   }
 
-  // 3. Society Broadcast Notification
-  async broadcast(societyId: string, dto: BroadcastNotificationDto, actorId: string) {
+  // 3. Society Broadcast Notification (Reliable Pipeline & Descriptive Error Handling)
+  async broadcast(societyId: string | null, dto: BroadcastNotificationDto, actorId: string) {
+    this.logger.log(`[Broadcast Request] Initiated by actorId=${actorId}, title="${dto.title}", category=${dto.category}`);
+
+    // Resolve societyId if null/undefined (e.g. for SuperAdmin dispatches)
+    let targetSocietyId = societyId;
+    if (!targetSocietyId && dto.societyId) {
+      targetSocietyId = dto.societyId;
+    }
+    if (!targetSocietyId) {
+      const firstSociety = await this.prisma.society.findFirst({
+        where: { isDeleted: false },
+        select: { id: true },
+      });
+      targetSocietyId = firstSociety?.id || null;
+    }
+
+    if (!targetSocietyId) {
+      this.logger.warn(`[Broadcast Validation Failed] No target society found`);
+      return {
+        success: false,
+        broadcastCount: 0,
+        message: 'No active society found to dispatch broadcast.',
+      };
+    }
+
+    // Validation: Find recipient occupants
     const users = await this.prisma.user.findMany({
-      where: { societyId, isDeleted: false },
+      where: { societyId: targetSocietyId, isDeleted: false },
       select: { id: true },
     });
 
-    const createdNotifications = await this.prisma.$transaction(
-      users.map((u) =>
-        this.prisma.notification.create({
-          data: {
-            societyId,
-            userId: u.id,
-            channel: 'IN_APP',
-            category: dto.category || 'BROADCAST',
-            priority: dto.priority || 'HIGH',
-            title: dto.title,
-            message: dto.message,
-            metadata: dto.metadata || {},
-          },
-        }),
-      ),
-    );
+    this.logger.log(`[Broadcast Validation] Found ${users.length} recipient occupant(s) in society ${targetSocietyId}`);
 
-    // Dispatch WebSocket Broadcast
-    this.gateway.broadcastToSociety(societyId, {
-      title: dto.title,
-      message: dto.message,
-      category: dto.category,
-    });
+    if (users.length === 0) {
+      return {
+        success: true,
+        broadcastCount: 0,
+        message: 'No recipients found for this society broadcast.',
+      };
+    }
 
-    // Log Activity
-    await this.prisma.activityTimeline.create({
-      data: {
-        societyId,
-        entityType: 'NOTIFICATION',
-        entityId: societyId,
-        action: ActivityAction.CREATED,
-        title: `Broadcast Sent: ${dto.title}`,
-        description: `Broadcasted notification to ${users.length} occupants`,
-        actorId,
-      },
-    });
+    // Database Save: Create In-App notifications inside transaction
+    try {
+      await this.prisma.$transaction(
+        users.map((u) =>
+          this.prisma.notification.create({
+            data: {
+              societyId: targetSocietyId!,
+              userId: u.id,
+              channel: 'IN_APP',
+              category: dto.category || 'BROADCAST',
+              priority: dto.priority || 'HIGH',
+              title: dto.title,
+              message: dto.message,
+              metadata: dto.metadata || {},
+            },
+          }),
+        ),
+      );
+      this.logger.log(`[Database Save] Successfully inserted ${users.length} notification records`);
+    } catch (err: any) {
+      this.logger.error(`[Database Save Failed] ${err.message}`, err.stack);
+      return {
+        success: false,
+        broadcastCount: 0,
+        message: 'Unable to save broadcast in database.',
+      };
+    }
 
-    return { broadcastCount: users.length };
+    // Realtime Dispatch: Emit WebSocket event
+    try {
+      this.gateway.broadcastToSociety(targetSocietyId, {
+        title: dto.title,
+        message: dto.message,
+        category: dto.category || 'BROADCAST',
+      });
+      this.logger.log(`[Notification Dispatch] Realtime WebSocket event emitted to society room ${targetSocietyId}`);
+    } catch (wsErr: any) {
+      this.logger.warn(`[Notification Dispatch Warning] Realtime WebSocket dispatch failed: ${wsErr.message}`);
+    }
+
+    // Activity Timeline Logging
+    try {
+      await this.prisma.activityTimeline.create({
+        data: {
+          societyId: targetSocietyId,
+          entityType: 'NOTIFICATION',
+          entityId: targetSocietyId,
+          action: ActivityAction.CREATED,
+          title: `Broadcast Sent: ${dto.title}`,
+          description: `Broadcasted notification to ${users.length} occupants`,
+          actorId: actorId || 'SYSTEM',
+        },
+      });
+      this.logger.log(`[Completed] Broadcast pipeline complete for ${users.length} users`);
+    } catch (actErr: any) {
+      this.logger.warn(`[Activity Log Warning] Failed to log activity timeline: ${actErr.message}`);
+    }
+
+    return {
+      success: true,
+      broadcastCount: users.length,
+      message: `Broadcast dispatched successfully to ${users.length} occupant(s).`,
+    };
   }
 
   // 4. Mark Notification as Read
@@ -215,16 +277,12 @@ export class NotificationsService {
   private async triggerExternalProviders(dto: SendNotificationDto) {
     switch (dto.channel) {
       case 'PUSH':
-        // Firebase Cloud Messaging (FCM) push integration hook
         break;
       case 'WHATSAPP':
-        // WhatsApp Business Cloud API integration hook
         break;
       case 'SMS':
-        // SMS Gateway (Twilio / Fast2SMS) integration hook
         break;
       case 'EMAIL':
-        // Nodemailer / SendGrid email integration hook
         break;
       default:
         break;

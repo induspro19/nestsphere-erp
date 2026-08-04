@@ -2,6 +2,10 @@ import { IsEnum, IsNotEmpty, IsObject, IsOptional, IsString } from 'class-valida
 import { NotificationCategory, NotificationPriority } from '@prisma/client';
 
 export class BroadcastNotificationDto {
+  @IsString()
+  @IsOptional()
+  societyId?: string;
+
   @IsEnum(NotificationCategory)
   @IsOptional()
   category?: NotificationCategory = NotificationCategory.BROADCAST;

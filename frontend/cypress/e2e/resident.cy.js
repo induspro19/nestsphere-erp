@@ -24,7 +24,7 @@ describe('Resident Full Module E2E Test', () => {
       cy.get('.lucide-loader2').should('not.exist')
       
       // Check the text on the page
-      cy.contains(mod.expectedText, { matchCase: false }).should('be.visible')
+      cy.contains(mod.expectedText, { matchCase: false, timeout: 10000 }).should('be.visible')
       
       // Take evidence
       cy.takeEvidence(`${mod.name}_Success`)

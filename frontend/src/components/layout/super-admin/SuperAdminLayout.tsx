@@ -15,6 +15,7 @@ import {
   FileKey
 } from 'lucide-react';
 import { Button } from '../../ui/button';
+import { AnimatedPageWrapper } from '../../shared/AnimatedPageWrapper';
 
 export const SuperAdminLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -34,7 +35,7 @@ export const SuperAdminLayout: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-muted/40">
+    <div className="min-h-screen bg-muted/40 font-sans">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div 
@@ -55,16 +56,16 @@ export const SuperAdminLayout: React.FC = () => {
           </button>
         </div>
 
-        <nav className="flex flex-1 flex-col overflow-y-auto px-4 py-6 space-y-1">
+        <nav className="flex flex-1 flex-col overflow-y-auto px-4 py-6 space-y-1 no-scrollbar">
           {navigation.map((item) => {
             const isActive = location.pathname === item.href;
             return (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 ${
                   isActive 
-                    ? 'bg-primary/20 text-primary' 
+                    ? 'bg-primary/20 text-primary font-semibold' 
                     : 'text-slate-400 hover:bg-slate-900 hover:text-white'
                 }`}
                 onClick={() => setSidebarOpen(false)}
@@ -101,10 +102,12 @@ export const SuperAdminLayout: React.FC = () => {
           </div>
         </header>
 
-        {/* Page Content */}
+        {/* Page Content with Zero-Flicker Transition */}
         <main className="flex-1">
           <div className="py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto">
-             <Outlet />
+            <AnimatedPageWrapper key={location.pathname}>
+              <Outlet />
+            </AnimatedPageWrapper>
           </div>
         </main>
       </div>
