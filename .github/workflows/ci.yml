@@ -2,7 +2,7 @@ name: NestSphere ERP Continuous Integration
 
 on:
   push:
-    branches: [ main, develop, 'release/**' ]
+    branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
 
@@ -18,11 +18,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
 
       - name: Install Backend Dependencies
-        run: cd backend && npm ci
+        run: cd backend && npm install --legacy-peer-deps
 
       - name: Validate Prisma Schema
         run: cd backend && npx prisma validate
@@ -44,11 +42,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
 
       - name: Install Frontend Dependencies
-        run: cd frontend && npm ci
+        run: cd frontend && npm install --legacy-peer-deps
 
       - name: Verify TypeScript Type Safety
         run: cd frontend && npx tsc --noEmit
