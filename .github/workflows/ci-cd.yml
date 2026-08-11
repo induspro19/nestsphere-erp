@@ -9,6 +9,8 @@ on:
 jobs:
   backend-qa-and-build:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/nestsphere_db?schema=public"
     steps:
       - uses: actions/checkout@v4
 
