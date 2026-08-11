@@ -50,7 +50,7 @@ export const EnterprisePageHeader: React.FC<EnterprisePageHeaderProps> = ({
                   <button
                     key={idx}
                     onClick={action.onClick}
-                    className={`h-12 min-w-[180px] px-6 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap ${
+                    className={`h-12 min-w-0 w-full sm:w-auto px-5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap ${
                       isPrimary
                         ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                         : 'bg-card text-foreground border border-border/60 hover:bg-accent/60 hover:border-primary/40'
