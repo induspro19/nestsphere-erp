@@ -102,14 +102,14 @@ export const GatekeeperDashboardPage: React.FC = () => {
       </div>
 
       {/* 2. Quick Actions */}
-      <div className="bg-white border border-gray-200 rounded-[20px] p-6 shadow-sm">
-        <h3 className="font-bold text-lg font-display mb-4 text-gray-900">Security Actions</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
-           <Button onClick={() => navigate('/gatekeeper/check-in')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs border-blue-200 hover:bg-blue-50 text-blue-800"><ShieldCheck className="h-5 w-5"/>Verify Token</Button>
-           <Button onClick={() => navigate('/gatekeeper/check-in')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs"><UserPlus className="h-5 w-5 text-gray-600"/>Manual Entry</Button>
-           <Button onClick={() => navigate('/gatekeeper/vehicle-verify')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs"><Car className="h-5 w-5 text-gray-600"/>Vehicles</Button>
-           <Button onClick={() => navigate('/gatekeeper/blacklist')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs border-red-200 hover:bg-red-50 text-red-800"><ShieldAlert className="h-5 w-5"/>Blacklist</Button>
-           <Button variant="destructive" className="h-20 flex-col gap-2 font-bold text-xs col-span-2 lg:col-span-4"><AlertTriangle className="h-5 w-5"/>Emergency / SOS</Button>
+      <div className="bg-white border border-gray-200 rounded-[20px] p-4 sm:p-6 shadow-sm">
+        <h3 className="font-bold text-base sm:text-lg font-display mb-3 text-gray-900">Security Actions</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
+           <Button onClick={() => navigate('/gatekeeper/check-in')} variant="outline" className="h-16 sm:h-20 flex-col gap-1 sm:gap-2 font-semibold text-[11px] sm:text-xs border-blue-200 hover:bg-blue-50 text-blue-800 rounded-xl"><ShieldCheck className="h-5 w-5"/>Verify Token</Button>
+           <Button onClick={() => navigate('/gatekeeper/check-in')} variant="outline" className="h-16 sm:h-20 flex-col gap-1 sm:gap-2 font-semibold text-[11px] sm:text-xs rounded-xl"><UserPlus className="h-5 w-5 text-gray-600"/>Manual Entry</Button>
+           <Button onClick={() => navigate('/gatekeeper/vehicle-verify')} variant="outline" className="h-16 sm:h-20 flex-col gap-1 sm:gap-2 font-semibold text-[11px] sm:text-xs rounded-xl"><Car className="h-5 w-5 text-gray-600"/>Vehicles</Button>
+           <Button onClick={() => navigate('/gatekeeper/blacklist')} variant="outline" className="h-16 sm:h-20 flex-col gap-1 sm:gap-2 font-semibold text-[11px] sm:text-xs border-red-200 hover:bg-red-50 text-red-800 rounded-xl"><ShieldAlert className="h-5 w-5"/>Blacklist</Button>
+           <Button variant="destructive" className="h-16 sm:h-20 flex-col gap-1 sm:gap-2 font-bold text-[11px] sm:text-xs col-span-2 sm:col-span-4 lg:col-span-4 rounded-xl"><AlertTriangle className="h-5 w-5"/>Emergency / SOS</Button>
         </div>
       </div>
 

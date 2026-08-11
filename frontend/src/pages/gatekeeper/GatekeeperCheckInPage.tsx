@@ -89,18 +89,18 @@ export const GatekeeperCheckInPage: React.FC = () => {
           <h2 className="text-xl font-bold font-display text-gray-900">4-Digit Visitor Token Verification</h2>
         </div>
 
-        <form onSubmit={handleVerifyToken} className="flex gap-3">
+        <form onSubmit={handleVerifyToken} className="flex flex-col sm:flex-row gap-2.5">
           <div className="relative flex-1">
             <Input
               value={tokenInput}
               onChange={(e) => setTokenInput(e.target.value.replace(/\D/g, '').slice(0, 4))}
               placeholder="Enter 4-Digit Token (e.g. 4831)"
-              className="h-14 text-2xl font-mono tracking-widest font-black text-blue-900 pl-4 border-gray-300 rounded-xl uppercase"
+              className="h-12 sm:h-14 text-xl sm:text-2xl font-mono tracking-widest font-black text-blue-900 pl-4 border-gray-300 rounded-xl uppercase"
               maxLength={4}
               required
             />
           </div>
-          <Button type="submit" disabled={verifying} className="h-14 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-base shadow-sm">
+          <Button type="submit" disabled={verifying} className="h-12 sm:h-14 px-6 sm:px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm sm:text-base shadow-sm">
             <Search className="h-5 w-5 mr-2" /> {verifying ? 'Verifying...' : 'Verify Token'}
           </Button>
         </form>

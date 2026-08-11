@@ -36,14 +36,14 @@ export const GatekeeperDeliveryPage: React.FC = () => {
           <Truck className="h-6 w-6 text-primary" /> Log Delivery / Courier Entry
         </h2>
 
-        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
           {vendors.map((v) => (
             <Button
               key={v}
               type="button"
               variant={vendor === v ? 'default' : 'outline'}
               onClick={() => setVendor(v)}
-              className={`h-12 font-bold text-xs ${
+              className={`h-11 sm:h-12 font-bold text-xs rounded-xl ${
                 vendor === v 
                   ? 'bg-primary text-primary-foreground shadow-md' 
                   : 'border-border/40 bg-secondary/50 text-secondary-foreground hover:bg-secondary'

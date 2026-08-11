@@ -73,56 +73,87 @@ export const GatekeeperKioskLayout: React.FC = () => {
       </div>
 
       {/* Standard Enterprise App Header */}
-      <header className="sticky top-0 z-40 bg-card border-b border-border/40 px-4 md:px-6 h-16 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary font-bold flex items-center justify-center border border-primary/20 shrink-0">
-            <Shield className="h-5 w-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-sm font-display text-foreground">{user?.societyName || 'Grand Heights Society'}</span>
-              <select
-                value={selectedGate}
-                onChange={(e) => setSelectedGate(e.target.value)}
-                className="bg-secondary text-secondary-foreground border border-border text-[10px] uppercase font-mono font-bold rounded-md px-2 py-0.5 focus:ring-0 focus:outline-none cursor-pointer"
-              >
-                {gates.map((g) => (
-                  <option key={g} value={g} className="bg-card text-foreground font-sans text-xs">
-                    {g}
-                  </option>
-                ))}
-              </select>
+      <header className="sticky top-0 z-40 bg-card border-b border-border/40 px-3 sm:px-6 py-2 sm:py-0 h-auto sm:h-16 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 shadow-sm">
+        <div className="flex items-center justify-between sm:justify-start gap-2 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-primary/10 text-primary font-bold flex items-center justify-center border border-primary/20 shrink-0">
+              <Shield className="h-5 w-5" />
             </div>
-            <p className="text-[11px] text-muted-foreground font-medium">On Duty: {user?.firstName ? `${user.firstName} ${user.lastName}` : 'Security Guard'}</p>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="font-bold text-xs sm:text-sm font-display text-foreground truncate max-w-[140px] sm:max-w-none">
+                  {user?.societyName || 'Grand Heights Society'}
+                </span>
+                <select
+                  value={selectedGate}
+                  onChange={(e) => setSelectedGate(e.target.value)}
+                  className="bg-secondary text-secondary-foreground border border-border text-[9px] sm:text-[10px] uppercase font-mono font-bold rounded-md px-1.5 py-0.5 focus:ring-0 focus:outline-none cursor-pointer max-w-[120px] sm:max-w-none truncate"
+                >
+                  {gates.map((g) => (
+                    <option key={g} value={g} className="bg-card text-foreground font-sans text-xs">
+                      {g}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <p className="text-[10px] sm:text-[11px] text-muted-foreground font-medium truncate">
+                Duty: {user?.firstName ? `${user.firstName} ${user.lastName}` : 'Security Guard'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5 sm:hidden shrink-0">
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={handlePanic}
+              className="h-9 px-2.5 font-bold text-[11px] gap-1 shadow-md animate-pulse min-h-[44px]"
+              aria-label="Gate Panic Alarm"
+            >
+              <ShieldAlert className="h-4 w-4" />
+              <span>Panic</span>
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                clearAuth();
+                navigate('/login');
+              }}
+              className="h-9 w-9 p-0 min-h-[44px] min-w-[44px]"
+              aria-label="Logout Guard Shift"
+            >
+              <LogOut className="h-4 w-4 text-muted-foreground" />
+            </Button>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-end gap-1.5 sm:gap-2">
           <Button
             size="sm"
             variant="outline"
             onClick={() => setShowShiftModal(true)}
-            className="h-10 gap-1.5 min-h-[44px] font-semibold text-xs"
+            className="flex-1 sm:flex-none h-9 sm:h-10 gap-1.5 min-h-[44px] font-semibold text-xs rounded-xl"
           >
-            <Clock className="h-4 w-4" />
-            <span className="hidden lg:inline">Shift Log</span>
+            <Clock className="h-4 w-4 text-primary" />
+            <span>Shift Log</span>
           </Button>
 
           <Button
             size="sm"
             onClick={() => setShowQrModal(true)}
-            className="h-10 px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs gap-1.5 shadow-md min-h-[44px]"
+            className="flex-1 sm:flex-none h-9 sm:h-10 px-3 sm:px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs gap-1.5 shadow-md min-h-[44px] rounded-xl"
             aria-label="Universal QR Scanner"
           >
             <QrCode className="h-4 w-4" />
-            <span className="hidden sm:inline">Scan QR</span>
+            <span>Scan QR</span>
           </Button>
 
           <Button
             size="sm"
             variant="destructive"
             onClick={handlePanic}
-            className="h-10 px-4 font-bold text-xs gap-1.5 shadow-md animate-pulse min-h-[44px]"
+            className="hidden sm:flex h-10 px-4 font-bold text-xs gap-1.5 shadow-md animate-pulse min-h-[44px] rounded-xl"
             aria-label="Gate Panic Alarm"
           >
             <ShieldAlert className="h-4 w-4" />
@@ -136,7 +167,7 @@ export const GatekeeperKioskLayout: React.FC = () => {
               clearAuth();
               navigate('/login');
             }}
-            className="h-10 min-h-[44px] min-w-[44px]"
+            className="hidden sm:flex h-10 min-h-[44px] min-w-[44px] rounded-xl"
             aria-label="Logout Guard Shift"
           >
             <LogOut className="h-4 w-4 text-muted-foreground hover:text-foreground" />
@@ -145,7 +176,7 @@ export const GatekeeperKioskLayout: React.FC = () => {
       </header>
 
       {/* Kiosk Sub-Navigation Tabs */}
-      <div className="bg-card/80 backdrop-blur-md border-b border-border/40 px-4 overflow-x-auto scrollbar-none flex items-center gap-2 py-2">
+      <div className="bg-card/80 backdrop-blur-md border-b border-border/40 px-3 sm:px-4 overflow-x-auto no-scrollbar flex items-center gap-1.5 py-2">
         {navItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -153,9 +184,9 @@ export const GatekeeperKioskLayout: React.FC = () => {
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-xs shrink-0 min-h-[44px] transition-all ${
+                `flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs whitespace-nowrap shrink-0 min-h-[44px] transition-all ${
                   isActive
-                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    ? 'bg-primary text-primary-foreground shadow-sm font-bold'
                     : 'bg-secondary/50 text-secondary-foreground hover:bg-secondary hover:text-foreground'
                 }`
               }
