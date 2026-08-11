@@ -74,12 +74,12 @@ export const ResidentDashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-3.5 pb-12 animate-in fade-in duration-200">
-      {/* Professional Enterprise Resident Dashboard Header (80px–90px Height) */}
-      <div className="p-4 md:p-5 rounded-[14px] bg-gradient-to-r from-blue-50/80 via-indigo-50/40 to-white border border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
+      {/* Professional Enterprise Resident Dashboard Header */}
+      <div className="p-4 md:p-5 rounded-[14px] bg-gradient-to-r from-blue-50/80 via-indigo-50/40 to-white border border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <h1 className="text-[24px] font-semibold tracking-tight text-gray-900 leading-tight">
-              Resident Dashboard
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-xl sm:text-[24px] font-bold tracking-tight text-gray-900 leading-tight">
+              Good morning, {data.person.firstName || 'Resident'} 👋
             </h1>
             <span className="h-[22px] px-2 text-[11px] font-mono font-medium rounded-full bg-blue-100/70 text-blue-700 border border-blue-200 flex items-center shrink-0">
               {data.person.digitalId}
@@ -91,50 +91,50 @@ export const ResidentDashboardPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Compact Enterprise Buttons (40px Height, 14px Font) */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        {/* Compact Enterprise Action Buttons */}
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center shrink-0">
           <Button
             onClick={() => navigate('/resident/visitors')}
-            className="h-10 px-4 rounded-[10px] text-[14px] font-semibold bg-blue-600 hover:bg-blue-700 text-white gap-2 shadow-xs"
+            className="h-10 px-3.5 sm:px-4 rounded-[10px] text-[13px] sm:text-[14px] font-semibold bg-blue-600 hover:bg-blue-700 text-white gap-1.5 shadow-xs justify-center"
           >
-            <QrCode className="h-[18px] w-[18px]" /> Pre-Approve Visitor
+            <QrCode className="h-4 w-4 shrink-0" /> Pre-Approve Visitor
           </Button>
           <Button
             onClick={() => navigate('/resident/complaints')}
             variant="outline"
-            className="h-10 px-4 rounded-[10px] text-[14px] font-semibold border-gray-200 hover:bg-gray-100 text-gray-800 gap-2"
+            className="h-10 px-3.5 sm:px-4 rounded-[10px] text-[13px] sm:text-[14px] font-semibold border-gray-200 hover:bg-gray-100 text-gray-800 gap-1.5 justify-center"
           >
-            <Plus className="h-[18px] w-[18px]" /> Raise Ticket
+            <Plus className="h-4 w-4 shrink-0" /> Raise Ticket
           </Button>
         </div>
       </div>
 
       {/* Emergency SOS Quick Bar */}
-      <div className="p-3.5 rounded-[12px] bg-rose-50 border border-rose-200/80 space-y-2">
+      <div className="p-3.5 rounded-[12px] bg-rose-50/80 border border-rose-200/80 space-y-2">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-[12px] text-rose-700 flex items-center gap-1.5 uppercase tracking-wider">
-            <ShieldAlert className="h-4 w-4" /> Emergency SOS Dispatch
+            <ShieldAlert className="h-4 w-4 shrink-0" /> Emergency SOS Dispatch
           </h3>
-          <span className="text-[11px] text-rose-500 font-medium">1-Tap Immediate Security Alert</span>
+          <span className="text-[11px] text-rose-500 font-medium hidden sm:inline">1-Tap Immediate Security Alert</span>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px]" onClick={() => handleSos('SECURITY')}>
-            <Shield className="h-3.5 w-3.5" /> Security
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
+          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px] justify-center" onClick={() => handleSos('SECURITY')}>
+            <Shield className="h-3.5 w-3.5 shrink-0" /> Security
           </Button>
-          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px]" onClick={() => handleSos('MAINTENANCE')}>
-            <Wrench className="h-3.5 w-3.5" /> Maintenance
+          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px] justify-center" onClick={() => handleSos('MAINTENANCE')}>
+            <Wrench className="h-3.5 w-3.5 shrink-0" /> Maintenance
           </Button>
-          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px]" onClick={() => handleSos('FIRE')}>
-            <Flame className="h-3.5 w-3.5" /> Fire
+          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px] justify-center" onClick={() => handleSos('FIRE')}>
+            <Flame className="h-3.5 w-3.5 shrink-0" /> Fire
           </Button>
-          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px]" onClick={() => handleSos('AMBULANCE')}>
-            <Ambulance className="h-3.5 w-3.5" /> Medical
+          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px] justify-center" onClick={() => handleSos('AMBULANCE')}>
+            <Ambulance className="h-3.5 w-3.5 shrink-0" /> Medical
           </Button>
-          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px]" onClick={() => handleSos('POLICE')}>
-            <PhoneCall className="h-3.5 w-3.5" /> Police
+          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px] justify-center" onClick={() => handleSos('POLICE')}>
+            <PhoneCall className="h-3.5 w-3.5 shrink-0" /> Police
           </Button>
-          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px]" onClick={() => handleSos('OFFICE')}>
-            <Building className="h-3.5 w-3.5" /> Office
+          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px] justify-center" onClick={() => handleSos('OFFICE')}>
+            <Building className="h-3.5 w-3.5 shrink-0" /> Office
           </Button>
         </div>
       </div>

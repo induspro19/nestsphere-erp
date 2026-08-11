@@ -143,10 +143,10 @@ export const ResidentPortalLayout: React.FC = () => {
         {/* Main Content Body */}
         <div className={`flex-1 flex flex-col min-h-screen transition-all duration-250 ease-in-out ${isSidebarCollapsed ? 'md:pl-[72px]' : 'md:pl-[280px]'}`}>
           {/* Mobile-App Style Resident Header (Height: 56px max on mobile, 60px on desktop) */}
-          <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 px-3 sm:px-4 h-[56px] md:h-[60px] flex items-center justify-between shadow-xs shrink-0">
+          <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 px-3 sm:px-4 h-[56px] md:h-[60px] flex items-center justify-between shadow-xs shrink-0 gap-2">
             {/* Left: App Logo & Title */}
-            <div className="flex items-center gap-2 md:w-auto w-[60px] shrink-0">
-              {window.location.pathname !== '/resident/dashboard' && (
+            <div className="flex items-center gap-2 shrink-0">
+              {location.pathname !== '/resident/dashboard' && (
                 <Button
                   data-testid="resident-back-button"
                   size="sm"
@@ -159,20 +159,21 @@ export const ResidentPortalLayout: React.FC = () => {
                 </Button>
               )}
               
-              <div className="flex items-center gap-2 md:hidden">
+              <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-[8px] bg-blue-600 text-white font-bold flex items-center justify-center text-[12px] shadow-xs shrink-0">
                   NS
                 </div>
+                <span className="font-bold text-sm text-gray-900 hidden sm:inline-block">Resident Portal</span>
               </div>
             </div>
 
-            {/* Center: Expandable Global Search */}
-            <div className="flex-1 max-w-[500px] px-2 sm:px-4 mx-auto w-full">
+            {/* Center: Global Search (Full bar on desktop, Icon button on mobile) */}
+            <div className="flex-1 max-w-[500px] px-1 sm:px-4 flex items-center justify-center">
               <Button
                 size="sm"
                 variant="outline"
                 onClick={() => setShowSearchModal(true)}
-                className="w-full h-9 rounded-[10px] justify-start gap-2 text-[13px] text-gray-500 bg-gray-50 hover:bg-gray-100 border-gray-200/80 shadow-none transition-colors"
+                className="hidden md:flex w-full h-9 rounded-[10px] justify-start gap-2 text-[13px] text-gray-500 bg-gray-50 hover:bg-gray-100 border-gray-200/80 shadow-none transition-colors"
                 aria-label="Search ERP"
               >
                 <Search className="h-4 w-4 text-gray-400 shrink-0" />
@@ -180,13 +181,23 @@ export const ResidentPortalLayout: React.FC = () => {
               </Button>
             </div>
 
-            {/* Right: Notifications, SOS & Profile */}
-            <div className="flex items-center justify-end gap-1.5 sm:gap-2.5 md:w-auto w-[120px] shrink-0">
+            {/* Right: Search Icon (Mobile), Notifications, SOS & Profile */}
+            <div className="flex items-center justify-end gap-1.5 sm:gap-2.5 shrink-0">
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setShowSearchModal(true)}
+                className="h-9 w-9 p-0 rounded-full text-gray-600 hover:bg-gray-100 md:hidden flex items-center justify-center"
+                aria-label="Search"
+              >
+                <Search className="h-4.5 w-4.5" />
+              </Button>
+
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => navigate('/resident/notices')}
-                className="h-9 w-9 p-0 rounded-full relative text-gray-600 hover:bg-gray-100 border border-transparent"
+                className="h-9 w-9 p-0 rounded-full relative text-gray-600 hover:bg-gray-100 border border-transparent flex items-center justify-center"
                 aria-label="Notifications"
               >
                 <Bell className="h-4.5 w-4.5" />
@@ -199,7 +210,7 @@ export const ResidentPortalLayout: React.FC = () => {
                 size="sm"
                 variant="destructive"
                 onClick={() => navigate('/resident/sos')}
-                className="h-8 px-2.5 sm:px-3.5 rounded-full gap-1.5 text-[12px] sm:text-[13px] font-bold shadow-xs bg-red-600 hover:bg-red-700"
+                className="h-8 px-2.5 sm:px-3.5 rounded-full gap-1 text-[12px] sm:text-[13px] font-bold shadow-xs bg-red-600 hover:bg-red-700"
                 aria-label="Emergency SOS"
               >
                 <ShieldAlert className="h-3.5 w-3.5" />
@@ -222,7 +233,7 @@ export const ResidentPortalLayout: React.FC = () => {
           </header>
 
           {/* Main View Outlet (Animated 180ms GPU-accelerated page transitions) */}
-          <main className="flex-1 p-2 md:p-4 max-w-[1600px] w-full mx-auto pb-24 md:pb-8 pt-2 md:pt-3">
+          <main className="flex-1 p-3 sm:p-4 md:p-5 max-w-[1600px] w-full mx-auto pb-36 md:pb-10 pt-2 md:pt-3">
             <AnimatedPageWrapper key={location.pathname}>
               <Outlet />
             </AnimatedPageWrapper>
