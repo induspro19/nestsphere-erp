@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="apple-touch-icon" href="./icons/icon-192x192.png" />
+    <link rel="manifest" href="./manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -18,9 +18,22 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script type="text/javascript">
+      // GitHub Pages SPA Subpath Redirect to HashRouter
+      (function() {
+        var path = window.location.pathname;
+        var repoName = '/nestsphere-erp';
+        if (path.startsWith(repoName)) {
+          var subPath = path.replace(repoName, '');
+          if (subPath && subPath !== '/' && !subPath.startsWith('/#')) {
+            window.location.replace(repoName + '/#' + subPath + window.location.search);
+          }
+        }
+      }());
+    </script>
   </head>
   <body class="bg-background text-foreground antialiased min-h-screen">
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>
