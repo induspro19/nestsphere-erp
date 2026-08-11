@@ -380,15 +380,16 @@ export const ResidentVisitorsPage: React.FC = () => {
         )}
       </div>
 
-      {/* NEW PRE-APPROVE VISITOR MODAL (Max Width 650px) */}
+      {/* NEW PRE-APPROVE VISITOR MODAL */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-[20px] w-full max-w-[650px] shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-t-3xl sm:rounded-[20px] w-full max-w-[650px] max-h-[90dvh] overflow-y-auto shadow-2xl p-5 sm:p-6 space-y-4 animate-in slide-in-from-bottom sm:zoom-in-95 duration-200 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
             
             {/* Modal Header */}
             <div className="flex justify-between items-center border-b border-gray-100 pb-3">
               <div>
-                <h2 className="text-xl font-bold font-display text-gray-900">Pre-Approve Visitor</h2>
+                <div className="w-8 h-1 bg-gray-300 rounded-full mx-auto sm:hidden mb-2" />
+                <h2 className="text-lg sm:text-xl font-bold font-display text-gray-900">Pre-Approve Visitor</h2>
                 <p className="text-xs text-gray-500 mt-0.5">Generate a 4-digit gate entry token for your guest.</p>
               </div>
               <Button size="icon" variant="ghost" onClick={() => setShowModal(false)} className="h-8 w-8 rounded-full">
@@ -435,7 +436,7 @@ export const ResidentVisitorsPage: React.FC = () => {
                 </select>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="font-bold text-gray-700 block mb-1">Visit Date *</label>
                   <Input
@@ -460,7 +461,7 @@ export const ResidentVisitorsPage: React.FC = () => {
               </div>
 
               {/* Security Declaration Checkbox */}
-              <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+              <div className="bg-gray-50 p-3.5 rounded-xl border border-gray-200">
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     type="checkbox"
@@ -474,22 +475,22 @@ export const ResidentVisitorsPage: React.FC = () => {
                 </label>
               </div>
 
-              {/* Bottom Buttons */}
-              <div className="flex justify-end gap-3 pt-3 border-t border-gray-100">
+              {/* Bottom Action Buttons */}
+              <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
                 <Button 
                   type="button" 
                   variant="outline" 
                   onClick={() => setShowModal(false)}
-                  className="h-11 px-5 rounded-xl text-sm font-semibold"
+                  className="flex-1 h-11 rounded-xl text-sm font-semibold"
                 >
                   Cancel
                 </Button>
                 <Button 
                   type="submit" 
                   disabled={!confirmedRules || submitting}
-                  className="h-11 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-bold text-sm shadow-md min-w-[170px]"
+                  className="flex-1 h-11 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-bold text-sm shadow-md"
                 >
-                  {submitting ? 'Generating...' : 'Generate Visitor Pass'}
+                  {submitting ? 'Generating...' : 'Generate Pass'}
                 </Button>
               </div>
 
@@ -501,10 +502,10 @@ export const ResidentVisitorsPage: React.FC = () => {
 
       {/* SUCCESS SCREEN MODAL */}
       {successPass && (
-        <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-md flex items-center justify-center p-4 animate-in zoom-in-95 duration-200">
-          <div className="bg-white rounded-[20px] w-full max-w-[480px] shadow-2xl p-6 text-center space-y-4 border border-gray-100">
+        <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-t-3xl sm:rounded-[20px] w-full max-w-[480px] max-h-[90dvh] overflow-y-auto shadow-2xl p-5 sm:p-6 text-center space-y-4 border border-gray-100 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
             
-            <CheckCircle2 className="h-16 w-16 text-emerald-500 mx-auto animate-bounce" />
+            <CheckCircle2 className="h-14 w-14 text-emerald-500 mx-auto animate-bounce" />
 
             <div>
               <h2 className="text-xl font-bold font-display text-gray-900">Visitor Approved Successfully</h2>
@@ -512,9 +513,9 @@ export const ResidentVisitorsPage: React.FC = () => {
             </div>
 
             {/* Generated Token Box */}
-            <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl py-4">
+            <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl py-3.5">
               <p className="text-[10px] uppercase font-bold text-blue-600 tracking-wider">ENTRY TOKEN</p>
-              <p className="text-4xl font-black font-mono tracking-[0.25em] text-blue-900 mt-1">
+              <p className="text-3xl sm:text-4xl font-black font-mono tracking-[0.25em] text-blue-900 mt-1">
                 {successPass.otpCode || successPass.qrToken || '4832'}
               </p>
             </div>
@@ -559,8 +560,8 @@ export const ResidentVisitorsPage: React.FC = () => {
 
       {/* DETAILS VIEW MODAL */}
       {selectedPass && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white rounded-[20px] w-full max-w-md shadow-2xl p-6 space-y-4 border border-gray-100">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-t-3xl sm:rounded-[20px] w-full max-w-md max-h-[90dvh] overflow-y-auto shadow-2xl p-5 sm:p-6 space-y-4 border border-gray-100 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
             <div className="flex justify-between items-center border-b pb-3">
               <h3 className="font-bold text-lg text-gray-900 font-display">Visitor Token & Details</h3>
               <Button size="icon" variant="ghost" onClick={() => setSelectedPass(null)} className="h-8 w-8 rounded-full">
@@ -568,9 +569,9 @@ export const ResidentVisitorsPage: React.FC = () => {
               </Button>
             </div>
 
-            <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 text-center">
+            <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-3.5 text-center">
               <p className="text-xs uppercase font-bold text-blue-600 tracking-wider">ENTRY TOKEN</p>
-              <p className="text-4xl font-black font-mono tracking-widest text-blue-900 mt-1">
+              <p className="text-3xl sm:text-4xl font-black font-mono tracking-widest text-blue-900 mt-1">
                 {selectedPass.otpCode || selectedPass.qrToken || '4832'}
               </p>
             </div>
@@ -591,10 +592,10 @@ export const ResidentVisitorsPage: React.FC = () => {
             </div>
 
             <div className="flex gap-2 pt-2">
-              <Button onClick={() => copyToken(selectedPass.otpCode || selectedPass.qrToken || '4832')} variant="outline" className="flex-1 rounded-xl">
+              <Button onClick={() => copyToken(selectedPass.otpCode || selectedPass.qrToken || '4832')} variant="outline" className="flex-1 rounded-xl h-11">
                 <Copy className="h-4 w-4 mr-1" /> Copy Token
               </Button>
-              <Button onClick={() => shareWhatsApp(selectedPass)} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl">
+              <Button onClick={() => shareWhatsApp(selectedPass)} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl h-11">
                 <Share2 className="h-4 w-4 mr-1" /> Share
               </Button>
             </div>

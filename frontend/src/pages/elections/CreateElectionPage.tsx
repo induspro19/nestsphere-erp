@@ -428,7 +428,7 @@ export const CreateElectionPage: React.FC = () => {
                 <p className="text-xs text-slate-600">{formData.description}</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
                   <span className="text-slate-400 font-bold block text-[10px] uppercase">Positions</span>
                   <span className="font-bold text-slate-900">{formData.positions.length} Configured Roles</span>

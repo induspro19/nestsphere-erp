@@ -91,7 +91,7 @@ export const CreatePollPage: React.FC = () => {
               <Input placeholder="Brief details explaining the resolution or survey purpose..." value={description} onChange={(e) => setDescription(e.target.value)} />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-medium">Decision Category</label>
                 <select className="w-full h-10 rounded-xl border border-input bg-background px-3 text-xs" value={pollType} onChange={(e) => setPollType(e.target.value)}>
@@ -126,7 +126,7 @@ export const CreatePollPage: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-medium">Voting Rule</label>
                 <select className="w-full h-10 rounded-xl border border-input bg-background px-3 text-xs" value={votingRule} onChange={(e) => setVotingRule(e.target.value)}>

@@ -302,12 +302,15 @@ export const NotificationsPage: React.FC = () => {
 
       {/* Modal: Broadcast Notification */}
       {isBroadcastModalOpen && (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-md rounded-2xl border border-border/60 bg-card p-6 shadow-2xl space-y-4">
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-md rounded-t-3xl sm:rounded-2xl border-t sm:border border-border/60 bg-card p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90dvh] overflow-y-auto pb-[calc(1.5rem+env(safe-area-inset-bottom))] animate-in slide-in-from-bottom sm:zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-border/40 pb-3">
-              <h3 className="text-lg font-bold font-display flex items-center gap-2">
-                <Send className="h-5 w-5 text-primary" /> Society Broadcast Dispatch
-              </h3>
+              <div>
+                <div className="w-8 h-1 bg-muted-foreground/30 rounded-full mx-auto sm:hidden mb-2" />
+                <h3 className="text-base sm:text-lg font-bold font-display flex items-center gap-2">
+                  <Send className="h-5 w-5 text-primary" /> Society Broadcast Dispatch
+                </h3>
+              </div>
               <Button variant="ghost" size="icon" onClick={() => setIsBroadcastModalOpen(false)} className="rounded-xl h-8 w-8">
                 <X className="h-4 w-4" />
               </Button>
@@ -316,7 +319,7 @@ export const NotificationsPage: React.FC = () => {
             <form onSubmit={handleBroadcast} className="space-y-4">
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-muted-foreground uppercase">Broadcast Title *</label>
-                <Input value={broadcastTitle} onChange={(e) => setBroadcastTitle(e.target.value)} placeholder="e.g. Society AGM Meeting Announcement" required />
+                <Input value={broadcastTitle} onChange={(e) => setBroadcastTitle(e.target.value)} placeholder="e.g. Society AGM Meeting Announcement" className="min-h-[44px]" required />
               </div>
 
               <div className="space-y-1">
@@ -324,7 +327,7 @@ export const NotificationsPage: React.FC = () => {
                 <select
                   value={broadcastCategory}
                   onChange={(e) => setBroadcastCategory(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl border border-input bg-background/50 text-xs"
+                  className="w-full min-h-[44px] px-3 rounded-xl border border-input bg-background/50 text-xs"
                 >
                   <option value="BROADCAST">BROADCAST</option>
                   <option value="EMERGENCY">EMERGENCY</option>
@@ -345,11 +348,11 @@ export const NotificationsPage: React.FC = () => {
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-border/40">
-                <Button type="button" variant="outline" onClick={() => setIsBroadcastModalOpen(false)} className="rounded-xl" disabled={isSubmitting}>
+              <div className="flex items-center gap-2 pt-3 border-t border-border/40">
+                <Button type="button" variant="outline" onClick={() => setIsBroadcastModalOpen(false)} className="flex-1 min-h-[44px] rounded-xl" disabled={isSubmitting}>
                   Cancel
                 </Button>
-                <Button type="submit" className="rounded-xl" disabled={isSubmitting}>
+                <Button type="submit" className="flex-1 min-h-[44px] rounded-xl font-semibold" disabled={isSubmitting}>
                   {isSubmitting ? 'Dispatching...' : 'Dispatch Broadcast'}
                 </Button>
               </div>
@@ -360,17 +363,20 @@ export const NotificationsPage: React.FC = () => {
 
       {/* Modal: Create Template */}
       {isTemplateModalOpen && (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-md rounded-2xl border border-border/60 bg-card p-6 shadow-2xl space-y-4">
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-md rounded-t-3xl sm:rounded-2xl border-t sm:border border-border/60 bg-card p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90dvh] overflow-y-auto pb-[calc(1.5rem+env(safe-area-inset-bottom))] animate-in slide-in-from-bottom sm:zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-border/40 pb-3">
-              <h3 className="text-lg font-bold font-display">Create Notification Template</h3>
+              <div>
+                <div className="w-8 h-1 bg-muted-foreground/30 rounded-full mx-auto sm:hidden mb-2" />
+                <h3 className="text-base sm:text-lg font-bold font-display">Create Notification Template</h3>
+              </div>
               <Button variant="ghost" size="icon" onClick={() => setIsTemplateModalOpen(false)} className="rounded-xl h-8 w-8">
                 <X className="h-4 w-4" />
               </Button>
             </div>
 
             <form onSubmit={handleCreateTemplate} className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-muted-foreground uppercase">Template Code *</label>
                   <Input value={templateCode} onChange={(e) => setTemplateCode(e.target.value)} placeholder="WELCOME_MSG" required />
@@ -386,7 +392,7 @@ export const NotificationsPage: React.FC = () => {
                 <select
                   value={templateChannel}
                   onChange={(e) => setTemplateChannel(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl border border-input bg-background/50 text-xs"
+                  className="w-full min-h-[44px] px-3 rounded-xl border border-input bg-background/50 text-xs"
                 >
                   <option value="IN_APP">IN_APP</option>
                   <option value="PUSH">PUSH (Firebase FCM)</option>
@@ -413,11 +419,11 @@ export const NotificationsPage: React.FC = () => {
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-border/40">
-                <Button type="button" variant="outline" onClick={() => setIsTemplateModalOpen(false)} className="rounded-xl">
+              <div className="flex items-center gap-2 pt-3 border-t border-border/40">
+                <Button type="button" variant="outline" onClick={() => setIsTemplateModalOpen(false)} className="flex-1 min-h-[44px] rounded-xl">
                   Cancel
                 </Button>
-                <Button type="submit" className="rounded-xl">
+                <Button type="submit" className="flex-1 min-h-[44px] rounded-xl font-semibold">
                   Save Template
                 </Button>
               </div>
