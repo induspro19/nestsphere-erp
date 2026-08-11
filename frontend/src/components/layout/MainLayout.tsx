@@ -30,7 +30,7 @@ export const MainLayout: React.FC = () => {
 
         {/* Main Content Area (Smooth Margin Shift & Zero Layout Flicker) */}
         <div
-          className={`flex-1 flex flex-col min-h-screen transition-all duration-250 ease-in-out ${
+          className={`flex-1 flex flex-col min-h-screen min-w-0 w-full max-w-full overflow-x-hidden transition-all duration-250 ease-in-out ${
             isSidebarCollapsed ? 'lg:pl-[72px]' : 'lg:pl-[280px]'
           }`}
         >
@@ -43,7 +43,7 @@ export const MainLayout: React.FC = () => {
               }
             }}
           />
-          <main className="flex-1 p-3.5 md:p-4 lg:p-5 max-w-[1600px] w-full mx-auto space-y-3.5">
+          <main className="flex-1 p-3 sm:p-4 lg:p-5 max-w-[1600px] w-full min-w-0 mx-auto space-y-3.5 overflow-x-hidden">
             <AnimatedPageWrapper key={location.pathname}>
               <Outlet />
             </AnimatedPageWrapper>

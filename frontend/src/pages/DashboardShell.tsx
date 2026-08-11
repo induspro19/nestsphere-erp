@@ -268,14 +268,14 @@ export const DashboardShell: React.FC = () => {
             {RECENT_ACTIVITIES.map((act) => {
               const Icon = act.icon;
               return (
-                <div key={act.id} className="flex items-center justify-between p-2.5 rounded-[10px] bg-gray-50 border border-gray-100/80 hover:bg-gray-100/60 transition-colors">
-                  <div className="flex items-center gap-2.5">
+                <div key={act.id} className="flex items-center justify-between p-2.5 rounded-[10px] bg-gray-50 border border-gray-100/80 hover:bg-gray-100/60 transition-colors gap-2 min-w-0">
+                  <div className="flex items-center gap-2.5 min-w-0">
                     <div className={`h-7 w-7 rounded-[6px] ${act.color} flex items-center justify-center shrink-0`}>
                       <Icon className="h-3.5 w-3.5" />
                     </div>
-                    <span className="text-[12px] font-medium text-gray-800">{act.title}</span>
+                    <span className="text-[12px] font-medium text-gray-800 truncate min-w-0">{act.title}</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-[11px] text-gray-400 shrink-0">
+                  <div className="flex items-center gap-1 text-[11px] text-gray-400 shrink-0">
                     <span>{act.time}</span>
                     <ChevronRight className="h-3.5 w-3.5 text-gray-300" />
                   </div>

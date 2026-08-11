@@ -110,37 +110,37 @@ export const ResidentDashboardPage: React.FC = () => {
       </div>
 
       {/* Emergency SOS Quick Bar */}
-      <div className="p-3.5 rounded-[12px] bg-rose-50/80 border border-rose-200/80 space-y-2">
-        <div className="flex items-center justify-between">
+      <div className="p-3.5 rounded-[14px] bg-rose-50/80 border border-rose-200/80 space-y-2">
+        <div className="flex items-center justify-between flex-wrap gap-1">
           <h3 className="font-semibold text-[12px] text-rose-700 flex items-center gap-1.5 uppercase tracking-wider">
             <ShieldAlert className="h-4 w-4 shrink-0" /> Emergency SOS Dispatch
           </h3>
           <span className="text-[11px] text-rose-500 font-medium hidden sm:inline">1-Tap Immediate Security Alert</span>
         </div>
-        <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
-          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px] justify-center" onClick={() => handleSos('SECURITY')}>
-            <Shield className="h-3.5 w-3.5 shrink-0" /> Security
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+          <Button size="sm" variant="destructive" className="h-10 sm:h-8 text-xs gap-1 py-1 rounded-[8px] justify-center min-h-[44px] sm:min-h-[32px]" onClick={() => handleSos('SECURITY')}>
+            <Shield className="h-4 w-4 shrink-0" /> Security
           </Button>
-          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px] justify-center" onClick={() => handleSos('MAINTENANCE')}>
-            <Wrench className="h-3.5 w-3.5 shrink-0" /> Maintenance
+          <Button size="sm" variant="destructive" className="h-10 sm:h-8 text-xs gap-1 py-1 rounded-[8px] justify-center min-h-[44px] sm:min-h-[32px]" onClick={() => handleSos('MAINTENANCE')}>
+            <Wrench className="h-4 w-4 shrink-0" /> Maintenance
           </Button>
-          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px] justify-center" onClick={() => handleSos('FIRE')}>
-            <Flame className="h-3.5 w-3.5 shrink-0" /> Fire
+          <Button size="sm" variant="destructive" className="h-10 sm:h-8 text-xs gap-1 py-1 rounded-[8px] justify-center min-h-[44px] sm:min-h-[32px]" onClick={() => handleSos('FIRE')}>
+            <Flame className="h-4 w-4 shrink-0" /> Fire
           </Button>
-          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px] justify-center" onClick={() => handleSos('AMBULANCE')}>
-            <Ambulance className="h-3.5 w-3.5 shrink-0" /> Medical
+          <Button size="sm" variant="destructive" className="h-10 sm:h-8 text-xs gap-1 py-1 rounded-[8px] justify-center min-h-[44px] sm:min-h-[32px]" onClick={() => handleSos('AMBULANCE')}>
+            <Ambulance className="h-4 w-4 shrink-0" /> Medical
           </Button>
-          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px] justify-center" onClick={() => handleSos('POLICE')}>
-            <PhoneCall className="h-3.5 w-3.5 shrink-0" /> Police
+          <Button size="sm" variant="destructive" className="h-10 sm:h-8 text-xs gap-1 py-1 rounded-[8px] justify-center min-h-[44px] sm:min-h-[32px]" onClick={() => handleSos('POLICE')}>
+            <PhoneCall className="h-4 w-4 shrink-0" /> Police
           </Button>
-          <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 py-1 rounded-[8px] justify-center" onClick={() => handleSos('OFFICE')}>
-            <Building className="h-3.5 w-3.5 shrink-0" /> Office
+          <Button size="sm" variant="destructive" className="h-10 sm:h-8 text-xs gap-1 py-1 rounded-[8px] justify-center min-h-[44px] sm:min-h-[32px]" onClick={() => handleSos('OFFICE')}>
+            <Building className="h-4 w-4 shrink-0" /> Office
           </Button>
         </div>
       </div>
 
       {/* 7 KPI StatCards (Equal 140px Height) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 min-w-0 w-full">
         <StatCard
           title="Outstanding Maintenance"
           value={`₹${data.metrics.outstandingDues.toLocaleString()}`}

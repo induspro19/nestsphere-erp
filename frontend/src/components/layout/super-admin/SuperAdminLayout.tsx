@@ -79,19 +79,19 @@ export const SuperAdminLayout: React.FC = () => {
       </div>
 
       {/* Main content wrapper */}
-      <div className="lg:pl-64 flex flex-col min-h-screen">
+      <div className="lg:pl-64 flex flex-col min-h-screen min-w-0 w-full max-w-full overflow-x-hidden">
         {/* Top Header */}
-        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-x-4 border-b border-border/40 bg-card px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-          <button type="button" className="-m-2.5 p-2.5 text-muted-foreground lg:hidden" onClick={() => setSidebarOpen(true)}>
+        <header className="sticky top-0 z-30 flex min-h-[56px] sm:h-16 shrink-0 items-center gap-x-4 border-b border-border/40 bg-card px-4 pt-[env(safe-area-inset-top,0px)] pb-1 sm:pb-0 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 w-full transition-all">
+          <button type="button" className="-m-2.5 p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-muted-foreground lg:hidden rounded-lg hover:bg-muted" onClick={() => setSidebarOpen(true)} aria-label="Open Super Admin Navigation">
             <Menu className="h-6 w-6" />
           </button>
           
           <div className="flex flex-1 items-center justify-end gap-4">
-            <Button variant="ghost" size="icon" className="text-muted-foreground">
+            <Button variant="ghost" size="icon" className="text-muted-foreground h-11 w-11 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl" aria-label="Notifications">
               <Bell className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3 border-l border-border/40 pl-4">
-               <div className="h-8 w-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs uppercase shadow-sm">
+               <div className="h-9 w-9 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs uppercase shadow-sm">
                  SA
                </div>
                <div className="hidden md:block text-sm">
@@ -102,9 +102,9 @@ export const SuperAdminLayout: React.FC = () => {
           </div>
         </header>
 
-        {/* Page Content with Zero-Flicker Transition */}
-        <main className="flex-1">
-          <div className="py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto">
+        {/* Page Content */}
+        <main className="flex-1 min-w-0 w-full overflow-x-hidden">
+          <div className="py-4 sm:py-8 px-3 sm:px-6 lg:px-8 max-w-[1400px] w-full min-w-0 mx-auto">
             <AnimatedPageWrapper key={location.pathname}>
               <Outlet />
             </AnimatedPageWrapper>

@@ -141,9 +141,9 @@ export const ResidentPortalLayout: React.FC = () => {
         </aside>
 
         {/* Main Content Body */}
-        <div className={`flex-1 flex flex-col min-h-screen transition-all duration-250 ease-in-out ${isSidebarCollapsed ? 'md:pl-[72px]' : 'md:pl-[280px]'}`}>
-          {/* Mobile-App Style Resident Header (Height: 56px max on mobile, 60px on desktop) */}
-          <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 px-3 sm:px-4 h-[56px] md:h-[60px] flex items-center justify-between shadow-xs shrink-0 gap-2">
+        <div className={`flex-1 flex flex-col min-h-screen min-w-0 w-full max-w-full overflow-x-hidden transition-all duration-250 ease-in-out ${isSidebarCollapsed ? 'md:pl-[72px]' : 'md:pl-[280px]'}`}>
+          {/* Mobile-App Style Resident Header */}
+          <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 px-3 sm:px-4 pt-[env(safe-area-inset-top,0px)] pb-1 sm:pb-0 min-h-[56px] md:h-[60px] flex items-center justify-between shadow-xs shrink-0 gap-2 w-full transition-all">
             {/* Left: App Logo & Title */}
             <div className="flex items-center gap-2 shrink-0">
               {location.pathname !== '/resident/dashboard' && (
@@ -152,10 +152,10 @@ export const ResidentPortalLayout: React.FC = () => {
                   size="sm"
                   variant="outline"
                   onClick={() => navigate(-1)}
-                  className="h-8 w-8 p-0 rounded-[8px] text-gray-700 hover:bg-gray-100 border-gray-200 md:hidden flex items-center justify-center shrink-0"
+                  className="h-10 w-10 min-h-[44px] min-w-[44px] p-0 rounded-[10px] text-gray-700 hover:bg-gray-100 border-gray-200 md:hidden flex items-center justify-center shrink-0"
                   title="Go Back"
                 >
-                  <ChevronLeft className="h-4 w-4 text-gray-500" />
+                  <ChevronLeft className="h-5 w-5 text-gray-500" />
                 </Button>
               )}
               
@@ -168,7 +168,7 @@ export const ResidentPortalLayout: React.FC = () => {
             </div>
 
             {/* Center: Global Search (Full bar on desktop, Icon button on mobile) */}
-            <div className="flex-1 max-w-[500px] px-1 sm:px-4 flex items-center justify-center">
+            <div className="flex-1 max-w-[500px] px-1 sm:px-4 flex items-center justify-center min-w-0">
               <Button
                 size="sm"
                 variant="outline"
@@ -182,27 +182,27 @@ export const ResidentPortalLayout: React.FC = () => {
             </div>
 
             {/* Right: Search Icon (Mobile), Notifications, SOS & Profile */}
-            <div className="flex items-center justify-end gap-1.5 sm:gap-2.5 shrink-0">
+            <div className="flex items-center justify-end gap-1 sm:gap-2 shrink-0">
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => setShowSearchModal(true)}
-                className="h-9 w-9 p-0 rounded-full text-gray-600 hover:bg-gray-100 md:hidden flex items-center justify-center"
+                className="h-10 w-10 min-h-[44px] min-w-[44px] p-0 rounded-full text-gray-600 hover:bg-gray-100 md:hidden flex items-center justify-center shrink-0"
                 aria-label="Search"
               >
-                <Search className="h-4.5 w-4.5" />
+                <Search className="h-5 w-5" />
               </Button>
 
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => navigate('/resident/notices')}
-                className="h-9 w-9 p-0 rounded-full relative text-gray-600 hover:bg-gray-100 border border-transparent flex items-center justify-center"
+                className="h-10 w-10 min-h-[44px] min-w-[44px] p-0 rounded-full relative text-gray-600 hover:bg-gray-100 border border-transparent flex items-center justify-center shrink-0"
                 aria-label="Notifications"
               >
-                <Bell className="h-4.5 w-4.5" />
+                <Bell className="h-5 w-5" />
                 {unreadNotifications > 0 && (
-                  <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-blue-600 rounded-full ring-2 ring-white" />
+                  <span className="absolute top-2 right-2 h-2 w-2 bg-blue-600 rounded-full ring-2 ring-white" />
                 )}
               </Button>
 
@@ -210,16 +210,16 @@ export const ResidentPortalLayout: React.FC = () => {
                 size="sm"
                 variant="destructive"
                 onClick={() => navigate('/resident/sos')}
-                className="h-8 px-2.5 sm:px-3.5 rounded-full gap-1 text-[12px] sm:text-[13px] font-bold shadow-xs bg-red-600 hover:bg-red-700"
+                className="h-10 sm:h-8 px-2.5 sm:px-3.5 min-h-[44px] sm:min-h-[32px] rounded-full gap-1 text-[12px] sm:text-[13px] font-bold shadow-xs bg-red-600 hover:bg-red-700 shrink-0"
                 aria-label="Emergency SOS"
               >
-                <ShieldAlert className="h-3.5 w-3.5" />
+                <ShieldAlert className="h-4 w-4 shrink-0" />
                 <span className="hidden sm:inline">SOS</span>
               </Button>
 
               <div
                 onClick={() => navigate('/resident/profile')}
-                className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-blue-50 text-blue-600 font-bold text-xs flex items-center justify-center border border-gray-200 shadow-xs cursor-pointer ml-0.5 shrink-0"
+                className="h-10 w-10 min-h-[44px] min-w-[44px] sm:h-9 sm:w-9 rounded-full bg-blue-50 text-blue-600 font-bold text-xs flex items-center justify-center border border-gray-200 shadow-xs cursor-pointer shrink-0"
                 role="button"
                 aria-label="View Resident Profile"
               >
@@ -232,8 +232,8 @@ export const ResidentPortalLayout: React.FC = () => {
             </div>
           </header>
 
-          {/* Main View Outlet (Animated 180ms GPU-accelerated page transitions) */}
-          <main className="flex-1 p-3 sm:p-4 md:p-5 max-w-[1600px] w-full mx-auto pb-36 md:pb-10 pt-2 md:pt-3">
+          {/* Main View Outlet */}
+          <main className="flex-1 p-3 sm:p-4 md:p-5 max-w-[1600px] w-full min-w-0 mx-auto pb-36 md:pb-10 pt-2 md:pt-3 overflow-x-hidden">
             <AnimatedPageWrapper key={location.pathname}>
               <Outlet />
             </AnimatedPageWrapper>

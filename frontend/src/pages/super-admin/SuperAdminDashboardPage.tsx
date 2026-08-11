@@ -78,7 +78,7 @@ export default function SuperAdminDashboardPage() {
       </div>
 
       {/* KPI Section */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5">
         <StatCard title="Total Societies" value="42" icon={Building2} trend="+12% vs last month" />
         <StatCard title="Active Societies" value="38" icon={CheckCircle} />
         <StatCard title="Trial Societies" value="4" icon={Clock} />
