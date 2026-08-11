@@ -533,10 +533,13 @@ export const ResidentDocumentsPage: React.FC = () => {
 
       {/* UPLOAD PERSONAL VAULT MODAL */}
       {showUploadModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-md max-h-[90dvh] overflow-y-auto p-5 sm:p-6 space-y-4 shadow-2xl animate-in slide-in-from-bottom sm:zoom-in-95 duration-200 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <h3 className="font-bold text-lg font-display text-gray-900">Upload to Personal Vault</h3>
+              <div>
+                <div className="w-8 h-1 bg-gray-300 rounded-full mx-auto sm:hidden mb-2" />
+                <h3 className="font-bold text-base sm:text-lg font-display text-gray-900">Upload to Personal Vault</h3>
+              </div>
               <Button size="icon" variant="ghost" onClick={() => setShowUploadModal(false)} className="h-8 w-8 rounded-full">
                 <X className="h-5 w-5" />
               </Button>
@@ -550,7 +553,7 @@ export const ResidentDocumentsPage: React.FC = () => {
                   value={uploadTitle}
                   onChange={(e) => setUploadTitle(e.target.value)}
                   required
-                  className="h-10 rounded-xl"
+                  className="h-11 rounded-xl"
                 />
               </div>
 
@@ -559,7 +562,7 @@ export const ResidentDocumentsPage: React.FC = () => {
                 <select
                   value={uploadCategory}
                   onChange={(e) => setUploadCategory(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl border border-gray-200 bg-gray-50 text-xs font-medium outline-none"
+                  className="w-full h-11 px-3 rounded-xl border border-gray-200 bg-gray-50 text-xs font-medium outline-none"
                 >
                   <option value="PERSONAL">Personal Document</option>
                   <option value="IDENTITY">Identity Proof (Aadhaar/PAN)</option>
@@ -574,15 +577,15 @@ export const ResidentDocumentsPage: React.FC = () => {
                   type="file" 
                   onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
                   required 
-                  className="h-10 rounded-xl"
+                  className="h-11 rounded-xl"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-gray-100">
-                <Button type="button" variant="outline" onClick={() => setShowUploadModal(false)} className="rounded-xl">
+              <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
+                <Button type="button" variant="outline" onClick={() => setShowUploadModal(false)} className="flex-1 h-11 rounded-xl font-semibold">
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl gap-2">
+                <Button type="submit" className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl gap-2">
                   <Upload className="h-4 w-4" /> Upload File
                 </Button>
               </div>

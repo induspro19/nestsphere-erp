@@ -473,3 +473,108 @@ export const generateResidentIdentityCardPDF = async (profile: {
   }
 };
 
+/**
+ * 5. Single Maintenance Bill Invoice PDF Generator
+ */
+export const generateSingleBillPDF = async (bill: {
+  billNumber: string;
+  month: string;
+  amount: number;
+  dueDate: string;
+  status: string;
+  paidOn?: string;
+}, userSession?: any) => {
+  try {
+    const doc = new jsPDF();
+    const residentName = `${userSession?.firstName || 'Resident'} ${userSession?.lastName || 'User'}`;
+    const flatStr = `${userSession?.tower || 'Tower A'} - Flat ${userSession?.flatNumber || 'A-402'}`;
+    const todayStr = new Date().toISOString().slice(0, 10);
+
+    // Header Branding Box
+    doc.setFillColor(15, 23, 42); // slate-900
+    doc.rect(0, 0, 210, 40, 'F');
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('NestSphere Society ERP', 14, 18);
+
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Official Maintenance Bill & Tax Invoice Receipt', 14, 28);
+
+    // Invoice Meta Header
+    doc.setTextColor(30, 41, 59);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`INVOICE NO: ${bill.billNumber}`, 14, 50);
+    doc.text(`BILLING MONTH: ${bill.month}`, 14, 57);
+
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Date Issued: ${todayStr}`, 140, 50);
+    doc.text(`Due Date: ${bill.dueDate}`, 140, 57);
+
+    doc.setDrawColor(226, 232, 240);
+    doc.line(14, 63, 196, 63);
+
+    // Resident Details
+    doc.setFont('helvetica', 'bold');
+    doc.text('Billed To:', 14, 72);
+    doc.setFont('helvetica', 'normal');
+    doc.text(residentName, 14, 78);
+    doc.text(flatStr, 14, 84);
+    doc.text('Grand Heights Housing Society', 14, 90);
+
+    // Status Badge
+    doc.setFillColor(bill.status === 'PAID' ? 220 : 254, bill.status === 'PAID' ? 252 : 242, bill.status === 'PAID' ? 231 : 242);
+    doc.roundedRect(140, 70, 56, 20, 3, 3, 'F');
+    doc.setTextColor(bill.status === 'PAID' ? 22 : 185, bill.status === 'PAID' ? 101 : 28, bill.status === 'PAID' ? 52 : 28);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`STATUS: ${bill.status}`, 168, 82, { align: 'center' });
+
+    // Itemized Table
+    const billItems = [
+      ['Monthly Society Maintenance Base Fee', `INR ${(bill.amount * 0.75).toFixed(2)}`],
+      ['Sinking & Capital Repair Fund', `INR ${(bill.amount * 0.15).toFixed(2)}`],
+      ['Common Area Electricity & Water', `INR ${(bill.amount * 0.10).toFixed(2)}`],
+    ];
+
+    autoTable(doc, {
+      startY: 98,
+      head: [['Charge Description', 'Amount']],
+      body: billItems,
+      theme: 'grid',
+      headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold' },
+      styles: { fontSize: 9.5, cellPadding: 4 },
+      margin: { left: 14, right: 14 },
+    });
+
+    const finalY = (doc as any).lastAutoTable.finalY + 8;
+
+    // Total Amount Summary
+    doc.setFillColor(248, 250, 252);
+    doc.roundedRect(120, finalY, 76, 24, 2, 2, 'F');
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(15, 23, 42);
+    doc.text('TOTAL AMOUNT DUE:', 124, finalY + 10);
+    doc.setFontSize(14);
+    doc.setTextColor(37, 99, 235);
+    doc.text(`INR ${bill.amount.toLocaleString()}.00`, 124, finalY + 18);
+
+    // Footer
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(100, 116, 139);
+    doc.text('Thank you for being a valued resident of Greenfield Heights.', 14, 280);
+    doc.text('NestSphere ERP Official Billing Receipt', 14, 285);
+
+    doc.save(`Invoice_${bill.billNumber}.pdf`);
+    toast.success(`Downloaded Invoice PDF (${bill.billNumber})`);
+  } catch (err) {
+    console.error('Invoice PDF Download Error:', err);
+    toast.error('Failed to download invoice PDF');
+  }
+};
+

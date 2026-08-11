@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/ca
 import { CreditCard, Download, Clock, IndianRupee, FileText, History } from 'lucide-react';
 import { toast } from 'sonner';
 import { PaymentCheckoutModal } from '../../components/shared/PaymentCheckoutModal';
+import { generateSingleBillPDF } from '../../utils/reportExport';
+import { useAuthStore } from '../../store/authStore';
 
 export const ResidentBillsPage: React.FC = () => {
   const [selectedBill, setSelectedBill] = useState<any>(null);
@@ -41,8 +43,24 @@ export const ResidentBillsPage: React.FC = () => {
     setIsModalOpen(true);
   };
 
+  const user = useAuthStore((state) => state.user);
+
   const handleDownloadInvoice = (billNumber: string) => {
-    toast.success(`Downloading PDF Invoice for ${billNumber}...`);
+    const found = bills.find((b) => b.billNumber === billNumber);
+    if (found) {
+      generateSingleBillPDF(found, user);
+    } else {
+      generateSingleBillPDF(
+        {
+          billNumber,
+          month: 'Current Month',
+          amount: 4500,
+          dueDate: '2026-08-31',
+          status: 'UNPAID',
+        },
+        user,
+      );
+    }
   };
 
   return (
