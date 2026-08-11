@@ -103,4 +103,43 @@ export class DocumentManagementController {
   ) {
     return this.documentService.restoreFromRecycleBin(societyId, id, actorId);
   }
+
+  @Post(':id/publish')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Publish Document & Broadcast Auto Distribution Notification to All Residents' })
+  async publishDocument(
+    @CurrentTenant() societyId: string,
+    @Param('id') id: string,
+    @ActiveUser('sub') actorId: string,
+  ) {
+    return this.documentService.publishDocument(societyId, id, actorId);
+  }
+
+  @Post(':id/read')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Mark Document as Read (Resident Read Tracking)' })
+  async markAsRead(
+    @CurrentTenant() societyId: string,
+    @Param('id') id: string,
+    @ActiveUser('sub') actorId: string,
+  ) {
+    return this.documentService.markAsRead(societyId, id, actorId);
+  }
+
+  @Post(':id/download')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Track Document Download & Return File Payload' })
+  async trackDownload(
+    @CurrentTenant() societyId: string,
+    @Param('id') id: string,
+    @ActiveUser('sub') actorId: string,
+  ) {
+    return this.documentService.trackDownload(societyId, id, actorId);
+  }
+
+  @Get('analytics/read-tracking')
+  @ApiOperation({ summary: 'Get Document Read & Download Analytics Report for Admin' })
+  async getAnalytics(@CurrentTenant() societyId: string) {
+    return this.documentService.getAnalytics(societyId);
+  }
 }

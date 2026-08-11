@@ -42,7 +42,19 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (request.url.includes('/financial')) code = 'FIN_001';
     if (request.url.includes('/complaints')) code = 'CMP_001';
 
-    this.logger.error(`[${requestId}] ${status} - ${message}`);
+    this.logger.error(
+      `[${requestId}] ${request.method} ${request.url} - ${status} - ${message}\nStack: ${exception?.stack || exception}`,
+    );
+    console.error('--- DETAILED ERROR LOG ---');
+    console.error('Request Method:', request.method);
+    console.error('Request URL:', request.url);
+    console.error('Headers:', JSON.stringify(request.headers));
+    console.error('Query:', JSON.stringify(request.query));
+    console.error('Body:', JSON.stringify(request.body));
+    console.error('User Context:', JSON.stringify((request as any).user));
+    console.error('Exception:', exception);
+    if (exception?.stack) console.error('Stack Trace:\n', exception.stack);
+    console.error('--------------------------');
 
     response.status(status).json({
       success: false,
@@ -53,6 +65,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       error: exception?.name || 'Error',
+      stack: process.env.NODE_ENV === 'development' ? exception?.stack : undefined,
     });
   }
 }

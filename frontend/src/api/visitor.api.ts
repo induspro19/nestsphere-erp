@@ -52,12 +52,15 @@ export const visitorApi = {
     purpose?: string;
     vehicleNumber?: string;
     passType?: string;
+    expectedArrival?: string;
+    expectedExit?: string;
+    photoUrl?: string;
   }): Promise<VisitorPass> => {
     const res = await axiosClient.post('/visitors/pass', data);
     return res.data?.data || res.data;
   },
 
-  checkIn: async (data: { passId?: string; otpCode?: string; qrToken?: string }) => {
+  checkIn: async (data: { passId?: string; otpCode?: string; qrToken?: string; gateId?: string }) => {
     const res = await axiosClient.post('/visitors/check-in', data);
     return res.data?.data || res.data;
   },

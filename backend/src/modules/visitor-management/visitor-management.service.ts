@@ -8,6 +8,7 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { WorkflowEngineService } from '../workflow-engine/workflow-engine.service';
 import { ActivityAction, AccessType } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
+import { isValidUuid } from '../../common/utils/uuid.util';
 
 @Injectable()
 export class VisitorManagementService {
@@ -20,6 +21,63 @@ export class VisitorManagementService {
 
   // 1. Create / Pre-Approve Visitor Pass
   async createPass(societyId: string, dto: CreateVisitorPassDto, actorId: string) {
+    if (!societyId) {
+      throw new BadRequestException('Society context is missing. Ensure you are logged into a society.');
+    }
+    if (!actorId) {
+      throw new BadRequestException('Actor context is missing. Ensure you are authenticated.');
+    }
+
+    let hostPersonId = dto.hostPersonId;
+    let hostUnitId = dto.hostUnitId;
+
+    // If host context is missing, attempt to derive it from the active user (Resident context)
+    if (!hostPersonId || !hostUnitId) {
+      const resident = await this.prisma.resident.findFirst({
+        where: { userId: actorId, societyId, isDeleted: false },
+      });
+      
+      const person = await this.prisma.person.findFirst({
+        where: { userId: actorId }
+      });
+
+      if (person) {
+        hostPersonId = hostPersonId || person.id;
+      }
+
+      if (resident) {
+        hostUnitId = hostUnitId || resident.flatId;
+      }
+
+      // Fallback for admin or unlinked accounts: pick first flat in society if no flatId found
+      if (!hostUnitId) {
+        const fallbackFlat = await this.prisma.flat.findFirst({
+          where: { societyId, isDeleted: false }
+        });
+        if (fallbackFlat) {
+          hostUnitId = fallbackFlat.id;
+        }
+      }
+    }
+
+    // Check for duplicate active visitor pass
+    const activePass = await this.prisma.visitorPass.findFirst({
+      where: {
+        societyId,
+        visitorPhone: dto.visitorPhone,
+        hostUnitId,
+        status: { in: ['PRE_APPROVED', 'CHECKED_IN'] },
+        expectedArrival: {
+           gte: new Date(new Date().setHours(0, 0, 0, 0)),
+           lt: new Date(new Date().setHours(23, 59, 59, 999))
+        }
+      }
+    });
+
+    if (activePass) {
+      throw new BadRequestException('Duplicate Active Visitor Pass exists for this visitor and unit today.');
+    }
+
     // Check Blacklist Rule in Access Control Engine
     const isBlacklisted = await this.prisma.accessRule.findFirst({
       where: {
@@ -38,11 +96,24 @@ export class VisitorManagementService {
       );
     }
 
-    // Generate Pass Number (e.g. VIS-00001), QR Token, 6-Digit OTP
+    // Generate Pass Number (e.g. VIS-00001) and unique random 4-digit Visitor Token
     const count = await this.prisma.visitorPass.count({ where: { societyId } });
     const passNumber = `VIS-${String(count + 1).padStart(5, '0')}`;
-    const qrToken = `QR-VIS-${uuidv4()}`;
-    const otpCode = String(Math.floor(100000 + Math.random() * 900000));
+    
+    let token = String(Math.floor(1000 + Math.random() * 9000));
+    let existingToken = await this.prisma.visitorPass.findFirst({
+      where: { societyId, otpCode: token, status: { in: ['PRE_APPROVED', 'CHECKED_IN'] } },
+    });
+    let attempts = 0;
+    while (existingToken && attempts < 10) {
+      token = String(Math.floor(1000 + Math.random() * 9000));
+      existingToken = await this.prisma.visitorPass.findFirst({
+        where: { societyId, otpCode: token, status: { in: ['PRE_APPROVED', 'CHECKED_IN'] } },
+      });
+      attempts++;
+    }
+    const otpCode = token;
+    const qrToken = token;
 
     // Map Person in People Engine if existing
     const existingPerson = await this.prisma.person.findFirst({
@@ -63,8 +134,8 @@ export class VisitorManagementService {
         visitorPhone: dto.visitorPhone,
         visitorEmail: dto.visitorEmail,
         personId: existingPerson ? existingPerson.id : null,
-        hostPersonId: dto.hostPersonId || null,
-        hostUnitId: dto.hostUnitId || null,
+        hostPersonId,
+        hostUnitId,
         purpose: dto.purpose,
         vehicleNumber: dto.vehicleNumber,
         expectedArrival: dto.expectedArrival ? new Date(dto.expectedArrival) : now,
@@ -108,30 +179,38 @@ export class VisitorManagementService {
     }
 
     // Reuse Communication Engine: Dispatch Real-time Notification to Host Resident
-    if (dto.hostPersonId) {
-      await this.notificationsService.send(societyId, {
-        channel: 'IN_APP',
-        category: 'VISITOR',
-        priority: 'HIGH',
-        recipientId: dto.hostPersonId,
-        title: `👋 Visitor ${isPreApproved ? 'Scheduled' : 'Arrived'}: ${dto.visitorName}`,
-        message: `${dto.visitorName} (${dto.visitorType}) ${isPreApproved ? 'is pre-approved to visit' : 'has entered gate'} for unit ${pass.hostUnit?.flatNumber || ''}. Pass OTP: ${otpCode}`,
-        metadata: { visitorPassId: pass.id, passNumber, otpCode },
-      });
+    if (hostPersonId) {
+      try {
+        await this.notificationsService.send(societyId, {
+          channel: 'IN_APP',
+          category: 'VISITOR',
+          priority: 'HIGH',
+          recipientId: hostPersonId,
+          title: `👋 Visitor ${isPreApproved ? 'Scheduled' : 'Arrived'}: ${dto.visitorName}`,
+          message: `${dto.visitorName} (${dto.visitorType}) ${isPreApproved ? 'is pre-approved to visit' : 'has entered gate'} for unit ${pass.hostUnit?.flatNumber || ''}. Pass OTP: ${otpCode}`,
+          metadata: { visitorPassId: pass.id, passNumber, otpCode },
+        });
+      } catch (error) {
+        console.error('Failed to send visitor notification:', error);
+      }
     }
 
     // Log Activity Timeline
-    await this.prisma.activityTimeline.create({
-      data: {
-        societyId,
-        entityType: 'VISITOR_PASS',
-        entityId: pass.id,
-        action: ActivityAction.CREATED,
-        title: `Visitor Pass Generated (${passNumber})`,
-        description: `Pass for ${dto.visitorName} (${dto.visitorType}) created by ${actorId}`,
-        actorId,
-      },
-    });
+    try {
+      await this.prisma.activityTimeline.create({
+        data: {
+          societyId,
+          entityType: 'VISITOR_PASS',
+          entityId: pass.id,
+          action: ActivityAction.CREATED,
+          title: `Visitor Pass Generated (${passNumber})`,
+          description: `Pass for ${dto.visitorName} (${dto.visitorType}) created by ${actorId}`,
+          actorId,
+        },
+      });
+    } catch (error) {
+      console.error('Failed to log activity timeline:', error);
+    }
 
     return pass;
   }
@@ -140,7 +219,7 @@ export class VisitorManagementService {
   async checkIn(societyId: string, dto: CheckInVisitorDto, guardId: string) {
     let pass = null;
 
-    if (dto.passId) {
+    if (dto.passId && isValidUuid(dto.passId)) {
       pass = await this.prisma.visitorPass.findFirst({ where: { id: dto.passId, societyId } });
     } else if (dto.otpCode) {
       pass = await this.prisma.visitorPass.findFirst({ where: { otpCode: dto.otpCode, societyId } });
@@ -202,6 +281,10 @@ export class VisitorManagementService {
 
   // 3. Gate Check-Out Visitor
   async checkOut(societyId: string, passId: string, guardId: string) {
+    if (!isValidUuid(passId)) {
+      throw new BadRequestException('Invalid visitor pass ID format');
+    }
+
     const pass = await this.prisma.visitorPass.findFirst({
       where: { id: passId, societyId },
     });
@@ -237,8 +320,15 @@ export class VisitorManagementService {
 
   // 4. Query Visitor Passes & History
   async findAll(societyId: string, query: QueryVisitorPassDto) {
-    const { search, visitorType, status, hostUnitId, page = 1, limit = 20 } = query;
-    const skip = (page - 1) * limit;
+    if (!societyId) {
+      throw new BadRequestException('Society context is missing. Ensure tenant context header or user profile is present.');
+    }
+
+    const pageNum = Math.max(1, Number(query?.page) || 1);
+    const limitNum = Math.max(1, Math.min(1000, Number(query?.limit) || 20));
+    const skip = (pageNum - 1) * limitNum;
+
+    const { search, visitorType, status, hostUnitId } = query;
 
     const where: any = { societyId, isDeleted: false };
 
@@ -248,6 +338,7 @@ export class VisitorManagementService {
         { visitorPhone: { contains: search } },
         { passNumber: { contains: search, mode: 'insensitive' } },
         { vehicleNumber: { contains: search, mode: 'insensitive' } },
+        { otpCode: { contains: search } },
       ];
     }
 
@@ -259,7 +350,7 @@ export class VisitorManagementService {
       this.prisma.visitorPass.findMany({
         where,
         skip,
-        take: limit,
+        take: limitNum,
         orderBy: { createdAt: 'desc' },
         include: {
           hostUnit: true,
@@ -272,7 +363,7 @@ export class VisitorManagementService {
 
     return {
       data: items,
-      meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
+      meta: { total, page: pageNum, limit: limitNum, totalPages: Math.ceil(total / limitNum) },
     };
   }
 

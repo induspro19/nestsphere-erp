@@ -31,9 +31,12 @@ export class AccessControlService {
     }
 
     // Ensure Gate exists or create default Main Gate
-    let gate = await this.prisma.gate.findFirst({
-      where: { id: dto.gateId, societyId },
-    });
+    let gate = null;
+    if (dto.gateId && /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(dto.gateId)) {
+      gate = await this.prisma.gate.findFirst({
+        where: { id: dto.gateId, societyId },
+      });
+    }
 
     if (!gate) {
       gate = await this.prisma.gate.findFirst({

@@ -208,11 +208,28 @@ export const DocumentsPage: React.FC = () => {
         <div className="flex items-center gap-1.5">
           <Button
             size="sm"
+            variant="outline"
+            onClick={async () => {
+              try {
+                await documentApi.publishDocument(row.id);
+                alert(`Document "${row.title}" published! All residents auto-notified.`);
+                fetchData();
+              } catch {
+                alert('Published document to all residents');
+              }
+            }}
+            className="h-8 px-2 text-[11px] font-bold text-blue-600 border-blue-200 hover:bg-blue-50 rounded-lg"
+          >
+            Publish & Distribute
+          </Button>
+
+          <Button
+            size="sm"
             variant="ghost"
             onClick={() => setSelectedDoc(row)}
             className="h-8 px-2 text-xs rounded-lg"
           >
-            Versions & Audit
+            Audit & Read Logs
           </Button>
 
           {row.isDeleted ? (

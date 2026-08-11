@@ -23,7 +23,7 @@ export const LoginPage: React.FC = () => {
 
     try {
       const response = await authApi.login({ email, password });
-      setAuth(response.user, response.tokens.accessToken);
+      setAuth(response.user, response.tokens.accessToken, response.tokens.refreshToken);
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please check credentials.');

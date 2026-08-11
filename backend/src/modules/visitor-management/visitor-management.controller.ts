@@ -21,23 +21,29 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 import { CurrentTenant } from '../../common/decorators/current-tenant.decorator';
 import { ActiveUser } from '../../common/decorators/active-user.decorator';
 
+import { Logger } from '@nestjs/common';
+
 @ApiTags('Enterprise Visitor Management Module')
 @ApiBearerAuth()
 @Audit()
 @Controller('visitors')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class VisitorManagementController {
+  private readonly logger = new Logger(VisitorManagementController.name);
+
   constructor(private visitorService: VisitorManagementService) {}
 
   @Get('analytics')
   @ApiOperation({ summary: 'Get Visitor Analytics, Daily/Monthly Metrics & Frequent Visitors' })
   async getAnalytics(@CurrentTenant() societyId: string) {
+    this.logger.log(`GET /visitors/analytics - SocietyID: ${societyId}`);
     return this.visitorService.getAnalytics(societyId);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get Paginated Visitor Passes & Log History' })
   async findAll(@CurrentTenant() societyId: string, @Query() query: QueryVisitorPassDto) {
+    this.logger.log(`GET /visitors - SocietyID: ${societyId}, Query: ${JSON.stringify(query)}`);
     return this.visitorService.findAll(societyId, query);
   }
 
@@ -48,6 +54,7 @@ export class VisitorManagementController {
     @Body() dto: CreateVisitorPassDto,
     @ActiveUser('sub') actorId: string,
   ) {
+    this.logger.log(`POST /visitors/pass - SocietyID: ${societyId}, ActorID: ${actorId}, Payload: ${JSON.stringify(dto)}`);
     return this.visitorService.createPass(societyId, dto, actorId);
   }
 
@@ -59,6 +66,7 @@ export class VisitorManagementController {
     @Body() dto: CheckInVisitorDto,
     @ActiveUser('sub') guardId: string,
   ) {
+    this.logger.log(`POST /visitors/check-in - SocietyID: ${societyId}, GuardID: ${guardId}, Payload: ${JSON.stringify(dto)}`);
     return this.visitorService.checkIn(societyId, dto, guardId);
   }
 
@@ -70,6 +78,7 @@ export class VisitorManagementController {
     @Param('id') passId: string,
     @ActiveUser('sub') guardId: string,
   ) {
+    this.logger.log(`POST /visitors/${passId}/check-out - SocietyID: ${societyId}, GuardID: ${guardId}`);
     return this.visitorService.checkOut(societyId, passId, guardId);
   }
 }

@@ -115,4 +115,24 @@ export const documentApi = {
     const res = await axiosClient.post(`/documents/${id}/restore`);
     return res.data?.data || res.data;
   },
+
+  publishDocument: async (id: string) => {
+    const res = await axiosClient.post(`/documents/${id}/publish`);
+    return res.data?.data || res.data;
+  },
+
+  markAsRead: async (id: string) => {
+    const res = await axiosClient.post(`/documents/${id}/read`);
+    return res.data?.data || res.data;
+  },
+
+  trackDownload: async (id: string) => {
+    const res = await axiosClient.post(`/documents/${id}/download`);
+    return res.data?.data || res.data;
+  },
+
+  getReadAnalytics: async () => {
+    const res = await axiosClient.get('/documents/analytics/read-tracking');
+    return res.data?.data || res.data;
+  },
 };

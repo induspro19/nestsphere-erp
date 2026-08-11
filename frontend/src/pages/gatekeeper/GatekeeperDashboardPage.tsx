@@ -1,110 +1,205 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../../components/ui/button';
 import { StatCard } from '../../components/shared/StatCard';
-import { DataTable } from '../../components/shared/DataTable';
-import { QrCode, Shield, Users, Truck, AlertTriangle, Car, FileText, UserCheck, ShieldAlert, DoorOpen, LogOut, Calendar, Briefcase, Camera, UserPlus } from 'lucide-react';
+import { Badge } from '../../components/ui/badge';
+import { QrCode, Shield, Users, Truck, AlertTriangle, Car, FileText, DoorOpen, LogOut, Calendar, Briefcase, Camera, UserPlus, Clock, XCircle, CheckCircle2, ShieldAlert, UserCheck, ShieldCheck } from 'lucide-react';
 import { gatekeeperApi, GatekeeperCommandSummary } from '../../api/gatekeeper.api';
+import { visitorApi, VisitorPass } from '../../api/visitor.api';
 import { useNavigate } from 'react-router-dom';
 import { GatekeeperLiveTimeline } from '../../components/gatekeeper/GatekeeperLiveTimeline';
+import { toast } from 'sonner';
 
 export const GatekeeperDashboardPage: React.FC = () => {
   const [summary, setSummary] = useState<GatekeeperCommandSummary | null>(null);
+  const [passes, setPasses] = useState<VisitorPass[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'EXPECTED' | 'CHECKED_IN' | 'CHECKED_OUT' | 'EXPIRED' | 'OVERSTAY'>('EXPECTED');
+  
   const navigate = useNavigate();
 
   useEffect(() => {
     gatekeeperApi.getCommandSummary().then(setSummary);
+    fetchVisitorPasses();
+    const interval = setInterval(fetchVisitorPasses, 15000); // Live poll
+    return () => clearInterval(interval);
   }, []);
 
+  const fetchVisitorPasses = async () => {
+    try {
+      const res = await visitorApi.getVisitorPasses({ limit: 200 } as any);
+      const data = (res as any).data || res;
+      if (Array.isArray(data)) {
+        setPasses(data);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCheckIn = async (passId: string) => {
+    try {
+      await visitorApi.checkIn({ passId });
+      toast.success('Visitor Checked In Successfully');
+      fetchVisitorPasses();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Check-in failed');
+    }
+  };
+
+  const handleCheckOut = async (passId: string) => {
+    try {
+      await visitorApi.checkOut(passId);
+      toast.success('Visitor Checked Out');
+      fetchVisitorPasses();
+    } catch (err: any) {
+      toast.error('Check-out failed');
+    }
+  };
+
+  // Helper to color-code expiry/status
+  const getExpiryColor = (pass: VisitorPass) => {
+    if (pass.status === 'EXPIRED') return 'bg-red-100 text-red-800 border-red-200';
+    if (!pass.expectedExit) return 'bg-gray-100 text-gray-800 border-gray-200';
+    
+    const exitTime = new Date(pass.expectedExit).getTime();
+    const now = new Date().getTime();
+    const diffMins = (exitTime - now) / (1000 * 60);
+
+    if (diffMins < 0) return 'bg-red-100 text-red-800 border-red-200'; // Overstay
+    if (diffMins < 60) return 'bg-yellow-100 text-yellow-800 border-yellow-200'; // Expiring soon
+    return 'bg-green-100 text-green-800 border-green-200'; // Valid
+  };
+
+  const getFilteredPasses = () => {
+    const now = new Date().getTime();
+    return passes.filter(p => {
+      if (activeTab === 'EXPECTED') return p.status === 'PRE_APPROVED';
+      if (activeTab === 'CHECKED_IN') return p.status === 'CHECKED_IN';
+      if (activeTab === 'CHECKED_OUT') return p.status === 'CHECKED_OUT';
+      if (activeTab === 'EXPIRED') return ['EXPIRED', 'CANCELLED', 'REJECTED'].includes(p.status);
+      if (activeTab === 'OVERSTAY') {
+        if (p.status !== 'CHECKED_IN' || !p.expectedExit) return false;
+        return new Date(p.expectedExit).getTime() < now;
+      }
+      return false;
+    });
+  };
+
+  const filteredPasses = getFilteredPasses();
+
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
-      {/* 1. KPI Cards (10) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        <StatCard title="Visitors Inside" value={summary?.metrics.visitorsInside || 12} trend="+12 Today" icon={Users} description="Live" />
-        <StatCard title="Today's Entries" value={summary?.metrics.todayEntries || 48} trend="+15%" icon={DoorOpen} description="Total" />
-        <StatCard title="Today's Exits" value={summary?.metrics.todayExits || 36} trend="+5%" icon={LogOut} description="Total" />
-        <StatCard title="Expected Visitors" value={summary?.metrics.expectedVisitors || 6} trend="Scheduled" icon={Calendar} description="Pending" />
-        <StatCard title="Deliveries Pending" value={summary?.metrics.deliveryWaiting || 3} trend="At Gate" icon={Truck} description="Action Req." />
-        <StatCard title="Staff Inside" value={summary?.metrics.staffInside || 8} trend="+2 Today" icon={Briefcase} description="Working" />
-        <StatCard title="Vehicles Entered" value={25} trend="Verified" icon={Car} description="Today" />
-        <StatCard title="Blacklist Alerts" value={summary?.metrics.blacklistAlerts || 0} trend="No Hits" icon={ShieldAlert} description="Secure" />
-        <StatCard title="Overstay Alerts" value={1} trend="Warning" icon={AlertTriangle} description="Check" />
-        <StatCard title="Emergency Events" value={summary?.metrics.emergencyAlerts || 0} trend="All Clear" icon={Shield} description="Safe" />
+    <div className="space-y-8 animate-in fade-in duration-300 pb-12">
+      {/* 1. KPI Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <StatCard title="Visitors Inside" value={passes.filter(p => p.status === 'CHECKED_IN').length} trend="Live" icon={Users} description="Inside Premises" />
+        <StatCard title="Expected" value={passes.filter(p => p.status === 'PRE_APPROVED').length} trend="Pending" icon={Calendar} description="Scheduled" />
+        <StatCard title="Today's Exits" value={passes.filter(p => p.status === 'CHECKED_OUT').length} trend="Completed" icon={LogOut} description="Left Premises" />
+        <StatCard title="Overstay Alert" value={passes.filter(p => p.status === 'CHECKED_IN' && p.expectedExit && new Date(p.expectedExit).getTime() < Date.now()).length} trend="Warning" icon={AlertTriangle} description="Check Now" />
+        <StatCard title="Blacklist Hits" value={summary?.metrics.blacklistAlerts || 0} trend="Blocked" icon={ShieldAlert} description="Secure" />
+        <StatCard title="Deliveries" value={summary?.metrics.deliveryWaiting || 0} trend="At Gate" icon={Truck} description="Waiting" />
       </div>
 
       {/* 2. Quick Actions */}
-      <div className="bg-card border border-border/40 rounded-2xl p-6 shadow-sm">
-        <h3 className="font-bold text-lg font-display mb-4 text-foreground">Quick Actions</h3>
+      <div className="bg-white border border-gray-200 rounded-[20px] p-6 shadow-sm">
+        <h3 className="font-bold text-lg font-display mb-4 text-gray-900">Security Actions</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
-           <Button onClick={() => navigate('/gatekeeper/check-in')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs"><QrCode className="h-5 w-5 text-primary"/>Scan QR</Button>
-           <Button onClick={() => navigate('/gatekeeper/check-in')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs"><UserPlus className="h-5 w-5 text-primary"/>Manual Entry</Button>
-           <Button onClick={() => navigate('/gatekeeper/check-out')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs"><LogOut className="h-5 w-5 text-primary"/>Check-Out</Button>
-           <Button onClick={() => navigate('/gatekeeper/deliveries')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs"><Truck className="h-5 w-5 text-primary"/>Delivery</Button>
-           <Button onClick={() => navigate('/gatekeeper/vehicle-verify')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs"><Car className="h-5 w-5 text-primary"/>Vehicles</Button>
-           <Button onClick={() => navigate('/gatekeeper/blacklist')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs"><ShieldAlert className="h-5 w-5 text-primary"/>Blacklist</Button>
-           <Button onClick={() => navigate('/gatekeeper/reports')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs"><FileText className="h-5 w-5 text-primary"/>Reports</Button>
-           <Button variant="destructive" className="h-20 flex-col gap-2 font-bold text-xs"><AlertTriangle className="h-5 w-5"/>Emergency</Button>
+           <Button onClick={() => navigate('/gatekeeper/check-in')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs border-blue-200 hover:bg-blue-50 text-blue-800"><ShieldCheck className="h-5 w-5"/>Verify Token</Button>
+           <Button onClick={() => navigate('/gatekeeper/check-in')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs"><UserPlus className="h-5 w-5 text-gray-600"/>Manual Entry</Button>
+           <Button onClick={() => navigate('/gatekeeper/vehicle-verify')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs"><Car className="h-5 w-5 text-gray-600"/>Vehicles</Button>
+           <Button onClick={() => navigate('/gatekeeper/blacklist')} variant="outline" className="h-20 flex-col gap-2 font-semibold text-xs border-red-200 hover:bg-red-50 text-red-800"><ShieldAlert className="h-5 w-5"/>Blacklist</Button>
+           <Button variant="destructive" className="h-20 flex-col gap-2 font-bold text-xs col-span-2 lg:col-span-4"><AlertTriangle className="h-5 w-5"/>Emergency / SOS</Button>
         </div>
       </div>
 
-      {/* Camera Placeholders (Preserving feature parity) */}
-      <div className="bg-card border border-border/40 rounded-2xl p-6 shadow-sm">
-         <h3 className="font-bold text-lg font-display mb-4 text-foreground flex items-center gap-2"><Camera className="h-5 w-5 text-primary"/> Security Cameras</h3>
-         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-accent/30 border border-border/50 rounded-xl overflow-hidden relative aspect-video flex items-center justify-center">
-              <span className="text-muted-foreground font-mono text-xs font-bold">CCTV MAIN FEED</span>
-            </div>
-            <div className="bg-accent/30 border border-border/50 rounded-xl overflow-hidden relative aspect-video flex items-center justify-center">
-              <span className="text-muted-foreground font-mono text-xs font-bold">ANPR CAM (Number Plate)</span>
-            </div>
-            <div className="bg-accent/30 border border-border/50 rounded-xl overflow-hidden relative aspect-video flex items-center justify-center">
-              <span className="text-muted-foreground font-mono text-xs font-bold">FACE AI CAM</span>
-            </div>
-          </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* 3. Today's Visitors DataTable */}
-        <div className="space-y-3 bg-card border border-border/40 p-5 rounded-2xl shadow-sm">
-          <h3 className="font-bold text-base font-display text-foreground flex items-center justify-between">Today's Visitors <Button variant="ghost" size="sm" className="h-6 text-xs text-primary">View All</Button></h3>
-          <DataTable 
-            columns={[{header: 'Visitor', accessorKey: 'name'}, {header: 'Host', accessorKey: 'host'}, {header: 'Status', accessorKey: 'status'}]}
-            data={[{id: '1', name: 'Rahul Sharma', host: 'A-402', status: <span className="text-green-600 font-medium">Inside</span>}]}
-          />
+      {/* 3. Live Visitor Queue Management */}
+      <div className="bg-white border border-gray-200 rounded-[20px] p-1 shadow-sm overflow-hidden flex flex-col">
+        <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50 rounded-t-[19px]">
+          <h3 className="font-bold text-lg font-display text-gray-900 flex items-center gap-2">
+            <Users className="h-5 w-5 text-blue-600" /> Visitor Queue Management
+          </h3>
+          <Button variant="outline" size="sm" onClick={fetchVisitorPasses} className="h-8">Refresh</Button>
         </div>
 
-        {/* 4. Visitors Waiting DataTable */}
-        <div className="space-y-3 bg-card border border-border/40 p-5 rounded-2xl shadow-sm">
-          <h3 className="font-bold text-base font-display text-foreground flex items-center justify-between">Visitors Waiting <Button variant="ghost" size="sm" className="h-6 text-xs text-primary">View All</Button></h3>
-          <DataTable 
-            columns={[{header: 'Visitor', accessorKey: 'name'}, {header: 'Host', accessorKey: 'host'}, {header: 'Wait Time', accessorKey: 'time'}]}
-            data={[{id: '2', name: 'Amazon Delivery', host: 'B-105', time: <span className="text-amber-600 font-medium">4 mins</span>}]}
-          />
+        {/* Tabs */}
+        <div className="flex items-center gap-1 p-3 border-b border-gray-100 overflow-x-auto no-scrollbar">
+          {(['EXPECTED', 'CHECKED_IN', 'CHECKED_OUT', 'OVERSTAY', 'EXPIRED'] as const).map((tab) => {
+            const count = getFilteredPasses().length;
+            return (
+              <Button
+                key={tab}
+                variant={activeTab === tab ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setActiveTab(tab)}
+                className={`rounded-full px-4 text-xs font-semibold transition-colors ${
+                  activeTab === tab 
+                    ? tab === 'OVERSTAY' ? 'bg-red-600 text-white' : 'bg-blue-600 text-white shadow-xs'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                {tab.replace('_', ' ')}
+              </Button>
+            );
+          })}
         </div>
 
-        {/* 5. Expected Visitors DataTable */}
-        <div className="space-y-3 bg-card border border-border/40 p-5 rounded-2xl shadow-sm">
-          <h3 className="font-bold text-base font-display text-foreground flex items-center justify-between">Expected Visitors <Button variant="ghost" size="sm" className="h-6 text-xs text-primary">View All</Button></h3>
-          <DataTable 
-            columns={[{header: 'Visitor', accessorKey: 'name'}, {header: 'Host', accessorKey: 'host'}, {header: 'Expected', accessorKey: 'time'}]}
-            data={[]}
-            emptyMessage="No visitors expected"
-          />
-        </div>
+        {/* List */}
+        <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 bg-gray-50/30">
+          {loading ? (
+            <div className="col-span-full py-8 text-center text-gray-500">Loading queue...</div>
+          ) : filteredPasses.length === 0 ? (
+             <div className="col-span-full py-12 text-center">
+               <UserCheck className="h-10 w-10 text-gray-300 mx-auto mb-2" />
+               <p className="font-semibold text-gray-900">No visitors in this list</p>
+             </div>
+          ) : (
+            filteredPasses.map(pass => (
+              <div key={pass.id} className="bg-white border border-gray-200 p-4 rounded-2xl shadow-sm flex flex-col gap-3 hover:shadow-md transition-shadow">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h4 className="font-bold text-gray-900 text-[15px]">{pass.visitorName}</h4>
+                    <p className="text-xs text-gray-500 font-medium">{pass.visitorType.replace('_', ' ')} • Flat {pass.hostUnit?.flatNumber || 'N/A'}</p>
+                  </div>
+                  <Badge className={`text-[10px] ${getExpiryColor(pass)}`} variant="outline">
+                    {pass.status === 'PRE_APPROVED' ? 'Valid' : pass.status.replace('_', ' ')}
+                  </Badge>
+                </div>
 
-        {/* 6. Vehicle Entries DataTable */}
-        <div className="space-y-3 bg-card border border-border/40 p-5 rounded-2xl shadow-sm">
-          <h3 className="font-bold text-base font-display text-foreground flex items-center justify-between">Recent Vehicles <Button variant="ghost" size="sm" className="h-6 text-xs text-primary">View All</Button></h3>
-          <DataTable 
-            columns={[{header: 'Plate Number', accessorKey: 'plate'}, {header: 'Type', accessorKey: 'type'}, {header: 'Time', accessorKey: 'time'}]}
-            data={[{id: '1', plate: 'MH-12-AB-1234', type: 'Resident', time: '10:45 AM'}]}
-          />
-        </div>
-      </div>
+                <div className="bg-gray-50 p-2 rounded-xl border border-gray-100 text-[11px] flex flex-col gap-1 text-gray-600">
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="h-3 w-3" />
+                    <span>Expected: {new Date(pass.expectedArrival!).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - {new Date(pass.expectedExit!).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                  </div>
+                  {pass.vehicleNumber && (
+                    <div className="flex items-center gap-1.5 text-blue-700 font-semibold">
+                      <Car className="h-3 w-3" />
+                      <span>{pass.vehicleNumber}</span>
+                    </div>
+                  )}
+                </div>
 
-      {/* 7. Security Timeline */}
-      <div className="space-y-3 bg-card border border-border/40 p-5 rounded-2xl shadow-sm">
-        <h3 className="font-bold text-lg font-display text-foreground">Live Security Activity</h3>
-        <GatekeeperLiveTimeline />
+                <div className="pt-2 border-t border-gray-100 mt-1 flex gap-2">
+                  {pass.status === 'PRE_APPROVED' && (
+                    <>
+                      <Button onClick={() => handleCheckIn(pass.id)} size="sm" className="flex-1 bg-green-600 hover:bg-green-700 text-white rounded-[10px]">
+                        <CheckCircle2 className="h-4 w-4 mr-1.5" /> Check In
+                      </Button>
+                      <Button variant="outline" size="sm" className="flex-1 text-red-600 border-red-200 hover:bg-red-50 rounded-[10px]">
+                        Deny
+                      </Button>
+                    </>
+                  )}
+                  {pass.status === 'CHECKED_IN' && (
+                    <Button onClick={() => handleCheckOut(pass.id)} size="sm" variant="outline" className="w-full text-gray-700 rounded-[10px]">
+                      <LogOut className="h-4 w-4 mr-1.5" /> Check Out
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
     </div>

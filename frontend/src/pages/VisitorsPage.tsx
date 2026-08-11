@@ -7,6 +7,7 @@ import { LoadingSpinner } from '../components/shared/LoadingSpinner';
 import { DataTable } from '../components/shared/DataTable';
 import { StatCard } from '../components/shared/StatCard';
 import { visitorApi, VisitorPass, VisitorAnalytics } from '../api/visitor.api';
+import { VisitorTypeCategory, VisitorPassStatus } from '../constants/enums';
 import {
   UserCheck,
   QrCode,
@@ -117,24 +118,7 @@ export const VisitorsPage: React.FC = () => {
     setVehicleNumber('');
   };
 
-  const visitorTypeOptions = [
-    'GUEST',
-    'RELATIVE',
-    'FRIEND',
-    'VENDOR',
-    'COURIER',
-    'FOOD_DELIVERY',
-    'CAB_DRIVER',
-    'SERVICE_ENGINEER',
-    'TECHNICIAN',
-    'HOUSEKEEPING',
-    'GOVERNMENT_OFFICER',
-    'POLICE',
-    'FIRE_BRIGADE',
-    'AMBULANCE',
-    'INTERVIEW_CANDIDATE',
-    'TEMPORARY_WORKER',
-  ];
+  const visitorTypeOptions = Object.values(VisitorTypeCategory);
 
   const columns = [
     {
@@ -154,11 +138,11 @@ export const VisitorsPage: React.FC = () => {
       ),
     },
     {
-      header: 'Entry Code / Pass OTP',
+      header: 'Visitor Token',
       accessorKey: (row: VisitorPass) => (
         <div className="text-xs space-y-0.5">
-          <Badge variant="secondary" className="font-mono text-[10px] bg-primary/10 text-primary border-primary/20">
-            OTP: {row.otpCode}
+          <Badge variant="secondary" className="font-mono text-xs font-bold bg-blue-50 text-blue-800 border-blue-200">
+            Token: {row.otpCode || '----'}
           </Badge>
           {row.vehicleNumber && <p className="text-muted-foreground font-mono">Vehicle: {row.vehicleNumber}</p>}
         </div>
@@ -212,7 +196,7 @@ export const VisitorsPage: React.FC = () => {
               size="sm"
               variant="outline"
               onClick={() => handleCheckOut(row.id)}
-              className="h-8 px-2 text-xs text-destructive rounded-lg hover:bg-destructive/10"
+              className="h-8 text-xs font-semibold text-rose-500 border-rose-500/20 hover:bg-rose-50 rounded-lg"
             >
               <LogOut className="h-3.5 w-3.5 mr-1" /> Check Out
             </Button>
@@ -223,7 +207,7 @@ export const VisitorsPage: React.FC = () => {
               onClick={() => setSelectedPass(row)}
               className="h-8 px-2 text-xs rounded-lg"
             >
-              Digital Pass
+              Pass Token
             </Button>
           )}
         </div>
@@ -240,12 +224,12 @@ export const VisitorsPage: React.FC = () => {
             <UserCheck className="h-6 w-6 text-primary" /> Enterprise Visitor Management
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Pre-approved passes, OTP verification, instant gate clearance, and frequent visitor analytics
+            Pre-approved 4-digit visitor tokens, instant gate verification, and visitor analytics
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" onClick={() => setIsCheckInModalOpen(true)} className="rounded-xl">
-            <KeyRound className="h-4 w-4 mr-2" /> Verify OTP Check-In
+            <KeyRound className="h-4 w-4 mr-2" /> Verify Token Check-In
           </Button>
           <Button onClick={() => setIsCreateModalOpen(true)} className="rounded-xl">
             <Plus className="h-4 w-4 mr-2" /> Pre-Approve Visitor
@@ -258,7 +242,7 @@ export const VisitorsPage: React.FC = () => {
         <StatCard title="Total Visitor Entries" value={analytics?.totalCount || 0} description="All-Time Visitor Passes" icon={Users} />
         <StatCard title="Currently Inside" value={analytics?.checkedInCount || 0} description="Gate Checked In" icon={UserCheck} />
         <StatCard title="Frequent Visitors" value={analytics?.frequentVisitors.length || 0} description="Recurring Regulars" icon={PhoneCall} />
-        <StatCard title="Verification Mode" value="OTP + QR" description="Gate Barrier Ready" icon={QrCode} />
+        <StatCard title="Verification Mode" value="4-Digit Token" description="Gate Security Ready" icon={UserCheck} />
       </div>
 
       {/* Filter & Search Bar */}

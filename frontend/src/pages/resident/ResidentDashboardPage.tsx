@@ -187,62 +187,62 @@ export const ResidentDashboardPage: React.FC = () => {
 
       {/* Quick Navigation Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-        <div onClick={() => navigate('/resident/bills')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs">
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2">
-              <CreditCard className="h-4 w-4 text-blue-600" /> My Maintenance Bills
+        <div onClick={() => navigate('/resident/bills')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs flex flex-col justify-between h-full">
+          <div className="flex items-center justify-between gap-2">
+            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2 min-w-0">
+              <CreditCard className="h-4 w-4 text-blue-600 shrink-0" /> <span className="truncate">My Maintenance Bills</span>
             </h4>
-            <Badge variant="outline" className="text-[11px] font-medium border-gray-200">Pay Online</Badge>
+            <Badge variant="outline" className="whitespace-nowrap inline-flex items-center justify-center text-[13px] sm:text-[14px] font-medium border-gray-200 px-3 py-1 h-8 shrink-0 rounded-full text-gray-700 bg-gray-50/50">Pay Online</Badge>
           </div>
           <p className="text-xs text-gray-500">View invoice PDF receipts, late fees, and payment status timeline.</p>
         </div>
 
-        <div onClick={() => navigate('/resident/complaints')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs">
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2">
-              <LifeBuoy className="h-4 w-4 text-blue-600" /> My Complaints & Tickets
+        <div onClick={() => navigate('/resident/complaints')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs flex flex-col justify-between h-full">
+          <div className="flex items-center justify-between gap-2">
+            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2 min-w-0">
+              <LifeBuoy className="h-4 w-4 text-blue-600 shrink-0" /> <span className="truncate">My Complaints & Tickets</span>
             </h4>
-            <Badge variant="outline" className="text-[11px] font-medium border-gray-200">Track Progress</Badge>
+            <Badge variant="outline" className="whitespace-nowrap inline-flex items-center justify-center text-[13px] sm:text-[14px] font-medium border-gray-200 px-3 py-1 h-8 shrink-0 rounded-full text-gray-700 bg-gray-50/50">Track Progress</Badge>
           </div>
           <p className="text-xs text-gray-500">Raise ticket, upload photo, technician details, service ratings.</p>
         </div>
 
-        <div onClick={() => navigate('/resident/notices')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs">
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2">
-              <Bell className="h-4 w-4 text-blue-600" /> Society Notices & Circulars
+        <div onClick={() => navigate('/resident/notices')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs flex flex-col justify-between h-full">
+          <div className="flex items-center justify-between gap-2">
+            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2 min-w-0">
+              <Bell className="h-4 w-4 text-blue-600 shrink-0" /> <span className="truncate">Society Notices & Circulars</span>
             </h4>
-            <Badge variant="outline" className="text-[11px] font-medium border-gray-200">Read Receipts</Badge>
+            <Badge variant="outline" className="whitespace-nowrap inline-flex items-center justify-center text-[13px] sm:text-[14px] font-medium border-gray-200 px-3 py-1 h-8 shrink-0 rounded-full text-gray-700 bg-gray-50/50">Read Receipts</Badge>
           </div>
           <p className="text-xs text-gray-500">Emergency alerts, water shut-off circulars, read receipt acknowledgements.</p>
         </div>
 
-        <div onClick={() => navigate('/resident/meetings')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs">
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2">
-              <CalendarCheck className="h-4 w-4 text-blue-600" /> Meetings & AGM
+        <div onClick={() => navigate('/resident/meetings')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs flex flex-col justify-between h-full">
+          <div className="flex items-center justify-between gap-2">
+            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2 min-w-0">
+              <CalendarCheck className="h-4 w-4 text-blue-600 shrink-0" /> <span className="truncate">Meetings & AGM</span>
             </h4>
-            <Badge variant="outline" className="text-[11px] font-medium border-gray-200">Join Online</Badge>
+            <Badge variant="outline" className="whitespace-nowrap inline-flex items-center justify-center text-[13px] sm:text-[14px] font-medium border-gray-200 px-3 py-1 h-8 shrink-0 rounded-full text-gray-700 bg-gray-50/50">Join Online</Badge>
           </div>
           <p className="text-xs text-gray-500">Agendas, online Google Meet link, voting results, MoM downloads.</p>
         </div>
 
-        <div onClick={() => navigate('/resident/visitors')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs">
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2">
-              <UserCheck className="h-4 w-4 text-blue-600" /> Pre-Approve Visitors
+        <div onClick={() => navigate('/resident/visitors')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs flex flex-col justify-between h-full">
+          <div className="flex items-center justify-between gap-2">
+            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2 min-w-0">
+              <UserCheck className="h-4 w-4 text-blue-600 shrink-0" /> <span className="truncate">Pre-Approve Visitors</span>
             </h4>
-            <Badge variant="outline" className="text-[11px] font-medium border-gray-200">QR Gate Pass</Badge>
+            <Badge variant="outline" className="whitespace-nowrap inline-flex items-center justify-center text-[13px] sm:text-[14px] font-medium border-gray-200 px-3 py-1 h-8 shrink-0 rounded-full text-gray-700 bg-gray-50/50">QR Gate Pass</Badge>
           </div>
           <p className="text-xs text-gray-500">Pre-approve guests, generate QR passes, track delivery entries.</p>
         </div>
 
-        <div onClick={() => navigate('/resident/amenities')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs">
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2">
-              <CalendarCheck className="h-4 w-4 text-blue-600" /> Book Amenities
+        <div onClick={() => navigate('/resident/amenities')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs flex flex-col justify-between h-full">
+          <div className="flex items-center justify-between gap-2">
+            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2 min-w-0">
+              <CalendarCheck className="h-4 w-4 text-blue-600 shrink-0" /> <span className="truncate">Book Amenities</span>
             </h4>
-            <Badge variant="outline" className="text-[11px] font-medium border-gray-200">Clubhouse</Badge>
+            <Badge variant="outline" className="whitespace-nowrap inline-flex items-center justify-center text-[13px] sm:text-[14px] font-medium border-gray-200 px-3 py-1 h-8 shrink-0 rounded-full text-gray-700 bg-gray-50/50">Clubhouse</Badge>
           </div>
           <p className="text-xs text-gray-500">Check slot availability for tennis court, swimming pool, clubhouse hall.</p>
         </div>

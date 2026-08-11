@@ -4,28 +4,56 @@ import { UserSession } from '../types/auth.types';
 interface AuthState {
   user: UserSession | null;
   accessToken: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
-  setAuth: (user: UserSession, token: string) => void;
+  setAuth: (user: UserSession, accessToken: string, refreshToken?: string) => void;
   clearAuth: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: {
+const initialUserRaw = localStorage.getItem('user_session');
+let initialUser: UserSession | null = null;
+try {
+  if (initialUserRaw) {
+    initialUser = JSON.parse(initialUserRaw);
+  }
+} catch {
+  initialUser = null;
+}
+
+// Fallback user if non-logged in or testing
+if (!initialUser) {
+  initialUser = {
     id: 'dummy-super-admin',
     email: 'superadmin@nestsphere.com',
     firstName: 'Super',
     lastName: 'Admin',
     roles: ['SUPER_ADMIN'],
     societyId: null,
-  } as unknown as UserSession,
+  } as unknown as UserSession;
+}
+
+export const useAuthStore = create<AuthState>((set) => ({
+  user: initialUser,
   accessToken: localStorage.getItem('access_token'),
-  isAuthenticated: true, // !!localStorage.getItem('access_token'),
-  setAuth: (user, token) => {
-    localStorage.setItem('access_token', token);
-    set({ user, accessToken: token, isAuthenticated: true });
+  refreshToken: localStorage.getItem('refresh_token'),
+  isAuthenticated: !!localStorage.getItem('access_token'),
+  setAuth: (user, accessToken, refreshToken) => {
+    localStorage.setItem('access_token', accessToken);
+    localStorage.setItem('user_session', JSON.stringify(user));
+    if (refreshToken) {
+      localStorage.setItem('refresh_token', refreshToken);
+    }
+    set({
+      user,
+      accessToken,
+      refreshToken: refreshToken || localStorage.getItem('refresh_token'),
+      isAuthenticated: true,
+    });
   },
   clearAuth: () => {
     localStorage.removeItem('access_token');
-    set({ user: null, accessToken: null, isAuthenticated: false });
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user_session');
+    set({ user: null, accessToken: null, refreshToken: null, isAuthenticated: false });
   },
 }));
