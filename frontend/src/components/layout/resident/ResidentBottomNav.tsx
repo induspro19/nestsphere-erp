@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   Home,
+  MessageSquare,
   CreditCard,
   LifeBuoy,
   Bell,
@@ -28,9 +29,9 @@ export const ResidentBottomNav: React.FC = () => {
 
   const primaryItems = [
     { title: 'Home', path: '/resident/dashboard', icon: Home },
-    { title: 'Bills', path: '/resident/bills', icon: CreditCard },
-    { title: 'Complaints', path: '/resident/complaints', icon: LifeBuoy },
-    { title: 'Notices', path: '/resident/notices', icon: Bell },
+    { title: 'Services', path: '/resident/amenities', icon: Grid },
+    { title: 'Chat', path: '/resident/notices', icon: MessageSquare },
+    { title: 'Profile', path: '/resident/profile', icon: User },
   ];
 
   const moreItems = [
@@ -58,7 +59,7 @@ export const ResidentBottomNav: React.FC = () => {
   return (
     <>
       {/* Mobile Bottom Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-t border-border/40 md:hidden pb-[env(safe-area-inset-bottom)] shadow-lg">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 md:hidden pb-[env(safe-area-inset-bottom)] shadow-lg">
         <div className="flex items-center justify-around h-16 px-2">
           {primaryItems.map((item) => {
             const Icon = item.icon;
@@ -67,24 +68,23 @@ export const ResidentBottomNav: React.FC = () => {
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex flex-col items-center justify-center w-full h-full min-h-[44px] text-[11px] font-medium transition-colors ${
-                    isActive ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-foreground'
+                  `flex flex-col items-center justify-center w-full h-full min-h-[44px] text-[11px] font-medium transition-colors relative ${
+                    isActive ? 'text-blue-600 font-bold' : 'text-gray-500 hover:text-gray-900'
                   }`
                 }
               >
-                <Icon className="h-5 w-5 mb-1 shrink-0" />
-                <span>{item.title}</span>
+                {({ isActive }) => (
+                  <>
+                    <Icon className="h-5 w-5 mb-0.5 shrink-0" />
+                    <span>{item.title}</span>
+                    {isActive && (
+                      <span className="h-1.5 w-1.5 bg-blue-600 rounded-full mt-0.5" />
+                    )}
+                  </>
+                )}
               </NavLink>
             );
           })}
-          <button
-            onClick={() => setShowBottomSheet(true)}
-            className="flex flex-col items-center justify-center w-full h-full min-h-[44px] text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="Open More Options"
-          >
-            <Grid className="h-5 w-5 mb-1 shrink-0" />
-            <span>More</span>
-          </button>
         </div>
       </nav>
 

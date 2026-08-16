@@ -142,93 +142,62 @@ export const ResidentPortalLayout: React.FC = () => {
 
         {/* Main Content Body */}
         <div className={`flex-1 flex flex-col min-h-screen min-w-0 w-full max-w-full overflow-x-hidden transition-all duration-250 ease-in-out ${isSidebarCollapsed ? 'md:pl-[72px]' : 'md:pl-[280px]'}`}>
-          {/* Mobile-App Style Resident Header */}
-          <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 px-3 sm:px-4 pt-[env(safe-area-inset-top,0px)] pb-1 sm:pb-0 min-h-[56px] md:h-[60px] flex items-center justify-between shadow-xs shrink-0 gap-2 w-full transition-all">
-            {/* Left: App Logo & Title */}
-            <div className="flex items-center gap-2 shrink-0">
+          {/* Stitch Emerald Style Resident Header */}
+          <header className="sticky top-0 z-30 bg-[#007A55] text-white border-b border-[#006847] px-4 pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-2 min-h-[60px] md:h-[64px] flex items-center justify-between shadow-md shrink-0 gap-2 w-full transition-all">
+            {/* Left: Resident Avatar & NestSphere Title */}
+            <div className="flex items-center gap-2.5 shrink-0">
               {location.pathname !== '/resident/dashboard' && (
                 <Button
                   data-testid="resident-back-button"
                   size="sm"
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => navigate(-1)}
-                  className="h-10 w-10 min-h-[44px] min-w-[44px] p-0 rounded-[10px] text-gray-700 hover:bg-gray-100 border-gray-200 md:hidden flex items-center justify-center shrink-0"
+                  className="h-9 w-9 min-h-[44px] min-w-[44px] p-0 rounded-full text-white hover:bg-white/10 md:hidden flex items-center justify-center shrink-0"
                   title="Go Back"
                 >
-                  <ChevronLeft className="h-5 w-5 text-gray-500" />
+                  <ChevronLeft className="h-6 w-6 text-white" />
                 </Button>
               )}
               
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-[8px] bg-blue-600 text-white font-bold flex items-center justify-center text-[12px] shadow-xs shrink-0">
-                  NS
-                </div>
-                <span className="font-bold text-sm text-gray-900 hidden sm:inline-block">Resident Portal</span>
-              </div>
-            </div>
-
-            {/* Center: Global Search (Full bar on desktop, Icon button on mobile) */}
-            <div className="flex-1 max-w-[500px] px-1 sm:px-4 flex items-center justify-center min-w-0">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => setShowSearchModal(true)}
-                className="hidden md:flex w-full h-9 rounded-[10px] justify-start gap-2 text-[13px] text-gray-500 bg-gray-50 hover:bg-gray-100 border-gray-200/80 shadow-none transition-colors"
-                aria-label="Search ERP"
-              >
-                <Search className="h-4 w-4 text-gray-400 shrink-0" />
-                <span className="font-normal truncate">Search...</span>
-              </Button>
-            </div>
-
-            {/* Right: Search Icon (Mobile), Notifications, SOS & Profile */}
-            <div className="flex items-center justify-end gap-1 sm:gap-2 shrink-0">
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => setShowSearchModal(true)}
-                className="h-10 w-10 min-h-[44px] min-w-[44px] p-0 rounded-full text-gray-600 hover:bg-gray-100 md:hidden flex items-center justify-center shrink-0"
-                aria-label="Search"
-              >
-                <Search className="h-5 w-5" />
-              </Button>
-
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => navigate('/resident/notices')}
-                className="h-10 w-10 min-h-[44px] min-w-[44px] p-0 rounded-full relative text-gray-600 hover:bg-gray-100 border border-transparent flex items-center justify-center shrink-0"
-                aria-label="Notifications"
-              >
-                <Bell className="h-5 w-5" />
-                {unreadNotifications > 0 && (
-                  <span className="absolute top-2 right-2 h-2 w-2 bg-blue-600 rounded-full ring-2 ring-white" />
-                )}
-              </Button>
-
-              <Button
-                size="sm"
-                variant="destructive"
-                onClick={() => navigate('/resident/sos')}
-                className="h-10 sm:h-8 px-2.5 sm:px-3.5 min-h-[44px] sm:min-h-[32px] rounded-full gap-1 text-[12px] sm:text-[13px] font-bold shadow-xs bg-red-600 hover:bg-red-700 shrink-0"
-                aria-label="Emergency SOS"
-              >
-                <ShieldAlert className="h-4 w-4 shrink-0" />
-                <span className="hidden sm:inline">SOS</span>
-              </Button>
-
               <div
                 onClick={() => navigate('/resident/profile')}
-                className="h-10 w-10 min-h-[44px] min-w-[44px] sm:h-9 sm:w-9 rounded-full bg-blue-50 text-blue-600 font-bold text-xs flex items-center justify-center border border-gray-200 shadow-xs cursor-pointer shrink-0"
+                className="h-10 w-10 rounded-full bg-white/20 text-white font-bold text-xs flex items-center justify-center border-2 border-white/80 shadow-sm cursor-pointer shrink-0 overflow-hidden"
                 role="button"
                 aria-label="View Resident Profile"
               >
                 {user?.avatarUrl ? (
                   <img src={user.avatarUrl} alt="Avatar" className="h-full w-full rounded-full object-cover" />
                 ) : (
-                  <span>{user?.firstName?.[0] || 'R'}{user?.lastName?.[0] || 'V'}</span>
+                  <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80" alt="Avatar" className="h-full w-full rounded-full object-cover" />
                 )}
               </div>
+              <span className="font-bold text-lg text-white tracking-tight font-display">NestSphere</span>
+            </div>
+
+            {/* Right: Search Icon, Notifications Bell */}
+            <div className="flex items-center justify-end gap-1 sm:gap-2 shrink-0">
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setShowSearchModal(true)}
+                className="h-10 w-10 min-h-[44px] min-w-[44px] p-0 rounded-full text-white hover:bg-white/10 flex items-center justify-center shrink-0"
+                aria-label="Search"
+              >
+                <Search className="h-5 w-5 text-white" />
+              </Button>
+
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => navigate('/resident/notices')}
+                className="h-10 w-10 min-h-[44px] min-w-[44px] p-0 rounded-full relative text-white hover:bg-white/10 border border-transparent flex items-center justify-center shrink-0"
+                aria-label="Notifications"
+              >
+                <Bell className="h-5 w-5 text-white" />
+                {unreadNotifications > 0 && (
+                  <span className="absolute top-2 right-2 h-2.5 w-2.5 bg-emerald-300 rounded-full ring-2 ring-[#007A55]" />
+                )}
+              </Button>
             </div>
           </header>
 

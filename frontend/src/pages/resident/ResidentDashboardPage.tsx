@@ -23,6 +23,7 @@ import {
   Shield,
   Wrench,
   Building,
+  ChevronRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -73,178 +74,167 @@ export const ResidentDashboardPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-3.5 pb-12 animate-in fade-in duration-200">
-      {/* Professional Enterprise Resident Dashboard Header */}
-      <div className="p-4 md:p-5 rounded-[14px] bg-gradient-to-r from-blue-50/80 via-indigo-50/40 to-white border border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-xl sm:text-[24px] font-bold tracking-tight text-gray-900 leading-tight">
-              Good morning, {data.person.firstName || 'Resident'} 👋
-            </h1>
-            <span className="h-[22px] px-2 text-[11px] font-mono font-medium rounded-full bg-blue-100/70 text-blue-700 border border-blue-200 flex items-center shrink-0">
-              {data.person.digitalId}
-            </span>
-          </div>
-          <p className="text-[13px] text-gray-600 font-normal flex items-center gap-1.5 leading-tight">
-            <Home className="h-3.5 w-3.5 text-blue-600 shrink-0" />
-            <span>Flat {data.unit?.flatNumber || 'A-402'} • {data.unit?.buildingName || 'Tower A'} - {data.unit?.wingName || 'Grand Heights'}</span>
-          </p>
-        </div>
-
-        {/* Compact Enterprise Action Buttons */}
-        <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center shrink-0">
-          <Button
-            onClick={() => navigate('/resident/visitors')}
-            className="h-10 px-3.5 sm:px-4 rounded-[10px] text-[13px] sm:text-[14px] font-semibold bg-blue-600 hover:bg-blue-700 text-white gap-1.5 shadow-xs justify-center"
-          >
-            <QrCode className="h-4 w-4 shrink-0" /> Pre-Approve Visitor
-          </Button>
-          <Button
-            onClick={() => navigate('/resident/complaints')}
-            variant="outline"
-            className="h-10 px-3.5 sm:px-4 rounded-[10px] text-[13px] sm:text-[14px] font-semibold border-gray-200 hover:bg-gray-100 text-gray-800 gap-1.5 justify-center"
-          >
-            <Plus className="h-4 w-4 shrink-0" /> Raise Ticket
-          </Button>
-        </div>
+    <div className="space-y-4 pb-12 animate-in fade-in duration-200">
+      {/* Stitch Greeting Heading */}
+      <div className="pt-1">
+        <h1 className="text-2xl sm:text-3xl font-extrabold font-display text-[#004D34] tracking-tight flex items-center gap-2">
+          Hello, {data.person.firstName || 'Alex'}! <span className="animate-bounce inline-block">👋</span>
+        </h1>
       </div>
 
-      {/* Emergency SOS Quick Bar */}
-      <div className="p-3.5 rounded-[14px] bg-rose-50/80 border border-rose-200/80 space-y-2">
-        <div className="flex items-center justify-between flex-wrap gap-1">
-          <h3 className="font-semibold text-[12px] text-rose-700 flex items-center gap-1.5 uppercase tracking-wider">
-            <ShieldAlert className="h-4 w-4 shrink-0" /> Emergency SOS Dispatch
-          </h3>
-          <span className="text-[11px] text-rose-500 font-medium hidden sm:inline">1-Tap Immediate Security Alert</span>
+      {/* Stitch Unit & Flat Information Card */}
+      <div 
+        onClick={() => navigate('/resident/profile')}
+        className="p-3.5 rounded-[16px] bg-white border border-gray-200 shadow-xs flex items-center justify-between gap-3 cursor-pointer hover:border-gray-300 transition-all"
+      >
+        <div className="flex items-center gap-3">
+          <div className="h-11 w-11 rounded-[14px] bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center shrink-0 shadow-xs">
+            <Building className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="font-bold text-sm sm:text-base text-gray-900 leading-tight">
+              Unit {data.unit?.flatNumber || '4B'}, {data.unit?.wingName || 'The Zenith'}
+            </h2>
+            <p className="text-xs font-mono font-medium text-gray-500 mt-0.5">
+              #{data.person.digitalId || 'NS-8924'}
+            </p>
+          </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-          <Button size="sm" variant="destructive" className="h-10 sm:h-8 text-xs gap-1 py-1 rounded-[8px] justify-center min-h-[44px] sm:min-h-[32px]" onClick={() => handleSos('SECURITY')}>
-            <Shield className="h-4 w-4 shrink-0" /> Security
-          </Button>
-          <Button size="sm" variant="destructive" className="h-10 sm:h-8 text-xs gap-1 py-1 rounded-[8px] justify-center min-h-[44px] sm:min-h-[32px]" onClick={() => handleSos('MAINTENANCE')}>
-            <Wrench className="h-4 w-4 shrink-0" /> Maintenance
-          </Button>
-          <Button size="sm" variant="destructive" className="h-10 sm:h-8 text-xs gap-1 py-1 rounded-[8px] justify-center min-h-[44px] sm:min-h-[32px]" onClick={() => handleSos('FIRE')}>
-            <Flame className="h-4 w-4 shrink-0" /> Fire
-          </Button>
-          <Button size="sm" variant="destructive" className="h-10 sm:h-8 text-xs gap-1 py-1 rounded-[8px] justify-center min-h-[44px] sm:min-h-[32px]" onClick={() => handleSos('AMBULANCE')}>
-            <Ambulance className="h-4 w-4 shrink-0" /> Medical
-          </Button>
-          <Button size="sm" variant="destructive" className="h-10 sm:h-8 text-xs gap-1 py-1 rounded-[8px] justify-center min-h-[44px] sm:min-h-[32px]" onClick={() => handleSos('POLICE')}>
-            <PhoneCall className="h-4 w-4 shrink-0" /> Police
-          </Button>
-          <Button size="sm" variant="destructive" className="h-10 sm:h-8 text-xs gap-1 py-1 rounded-[8px] justify-center min-h-[44px] sm:min-h-[32px]" onClick={() => handleSos('OFFICE')}>
-            <Building className="h-4 w-4 shrink-0" /> Office
-          </Button>
-        </div>
+        <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/80 text-xs font-bold shrink-0">
+          Active
+        </span>
       </div>
 
-      {/* 7 KPI StatCards (Equal 140px Height) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 min-w-0 w-full">
-        <StatCard
-          title="Outstanding Maintenance"
-          value={`₹${data.metrics.outstandingDues.toLocaleString()}`}
-          subRows={["Due in 5 Days", <span key="st" className="text-amber-600 font-medium">Pending Invoice</span>]}
-          icon={CreditCard}
-        />
-        <StatCard
-          title="Active Complaints"
-          value={data.metrics.activeComplaints}
-          subRows={["In Progress: 2", <span key="st" className="text-blue-600 font-medium">Assigned to Electrician</span>]}
-          icon={LifeBuoy}
-        />
-        <StatCard
-          title="Upcoming Meetings"
-          value={data.metrics.upcomingMeetings}
-          subRows={["AGM Scheduled", "Aug 12 • 06:00 PM"]}
-          icon={CalendarCheck}
-        />
-        <StatCard
-          title="New Notices"
-          value={data.metrics.newNotices}
-          subRows={["Unread Circulars", <span key="st" className="text-blue-600 font-medium">Water Cut Off Circular</span>]}
-          icon={Bell}
-        />
-        <StatCard
-          title="Active Bookings"
-          value={data.metrics.activeBookings}
-          subRows={["Clubhouse Slot", "Tomorrow 07:00 AM"]}
-          icon={CalendarCheck}
-        />
-        <StatCard
-          title="Visitors Today"
-          value={data.metrics.todayVisitors}
-          subRows={["Pre-Approved: 3", "Checked In: 1"]}
-          icon={UserCheck}
-        />
-        <StatCard
-          title="Parking & Vehicles"
-          value={`${data.metrics.assignedVehicles} Vehicles`}
-          subRows={["Assigned Slot: A-402", "Sticker Verified"]}
-          icon={ParkingCircle}
-        />
+      {/* Stitch Full-Width Emergency SOS Bar */}
+      <div 
+        onClick={() => navigate('/resident/sos')}
+        className="p-3.5 rounded-[14px] bg-[#C81E1E] hover:bg-[#B91C1C] text-white flex items-center justify-between cursor-pointer transition-colors shadow-sm"
+      >
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center text-white shrink-0">
+            <Flame className="h-4 w-4" />
+          </div>
+          <span className="font-bold text-base tracking-wide">Emergency SOS</span>
+        </div>
+        <ChevronRight className="h-5 w-5 text-white/90" />
       </div>
 
-      {/* Quick Navigation Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-        <div onClick={() => navigate('/resident/bills')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs flex flex-col justify-between h-full">
-          <div className="flex items-center justify-between gap-2">
-            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2 min-w-0">
-              <CreditCard className="h-4 w-4 text-blue-600 shrink-0" /> <span className="truncate">My Maintenance Bills</span>
-            </h4>
-            <Badge variant="outline" className="whitespace-nowrap inline-flex items-center justify-center text-[13px] sm:text-[14px] font-medium border-gray-200 px-3 py-1 h-8 shrink-0 rounded-full text-gray-700 bg-gray-50/50">Pay Online</Badge>
+      {/* Stitch 3x3 Module Action Cards Grid */}
+      <div className="grid grid-cols-3 gap-2.5 sm:gap-3.5">
+        {/* 1. Dues Card */}
+        <div 
+          onClick={() => navigate('/resident/bills')} 
+          className="p-3.5 sm:p-4 rounded-[16px] bg-[#E6F8F6] border border-[#B2EBF2] hover:bg-[#D7F5F2] cursor-pointer transition-all flex flex-col items-center justify-center text-center gap-1.5 shadow-xs"
+        >
+          <div className="h-9 w-9 rounded-xl bg-teal-100/80 text-[#007A55] flex items-center justify-center shrink-0">
+            <CreditCard className="h-5 w-5" />
           </div>
-          <p className="text-xs text-gray-500">View invoice PDF receipts, late fees, and payment status timeline.</p>
+          <span className="text-xs font-bold text-gray-700">Dues</span>
+          <span className="text-xs sm:text-sm font-extrabold text-[#007A55]">
+            ₹{data.metrics.outstandingDues > 0 ? (data.metrics.outstandingDues/1000).toFixed(2) + 'k' : '1.25k'}
+          </span>
         </div>
 
-        <div onClick={() => navigate('/resident/complaints')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs flex flex-col justify-between h-full">
-          <div className="flex items-center justify-between gap-2">
-            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2 min-w-0">
-              <LifeBuoy className="h-4 w-4 text-blue-600 shrink-0" /> <span className="truncate">My Complaints & Tickets</span>
-            </h4>
-            <Badge variant="outline" className="whitespace-nowrap inline-flex items-center justify-center text-[13px] sm:text-[14px] font-medium border-gray-200 px-3 py-1 h-8 shrink-0 rounded-full text-gray-700 bg-gray-50/50">Track Progress</Badge>
+        {/* 2. Helpdesk Card */}
+        <div 
+          onClick={() => navigate('/resident/complaints')} 
+          className="p-3.5 sm:p-4 rounded-[16px] bg-[#FFF8EA] border border-[#FFE0B2] hover:bg-[#FFF2D6] cursor-pointer transition-all flex flex-col items-center justify-center text-center gap-1.5 shadow-xs"
+        >
+          <div className="h-9 w-9 rounded-xl bg-amber-100/80 text-amber-700 flex items-center justify-center shrink-0">
+            <LifeBuoy className="h-5 w-5" />
           </div>
-          <p className="text-xs text-gray-500">Raise ticket, upload photo, technician details, service ratings.</p>
+          <span className="text-xs font-bold text-gray-700">Helpdesk</span>
+          <span className="text-xs sm:text-sm font-extrabold text-amber-700">
+            {data.metrics.activeComplaints || 2} Active
+          </span>
         </div>
 
-        <div onClick={() => navigate('/resident/notices')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs flex flex-col justify-between h-full">
-          <div className="flex items-center justify-between gap-2">
-            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2 min-w-0">
-              <Bell className="h-4 w-4 text-blue-600 shrink-0" /> <span className="truncate">Society Notices & Circulars</span>
-            </h4>
-            <Badge variant="outline" className="whitespace-nowrap inline-flex items-center justify-center text-[13px] sm:text-[14px] font-medium border-gray-200 px-3 py-1 h-8 shrink-0 rounded-full text-gray-700 bg-gray-50/50">Read Receipts</Badge>
+        {/* 3. Notices Card */}
+        <div 
+          onClick={() => navigate('/resident/notices')} 
+          className="p-3.5 sm:p-4 rounded-[16px] bg-[#E8EEFF] border border-[#C5CAE9] hover:bg-[#DBE4FF] cursor-pointer transition-all flex flex-col items-center justify-center text-center gap-1.5 shadow-xs"
+        >
+          <div className="h-9 w-9 rounded-xl bg-indigo-100/80 text-indigo-700 flex items-center justify-center shrink-0">
+            <Bell className="h-5 w-5" />
           </div>
-          <p className="text-xs text-gray-500">Emergency alerts, water shut-off circulars, read receipt acknowledgements.</p>
+          <span className="text-xs font-bold text-gray-700">Notices</span>
+          <span className="text-xs sm:text-sm font-extrabold text-indigo-700">
+            {data.metrics.newNotices || 3} New
+          </span>
         </div>
 
-        <div onClick={() => navigate('/resident/meetings')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs flex flex-col justify-between h-full">
-          <div className="flex items-center justify-between gap-2">
-            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2 min-w-0">
-              <CalendarCheck className="h-4 w-4 text-blue-600 shrink-0" /> <span className="truncate">Meetings & AGM</span>
-            </h4>
-            <Badge variant="outline" className="whitespace-nowrap inline-flex items-center justify-center text-[13px] sm:text-[14px] font-medium border-gray-200 px-3 py-1 h-8 shrink-0 rounded-full text-gray-700 bg-gray-50/50">Join Online</Badge>
+        {/* 4. Meetings Card */}
+        <div 
+          onClick={() => navigate('/resident/meetings')} 
+          className="p-3.5 sm:p-4 rounded-[16px] bg-[#F0F4F8] border border-[#D9E2EC] hover:bg-[#E2E8F0] cursor-pointer transition-all flex flex-col items-center justify-center text-center gap-1.5 shadow-xs"
+        >
+          <div className="h-9 w-9 rounded-xl bg-slate-200/80 text-blue-700 flex items-center justify-center shrink-0">
+            <CalendarCheck className="h-5 w-5" />
           </div>
-          <p className="text-xs text-gray-500">Agendas, online Google Meet link, voting results, MoM downloads.</p>
+          <span className="text-xs font-bold text-gray-700">Meetings</span>
+          <span className="text-xs sm:text-sm font-extrabold text-blue-700">
+            {data.metrics.upcomingMeetings || 1} Soon
+          </span>
         </div>
 
-        <div onClick={() => navigate('/resident/visitors')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs flex flex-col justify-between h-full">
-          <div className="flex items-center justify-between gap-2">
-            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2 min-w-0">
-              <UserCheck className="h-4 w-4 text-blue-600 shrink-0" /> <span className="truncate">Pre-Approve Visitors</span>
-            </h4>
-            <Badge variant="outline" className="whitespace-nowrap inline-flex items-center justify-center text-[13px] sm:text-[14px] font-medium border-gray-200 px-3 py-1 h-8 shrink-0 rounded-full text-gray-700 bg-gray-50/50">QR Gate Pass</Badge>
+        {/* 5. Amenities Card */}
+        <div 
+          onClick={() => navigate('/resident/amenities')} 
+          className="p-3.5 sm:p-4 rounded-[16px] bg-[#E6F8F6] border border-[#B2EBF2] hover:bg-[#D7F5F2] cursor-pointer transition-all flex flex-col items-center justify-center text-center gap-1.5 shadow-xs"
+        >
+          <div className="h-9 w-9 rounded-xl bg-teal-100/80 text-[#007A55] flex items-center justify-center shrink-0">
+            <Wrench className="h-5 w-5" />
           </div>
-          <p className="text-xs text-gray-500">Pre-approve guests, generate QR passes, track delivery entries.</p>
+          <span className="text-xs font-bold text-gray-700">Amenities</span>
+          <span className="text-xs sm:text-sm font-extrabold text-[#007A55]">Book</span>
         </div>
 
-        <div onClick={() => navigate('/resident/amenities')} className="p-4 rounded-[14px] bg-white border border-gray-200 hover:border-blue-500 cursor-pointer transition-all space-y-2 group hover:shadow-xs flex flex-col justify-between h-full">
-          <div className="flex items-center justify-between gap-2">
-            <h4 className="font-semibold text-sm group-hover:text-blue-600 transition-colors flex items-center gap-2 min-w-0">
-              <CalendarCheck className="h-4 w-4 text-blue-600 shrink-0" /> <span className="truncate">Book Amenities</span>
-            </h4>
-            <Badge variant="outline" className="whitespace-nowrap inline-flex items-center justify-center text-[13px] sm:text-[14px] font-medium border-gray-200 px-3 py-1 h-8 shrink-0 rounded-full text-gray-700 bg-gray-50/50">Clubhouse</Badge>
+        {/* 6. Community Card */}
+        <div 
+          onClick={() => navigate('/polls')} 
+          className="p-3.5 sm:p-4 rounded-[16px] bg-[#FFF3E0] border border-[#FFE0B2] hover:bg-[#FFE8CC] cursor-pointer transition-all flex flex-col items-center justify-center text-center gap-1.5 shadow-xs"
+        >
+          <div className="h-9 w-9 rounded-xl bg-orange-100/80 text-orange-700 flex items-center justify-center shrink-0">
+            <User className="h-5 w-5" />
           </div>
-          <p className="text-xs text-gray-500">Check slot availability for tennis court, swimming pool, clubhouse hall.</p>
+          <span className="text-xs font-bold text-gray-700">Community</span>
+          <span className="text-xs sm:text-sm font-extrabold text-orange-700">5 Posts</span>
+        </div>
+
+        {/* 7. Visitors Card */}
+        <div 
+          onClick={() => navigate('/resident/visitors')} 
+          className="p-3.5 sm:p-4 rounded-[16px] bg-[#E8F0FE] border border-[#D2E3FC] hover:bg-[#D7E5FC] cursor-pointer transition-all flex flex-col items-center justify-center text-center gap-1.5 shadow-xs"
+        >
+          <div className="h-9 w-9 rounded-xl bg-blue-100/80 text-blue-700 flex items-center justify-center shrink-0">
+            <UserCheck className="h-5 w-5" />
+          </div>
+          <span className="text-xs font-bold text-gray-700">Visitors</span>
+          <span className="text-xs sm:text-sm font-extrabold text-blue-700">Log</span>
+        </div>
+
+        {/* 8. Parking Card */}
+        <div 
+          onClick={() => navigate('/resident/parking')} 
+          className="p-3.5 sm:p-4 rounded-[16px] bg-[#F5F5F5] border border-[#E0E0E0] hover:bg-[#EAEAEA] cursor-pointer transition-all flex flex-col items-center justify-center text-center gap-1.5 shadow-xs"
+        >
+          <div className="h-9 w-9 rounded-xl bg-gray-200/80 text-gray-700 flex items-center justify-center shrink-0">
+            <ParkingCircle className="h-5 w-5" />
+          </div>
+          <span className="text-xs font-bold text-gray-700">Parking</span>
+          <span className="text-xs sm:text-sm font-extrabold text-gray-600">Pass</span>
+        </div>
+
+        {/* 9. More Card */}
+        <div 
+          onClick={() => navigate('/resident/documents')} 
+          className="p-3.5 sm:p-4 rounded-[16px] bg-[#F5F5F5] border border-[#E0E0E0] hover:bg-[#EAEAEA] cursor-pointer transition-all flex flex-col items-center justify-center text-center gap-1.5 shadow-xs"
+        >
+          <div className="h-9 w-9 rounded-xl bg-gray-200/80 text-gray-700 flex items-center justify-center shrink-0">
+            <FileText className="h-5 w-5" />
+          </div>
+          <span className="text-xs font-bold text-gray-700">More</span>
+          <span className="text-xs sm:text-sm font-extrabold text-gray-600">View All</span>
         </div>
       </div>
     </div>
